@@ -1,6 +1,8 @@
+//pages
+import LoginPage from "@/pages/account/login/login";
 
-export default function LoginPage() {
+export default function Login() {
   return (
-    <h1>Login Page</h1>
+    <LoginPage />
   );
 }

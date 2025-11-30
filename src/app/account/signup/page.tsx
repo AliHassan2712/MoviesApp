@@ -1,6 +1,8 @@
+//pages
+import SignupPage from "@/pages/account/signup/singup";
 
-export default function SignupPage() {
+export default function Signup() {
   return (
-   <h1>Signup Page</h1>
+   <SignupPage/>
   );
 }
