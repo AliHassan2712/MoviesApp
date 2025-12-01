@@ -1,25 +1,19 @@
 "use client";
 
-//validation Yup schema
 import { signupSchema, SignupSchemaType } from "../validation";
-
-//hooks
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import useSignup from "../hooks/useSignup";
 
-function Spinner() {
-  return (
-    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-  );
-}
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Input from "@/components/ui/Input";
+import PrimaryButton from "@/components/ui/PrimaryButton";
 
 export default function SignupForm() {
   const { signup, isLoading } = useSignup();
 
   const {
-    handleSubmit,
     register,
+    handleSubmit,
     formState: { errors },
   } = useForm<SignupSchemaType>({
     resolver: yupResolver(signupSchema),
@@ -35,87 +29,48 @@ export default function SignupForm() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-        <div>
-          <label className="text-text-soft block mb-1 font-medium">First Name</label>
-          <input
-            {...register("firstName")}
-            className="w-full bg-card text-main border border-main rounded-lg p-3 outline-none focus:ring-2 focus:ring-primary transition"
-            type="text"
-            placeholder="John"
-          />
-          {errors.firstName && <p className="text-primary text-sm mt-1">{errors.firstName.message}</p>}
-        </div>
-
-        <div>
-          <label className="text-text-soft block mb-1 font-medium">Last Name</label>
-          <input
-            {...register("lastName")}
-            className="w-full bg-card text-main border border-main rounded-lg p-3 outline-none focus:ring-2 focus:ring-primary transition"
-            type="text"
-            placeholder="Doe"
-          />
-          {errors.lastName && <p className="text-primary text-sm mt-1">{errors.lastName.message}</p>}
-        </div>
-
-      </div>
-
-      <div>
-        <label className="text-text-soft block mb-1 font-medium">Email</label>
-        <input
-          {...register("email")}
-          className="w-full bg-card text-main border border-main rounded-lg p-3 outline-none focus:ring-2 focus:ring-primary transition"
-          type="email"
-          placeholder="example@mail.com"
+        <Input
+          label="First Name"
+          placeholder="John"
+          error={errors.firstName?.message}
+          {...register("firstName")}
         />
-        {errors.email && <p className="text-primary text-sm mt-1">{errors.email.message}</p>}
-      </div>
 
-      <div>
-        <label className="text-text-soft block mb-1 font-medium">Password</label>
-        <input
-          {...register("password")}
-          className="w-full bg-card text-main border border-main rounded-lg p-3 outline-none focus:ring-2 focus:ring-primary transition"
-          type="password"
-          placeholder="******"
+        <Input
+          label="Last Name"
+          placeholder="Doe"
+          error={errors.lastName?.message}
+          {...register("lastName")}
         />
-        {errors.password && <p className="text-primary text-sm mt-1">{errors.password.message}</p>}
+
       </div>
 
-      <div>
-        <label className="text-text-soft block mb-1 font-medium">Confirm Password</label>
-        <input
-          {...register("confirmPassword")}
-          className="w-full bg-card text-main border border-main rounded-lg p-3 outline-none focus:ring-2 focus:ring-primary transition"
-          type="password"
-          placeholder="******"
-        />
-        {errors.confirmPassword && <p className="text-primary text-sm mt-1">{errors.confirmPassword.message}</p>}
-      </div>
+      <Input
+        label="Email"
+        placeholder="example@mail.com"
+        error={errors.email?.message}
+        {...register("email")}
+      />
 
-      <div className="flex items-center gap-2">
-        <input type="checkbox" {...register("agree")} className="w-4 h-4 accent-primary" />
-        <p className="text-text-soft text-sm">
-          I agree to the{" "}
-          <span className="text-primary underline cursor-pointer hover:text-primary/80">Terms of Service</span>
-        </p>
-      </div>
+      <Input
+        label="Password"
+        type="password"
+        placeholder="******"
+        error={errors.password?.message}
+        {...register("password")}
+      />
 
-      {errors.agree && <p className="text-primary text-sm mt-1">{errors.agree.message}</p>}
+      <Input
+        label="Confirm Password"
+        type="password"
+        placeholder="******"
+        error={errors.confirmPassword?.message}
+        {...register("confirmPassword")}
+      />
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full btn-primary py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition disabled:opacity-60 flex items-center justify-center gap-2"
-      >
-        {isLoading ? (
-          <>
-            <Spinner />
-            <span>Loading...</span>
-          </>
-        ) : (
-          "Sign Up"
-        )}
-      </button>
+      <PrimaryButton isLoading={isLoading} type="submit">
+        Sign Up
+      </PrimaryButton>
 
     </form>
   );

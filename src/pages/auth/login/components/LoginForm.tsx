@@ -1,78 +1,72 @@
 "use client";
 
-import { loginSchema, LoginSchemaType } from "../validation";
-import SocialButtons from "@/components/ui/SocialButtons";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { loginSchema, LoginSchemaType } from "../validation";
+
 import useLogin from "../hooks/useLogin";
+import Input from "@/components/ui/Input";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import SocialButtons from "@/components/ui/SocialButtons";
+
 import Link from "next/link";
 
-function Spinner() {
-  return (
-    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-  );
-}
-
 export default function LoginForm() {
-  const { login, isLoading} = useLogin();
+  const { login, isLoading, error } = useLogin();
 
-  const { handleSubmit, register, formState: { errors } } =
+  const { register, handleSubmit, formState: { errors } } =
     useForm<LoginSchemaType>({
       resolver: yupResolver(loginSchema),
       mode: "onBlur",
     });
 
-  const onSubmit = async (data: LoginSchemaType) => {
-    await login(data);
-  };
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div>
-        <label className="text-text-soft block mb-1 font-medium">Email</label>
-        <input
-          {...register("email")}
-          className="w-full bg-card text-main border border-main rounded-lg p-3 outline-none focus:ring-2 focus:ring-primary"
-          type="email"
-          placeholder="example@mail.com"
-        />
-        {errors.email && <p className="text-primary text-sm mt-1">{errors.email.message}</p>}
+    <form onSubmit={handleSubmit(login)} className="space-y-6">
+
+      {/* API Error */}
+      {error && <p className="text-primary text-sm font-bold">{error}</p>}
+
+      {/* EMAIL */}
+      <Input
+        label="Email"
+        placeholder="example@mail.com"
+        error={errors.email?.message}
+        {...register("email")}
+      />
+
+      {/* PASSWORD */}
+      <Input
+        label="Password"
+        type="password"
+        placeholder="******"
+        error={errors.password?.message}
+        {...register("password")}
+      />
+
+      {/* Forgot Password */}
+      <div className="text-right -mt-2">
+        <Link href="/auth/forget-password" className="text-primary text-sm hover:underline">
+          Forgot password?
+        </Link>
       </div>
 
-      <div>
-        <label className="text-text-soft block mb-1 font-medium">Password</label>
-        <input
-          {...register("password")}
-          className="w-full bg-card text-main border border-main rounded-lg p-3 outline-none focus:ring-2 focus:ring-primary"
-          type="password"
-          placeholder="******"
-        />
-        {errors.password && <p className="text-primary text-sm mt-1">{errors.password.message}</p>}
+      {/* LOGIN BUTTON */}
+      <PrimaryButton isLoading={isLoading} type="submit">
+        Login
+      </PrimaryButton>
 
-        <div className="text-right mt-1">
-          <Link href="/auth/forget-password" className="text-primary text-sm hover:underline">
-            Forgot password?
+      {/* SIGNUP LINK */}
+      <div className="text-center">
+        <p className="text-text-soft text-sm">
+          Don’t have an account?{" "}
+          <Link href="/auth/signup" className="text-primary font-semibold hover:underline">
+            Create an account
           </Link>
-        </div>
+        </p>
       </div>
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full btn-primary py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition disabled:opacity-60 flex items-center justify-center gap-2"
-      >
-        {isLoading ? (
-          <>
-            <Spinner />
-            <span>Loading...</span>
-          </>
-        ) : (
-          "Login"
-        )}
-      </button>
-
+      {/* SOCIAL LOGIN */}
       <SocialButtons mode="login" />
-
     </form>
   );
 }

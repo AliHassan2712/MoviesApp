@@ -10,7 +10,6 @@ export const signupSchema = yup.object().shape({
     .string()
     .required("Confirm password")
     .oneOf([yup.ref("password")], "Passwords do not match"),
-  agree: yup.boolean().required("You must agree to the terms").oneOf([true], "You must agree to the terms"),
 });
 
 export type SignupSchemaType = yup.InferType<typeof signupSchema>;

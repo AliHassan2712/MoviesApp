@@ -1,27 +1,22 @@
-//components
-import ForgetPasswordBackground from "./components/ForgetPasswordBackground";
-import ForgotPasswordForm from "./components/ForgotPasswordForm";
+import AuthBackground from "@/components/ui/AuthBackground";
+import AuthCard from "@/components/ui/AuthCard";
+import AuthHeader from "@/components/ui/AuthHeader";
+
+import ForgotPasswordForm from "@/pages/auth/forget-password/components/ForgotPasswordForm";
+import bgImg from "@/pages/auth/forget-password/assets/imgs/background.png";
 
 export default function ForgotPasswordPage() {
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-main">
+      <AuthBackground image={bgImg} />
 
-      {/* Background */}
-      <ForgetPasswordBackground />
-
-      {/* Card */}
-      <div className="relative z-10 w-[90%] sm:max-w-lg bg-card p-10 rounded-xl border border-main shadow-xl">
-        <h1 className="text-3xl font-bold text-center mb-3 text-main">
-          Forgot Password
-        </h1>
-
-        <p className="text-center text-text-soft text-sm mb-6">
-          Enter your email and we will send you a reset link.
-        </p>
-
+      <AuthCard>
+        <AuthHeader 
+          title="Forget Password" 
+          subtitle="Enter your email to receive a reset link"
+        />
         <ForgotPasswordForm />
-      </div>
-
+      </AuthCard>
     </div>
   );
 }

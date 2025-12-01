@@ -1,55 +1,43 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import useForgotPassword from "../hooks/useForgotPassword";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-function Spinner() {
-  return (
-    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-  );
-}
+import useForgotPassword from "../hooks/useForgotPassword";
+import Input from "@/components/ui/Input";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import Link from "next/link";
+import { forgotPasswordSchema, ForgotPasswordSchemaType } from "../validation";
 
 export default function ForgotPasswordForm() {
-  const { sendResetEmail, isLoading } =
-    useForgotPassword();
+  const { sendResetEmail, isLoading } = useForgotPassword();
 
-  const [email, setEmail] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ForgotPasswordSchemaType>({
+    resolver: yupResolver(forgotPasswordSchema),
+    mode: "onBlur",
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await sendResetEmail(email);
+  const onSubmit = async (data: ForgotPasswordSchemaType) => {
+    await sendResetEmail(data.email);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label className="text-text-soft block mb-1 font-medium">Email</label>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
-        <input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full bg-card text-main border border-main rounded-lg p-3 outline-none focus:ring-2 focus:ring-primary placeholder:text-muted"
-          type="email"
-          placeholder="example@mail.com"
-          required
-        />
-      </div>
+      <Input
+        label="Email"
+        placeholder="example@mail.com"
+        error={errors.email?.message}
+        {...register("email")}
+      />
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full btn-primary py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition disabled:opacity-60 flex items-center justify-center gap-2"
-      >
-        {isLoading ? (
-          <>
-            <Spinner />
-            <span>Sending...</span>
-          </>
-        ) : (
-          "Send Reset Link"
-        )}
-      </button>
+      <PrimaryButton isLoading={isLoading} type="submit">
+        Send Reset Link
+      </PrimaryButton>
 
       <div className="text-center">
         <Link href="/auth/login" className="text-primary text-sm hover:underline">

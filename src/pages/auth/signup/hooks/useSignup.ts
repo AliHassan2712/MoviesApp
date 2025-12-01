@@ -1,53 +1,22 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { SignupSchemaType } from "../validation";
-import toast from "react-hot-toast";
+import useApiHandler from "@/lib/useApiHandler";
+import { useRouter } from "next/navigation";
 
 export default function useSignup() {
+  const { post, isLoading, error } = useApiHandler();
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const signup = async (data: SignupSchemaType) => {
-    try {
-      setIsLoading(true);
-      setServerError(null);
-      setSuccessMessage(null);
+    const res = await post(`${API_URL}/auth/signup`, data);
 
-      const response = await fetch("/api/account/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        setServerError(result.message || "Something went wrong");
-        toast.error(result.message || "Something went wrong");
-        return false;
-      }
-
-      setSuccessMessage(result.message || "Signup successful!");
-      toast.success("Account created successfully!");
-
-      setTimeout(() => {
-        router.push("/auth/login");
-      }, 1500);
-
-      return true;
-
-    } catch {
-      setServerError("Network error, please try again.");
-      toast.error("Network error, please try again.");
-      return false;
-
-    } finally {
-      setIsLoading(false);
+    if (res.success) {
+      setTimeout(() => router.push("/auth/login"), 1200);
     }
+
+    return res.success;
   };
 
-  return { signup, isLoading, serverError, successMessage };
+  return { signup, isLoading, error };
 }

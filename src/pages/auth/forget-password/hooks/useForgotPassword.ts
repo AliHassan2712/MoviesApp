@@ -1,44 +1,14 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
+import useApiHandler from "@/lib/useApiHandler";
 
 export default function useForgotPassword() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { post, isLoading, error } = useApiHandler();
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const sendResetEmail = async (email: string) => {
-    try {
-      setIsLoading(true);
-      setServerError(null);
-      setSuccessMessage(null);
 
-      const response = await fetch("/api/auth/forget-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setServerError(data.message || "Something went wrong");
-        toast.error(data.message || "Something went wrong");
-        return false;
-      }
-
-      setSuccessMessage(data.message);
-      toast.success("Reset email sent successfully!");
-      return true;
-
-    } catch {
-      setServerError("Network error, please try again.");
-      toast.error("Network error, please try again.");
-      return false;
-
-    } finally {
-      setIsLoading(false);
-    }
+    const res = await post(`${API_URL}/auth/forget-password`, { email });
+    return res.success;
   };
 
-  return { sendResetEmail, isLoading, serverError, successMessage };
+  return { sendResetEmail, isLoading, error };
 }

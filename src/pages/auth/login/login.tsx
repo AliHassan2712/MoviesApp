@@ -1,21 +1,22 @@
-// components
-import LoginBackground from "./components/LoginBackground";
-import LoginForm from "./components/LoginForm";
-import LoginHeader from "./components/LoginHeader";
+import AuthBackground from "@/components/ui/AuthBackground";
+import AuthCard from "@/components/ui/AuthCard";
+import AuthHeader from "@/components/ui/AuthHeader";
+
+import LoginForm from "@/pages/auth/login/components/LoginForm";
+import bgImg from "@/pages/auth/login/assets/imgs/background.png";
 
 export default function LoginPage() {
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-main">
+      <AuthBackground image={bgImg} />
 
-      {/* BACKGROUND IMAGE */}
-      <LoginBackground />
-
-      {/* LOGIN CARD */}
-      <div className="relative z-10 w-[90%] sm:max-w-lg bg-card p-10 rounded-xl border border-main shadow-xl">
-        <LoginHeader />
+      <AuthCard>
+        <AuthHeader 
+          title="Welcome Back" 
+          subtitle="Login to continue watching your movies" 
+        />
         <LoginForm />
-      </div>
-
+      </AuthCard>
     </div>
   );
 }

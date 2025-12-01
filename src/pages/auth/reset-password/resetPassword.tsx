@@ -1,20 +1,22 @@
-import ResetPasswordBackground from "./components/ResetPasswordBackground";
-import ResetPasswordHeader from "./components/ResetPasswordHeader";
-import ResetPasswordForm from "./components/ResetPasswordForm";
+import AuthBackground from "@/components/ui/AuthBackground";
+import AuthCard from "@/components/ui/AuthCard";
+import AuthHeader from "@/components/ui/AuthHeader";
+
+import ResetPasswordForm from "@/pages/auth/reset-password/components/ResetPasswordForm";
+import bgImg from "@/pages/auth/reset-password/assets/imgs/background.png";
 
 export default function ResetPasswordPage() {
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-main">
+      <AuthBackground image={bgImg} />
 
-      {/* Background */}
-      <ResetPasswordBackground />
-
-      {/* Card */}
-      <div className="relative z-10 w-[90%] sm:max-w-lg bg-card p-10 rounded-xl border border-main shadow-xl">
-        <ResetPasswordHeader />
+      <AuthCard>
+        <AuthHeader 
+          title="Reset Password" 
+          subtitle="Create your new password"
+        />
         <ResetPasswordForm />
-      </div>
-
+      </AuthCard>
     </div>
   );
 }
