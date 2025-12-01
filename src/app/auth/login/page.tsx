@@ -1,5 +1,5 @@
 //pages
-import LoginPage from "@/pages/account/login/login";
+import LoginPage from "@/pages/auth/login/login";
 
 export default function Login() {
   return (

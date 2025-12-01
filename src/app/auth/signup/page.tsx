@@ -1,5 +1,5 @@
 //pages
-import SignupPage from "@/pages/account/signup/singup";
+import SignupPage from "@/pages/auth/signup/singup";
 
 export default function Signup() {
   return (

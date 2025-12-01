@@ -3,7 +3,7 @@ export const PATHS = {
 
   MOVIES: "/movies",
   MOVIE_DETAILS: (id: string | number) => `/movies/${id}`,
-  
+
   SERIES: "/series",
   SERIES_DETAILS: (id: string | number) => `/series/${id}`,
 
@@ -16,9 +16,9 @@ export const PATHS = {
   FAVORITES: "/favorites",
   WATCHLIST: "/watchlist",
 
-  LOGIN: "/login",
-  SIGNUP: "/signup",
-  RESET_PASSWORD: "/reset-password",
+  LOGIN: "/auth/login",
+  SIGNUP: "/auth/signup",
+  RESET_PASSWORD: "/auth/reset-password",
   PROFILE: "/profile",
-  
+
 } as const;

@@ -1,26 +1,22 @@
-
-//next
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { LoginSchemaType } from "../validation";
+import toast from "react-hot-toast";
 
-// Validation types
-import { SignupSchemaType } from "../validation";
-
-export default function useSignup() {
+export default function useLogin() {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const signup = async (data: SignupSchemaType) => {
+  const login = async (data: LoginSchemaType) => {
     try {
       setIsLoading(true);
       setServerError(null);
       setSuccessMessage(null);
 
-      // =============== SEND DATA TO API ===============
-      const response = await fetch("/api/account/signup", {
+      const response = await fetch("/api/account/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -28,34 +24,30 @@ export default function useSignup() {
 
       const result = await response.json();
 
-      // =============== SERVER ERROR HANDLING ===============
       if (!response.ok) {
-        setServerError(result.message || "Something went wrong");
+        setServerError(result.message || "Invalid email or password.");
+        toast.error(result.message || "Invalid email or password.");
         return false;
       }
 
-      // =============== SUCCESS HANDLING ===============
-      setSuccessMessage(result.message || "Signup successful!");
+      setSuccessMessage(result.message || "Login successful!");
+      toast.success("Welcome back!");
 
-      // Redirect after success
       setTimeout(() => {
-        router.push("/account/login");
-      }, 1500);
+        router.push("/");
+      }, 1200);
 
       return true;
 
     } catch {
       setServerError("Network error, please try again.");
+      toast.error("Network error, please try again.");
       return false;
+
     } finally {
       setIsLoading(false);
     }
   };
 
-  return {
-    signup,
-    isLoading,
-    serverError,
-    successMessage,
-  };
+  return { login, isLoading, serverError, successMessage };
 }

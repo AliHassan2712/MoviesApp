@@ -1,18 +1,21 @@
 "use client";
 
-// components
-import SocialButtons from "../../../../components/ui/SocialButtons";
-
 //validation Yup schema
 import { signupSchema, SignupSchemaType } from "../validation";
 
 //hooks
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import useSignup from "@/pages/account/signup/hooks/useSignup";
+import useSignup from "../hooks/useSignup";
+
+function Spinner() {
+  return (
+    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+  );
+}
 
 export default function SignupForm() {
-  const { signup, isLoading, serverError, successMessage } = useSignup();
+  const { signup, isLoading } = useSignup();
 
   const {
     handleSubmit,
@@ -30,14 +33,8 @@ export default function SignupForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
-      {/* GLOBAL MESSAGES */}
-      {serverError && <p className="text-primary text-sm font-bold">{serverError}</p>}
-      {successMessage && <p className="text-success text-sm font-bold">{successMessage}</p>}
-
-      {/* FIRST + LAST NAME */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-        {/* FIRST NAME */}
         <div>
           <label className="text-text-soft block mb-1 font-medium">First Name</label>
           <input
@@ -46,12 +43,9 @@ export default function SignupForm() {
             type="text"
             placeholder="John"
           />
-          {errors.firstName && (
-            <p className="text-primary text-sm mt-1">{errors.firstName.message}</p>
-          )}
+          {errors.firstName && <p className="text-primary text-sm mt-1">{errors.firstName.message}</p>}
         </div>
 
-        {/* LAST NAME */}
         <div>
           <label className="text-text-soft block mb-1 font-medium">Last Name</label>
           <input
@@ -60,14 +54,11 @@ export default function SignupForm() {
             type="text"
             placeholder="Doe"
           />
-          {errors.lastName && (
-            <p className="text-primary text-sm mt-1">{errors.lastName.message}</p>
-          )}
+          {errors.lastName && <p className="text-primary text-sm mt-1">{errors.lastName.message}</p>}
         </div>
 
       </div>
 
-      {/* EMAIL */}
       <div>
         <label className="text-text-soft block mb-1 font-medium">Email</label>
         <input
@@ -76,12 +67,9 @@ export default function SignupForm() {
           type="email"
           placeholder="example@mail.com"
         />
-        {errors.email && (
-          <p className="text-primary text-sm mt-1">{errors.email.message}</p>
-        )}
+        {errors.email && <p className="text-primary text-sm mt-1">{errors.email.message}</p>}
       </div>
 
-      {/* PASSWORD */}
       <div>
         <label className="text-text-soft block mb-1 font-medium">Password</label>
         <input
@@ -90,12 +78,9 @@ export default function SignupForm() {
           type="password"
           placeholder="******"
         />
-        {errors.password && (
-          <p className="text-primary text-sm mt-1">{errors.password.message}</p>
-        )}
+        {errors.password && <p className="text-primary text-sm mt-1">{errors.password.message}</p>}
       </div>
 
-      {/* CONFIRM PASSWORD */}
       <div>
         <label className="text-text-soft block mb-1 font-medium">Confirm Password</label>
         <input
@@ -104,41 +89,33 @@ export default function SignupForm() {
           type="password"
           placeholder="******"
         />
-        {errors.confirmPassword && (
-          <p className="text-primary text-sm mt-1">{errors.confirmPassword.message}</p>
-        )}
+        {errors.confirmPassword && <p className="text-primary text-sm mt-1">{errors.confirmPassword.message}</p>}
       </div>
 
-      {/* TERMS AND CONDITIONS */}
       <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          {...register("agree")}
-          className="w-4 h-4 accent-primary"
-        />
+        <input type="checkbox" {...register("agree")} className="w-4 h-4 accent-primary" />
         <p className="text-text-soft text-sm">
           I agree to the{" "}
-          <span className="text-primary underline cursor-pointer hover:text-primary/80">
-            Terms of Service
-          </span>
+          <span className="text-primary underline cursor-pointer hover:text-primary/80">Terms of Service</span>
         </p>
       </div>
 
-      {errors.agree && (
-        <p className="text-primary text-sm mt-1">{errors.agree.message}</p>
-      )}
+      {errors.agree && <p className="text-primary text-sm mt-1">{errors.agree.message}</p>}
 
-      {/* SUBMIT BUTTON */}
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full btn-primary py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition"
+        className="w-full btn-primary py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition disabled:opacity-60 flex items-center justify-center gap-2"
       >
-        {isLoading ? "Loading..." : "Sign Up"}
+        {isLoading ? (
+          <>
+            <Spinner />
+            <span>Loading...</span>
+          </>
+        ) : (
+          "Sign Up"
+        )}
       </button>
-
-      {/* SOCIAL BUTTONS */}
-      <SocialButtons mode="signup" />
 
     </form>
   );
