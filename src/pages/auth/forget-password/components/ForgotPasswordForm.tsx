@@ -1,38 +1,30 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-
+import { useState } from "react";
 import useForgotPassword from "../hooks/useForgotPassword";
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import Link from "next/link";
-import { forgotPasswordSchema, ForgotPasswordSchemaType } from "../validation";
 
 export default function ForgotPasswordForm() {
-  const { sendResetEmail, isLoading } = useForgotPassword();
+  const { sendResetEmail, isLoading, error } = useForgotPassword();
+  const [email, setEmail] = useState("");
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ForgotPasswordSchemaType>({
-    resolver: yupResolver(forgotPasswordSchema),
-    mode: "onBlur",
-  });
-
-  const onSubmit = async (data: ForgotPasswordSchemaType) => {
-    await sendResetEmail(data.email);
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await sendResetEmail(email);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={onSubmit} className="space-y-6">
+
+      {error && <p className="text-primary text-sm font-bold">{error}</p>}
 
       <Input
         label="Email"
         placeholder="example@mail.com"
-        error={errors.email?.message}
-        {...register("email")}
+        value={email}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
       />
 
       <PrimaryButton isLoading={isLoading} type="submit">

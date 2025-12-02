@@ -16,9 +16,10 @@ export const PATHS = {
   FAVORITES: "/favorites",
   WATCHLIST: "/watchlist",
 
+  // Auth
   LOGIN: "/auth/login",
   SIGNUP: "/auth/signup",
-  RESET_PASSWORD: "/auth/reset-password",
-  PROFILE: "/profile",
+  FORGOT_PASSWORD: "/auth/forget-password",
 
+  PROFILE: "/profile",
 } as const;

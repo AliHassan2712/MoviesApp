@@ -1,16 +1,16 @@
 "use client";
 
-import { resetPasswordSchema, ResetPasswordSchemaType } from "../validation";
-import useResetPassword from "../hooks/useResetPassword";
-
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+
+import useResetPassword from "../hooks/useResetPassword";
+import { resetPasswordSchema, ResetPasswordSchemaType } from "../validation";
 
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
-export default function ResetPasswordForm() {
-  const { resetPassword, isLoading, } = useResetPassword();
+export default function ResetPasswordForm({ token } : { token: string }) {
+  const { resetPassword, isLoading, error } = useResetPassword();
 
   const { register, handleSubmit, formState: { errors } } =
     useForm<ResetPasswordSchemaType>({
@@ -18,8 +18,14 @@ export default function ResetPasswordForm() {
       mode: "onBlur",
     });
 
+  const onSubmit = async (data: ResetPasswordSchemaType) => {
+    await resetPassword(token, data.password , data.confirmPassword);
+  };
+
   return (
-    <form onSubmit={handleSubmit((data) => resetPassword(data.password, data.confirmPassword))} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
+      {error && <p className="text-primary text-sm font-bold">{error}</p>}
 
       <Input
         label="New Password"

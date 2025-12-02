@@ -12,9 +12,10 @@ export default function ForgotPasswordPage() {
 
       <AuthCard>
         <AuthHeader 
-          title="Forget Password" 
+          title="Forgot Password"
           subtitle="Enter your email to receive a reset link"
         />
+
         <ForgotPasswordForm />
       </AuthCard>
     </div>
