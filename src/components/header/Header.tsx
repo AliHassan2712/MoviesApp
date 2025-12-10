@@ -6,11 +6,13 @@ import { useState, useEffect } from "react";
 // navigation
 import Link from "next/link";
 import { PATHS } from "@/constant/PATHS";
-
+import { useFavorite } from "../../contexts/FavoriteContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
+  const { favoriteList } = useFavorite();
   // scroll listener
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 20);
@@ -39,8 +41,20 @@ export const Header = () => {
           <Link href={PATHS.SERIES} className="hover:text-primary transition">Series</Link>
           <Link href={PATHS.ACTORS} className="hover:text-primary transition">Actors</Link>
           <Link href={PATHS.GENRES} className="hover:text-primary transition">Genres</Link>
-          <Link href={PATHS.FAVORITES} className="hover:text-primary transition">Favorites</Link>
           <Link href={PATHS.WATCHLIST} className="hover:text-primary transition">Watchlist</Link>
+          <div className="relative inline-block">
+            <Link href={PATHS.FAVORITES} className="hover:text-primary transition">Favorites
+              <FontAwesomeIcon
+                icon={faHeartRegular}
+                className="ms-2 text-white text-xl"
+              />
+              <span
+                className="absolute -top-2 -right-2 btn-primary text-white text-[10px] rounded-full px-[6px] py-[2px]"
+              >
+                {favoriteList.length}
+              </span>
+            </Link>
+          </div>
         </nav>
 
         {/* Desktop Login */}
@@ -68,8 +82,21 @@ export const Header = () => {
           <Link href={PATHS.SERIES} className="block hover:text-primary transition">Series</Link>
           <Link href={PATHS.ACTORS} className="block hover:text-primary transition">Actors</Link>
           <Link href={PATHS.GENRES} className="block hover:text-primary transition">Genres</Link>
-          <Link href={PATHS.FAVORITES} className="block hover:text-primary transition">Favorites</Link>
           <Link href={PATHS.WATCHLIST} className="block hover:text-primary transition">Watchlist</Link>
+
+          <div className="relative inline-block">
+            <Link href={PATHS.FAVORITES} className="hover:text-primary transition">Favorites
+              <FontAwesomeIcon
+                icon={faHeartRegular}
+                className="ms-2 text-white text-xl"
+              />
+              <span
+                className="absolute -top-2 -right-2 btn-primary text-white text-[10px] rounded-full px-[6px] py-[2px]"
+              >
+                {favoriteList.length}
+              </span>
+            </Link>
+          </div>
 
           <Link
             href={PATHS.LOGIN}

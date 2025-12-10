@@ -1,6 +1,7 @@
 import { Header } from "@/components/header/Header";
 import "./globals.css";
 import type { Metadata } from "next";
+import { FavoriteProvider } from "../contexts/FavoriteContext";
 
 export const metadata: Metadata = {
   title: "Movies App",
@@ -11,8 +12,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body suppressHydrationWarning>
-        <Header />
-        {children}
+        <FavoriteProvider>
+          <Header />
+
+          {children}
+        </FavoriteProvider>
       </body>
     </html>
   );

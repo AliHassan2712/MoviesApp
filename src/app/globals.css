@@ -63,6 +63,7 @@
   background-color: var(--color-btn-primary-hover);
 }
 
+.margin-bottom{margin-bottom: 100px;}
 /* Global */
 body {
   background-color: var(--color-background);

@@ -1,14 +1,17 @@
 "use client";
 
-//components
-import { Container } from "@/components/containers/Container";
+import Hero from "./components/Hero";
+import Movies from "../movies/components/Movies";
 
 
 export default function HomePageComponent() {
-  return (
-    <Container>
-      <h1>Welcome to the Movies App</h1>
-      <p>Discover movies.</p>
-    </Container>
-  );
+
+    return (
+        <>
+            <Hero />
+            <Movies />
+
+        </>
+    )
+
 }
