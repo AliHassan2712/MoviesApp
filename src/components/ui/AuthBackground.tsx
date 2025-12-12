@@ -1,7 +1,12 @@
+// Next
 import Image from "next/image";
 import { StaticImageData } from "next/image";
 
-export default function AuthBackground({ image }: { image: StaticImageData }) {
+type AuthBackgroundProps = {
+image: StaticImageData
+}
+
+export default function AuthBackground({ image }: AuthBackgroundProps) {
   return (
     <div className="absolute inset-0">
       <Image

@@ -1,8 +1,13 @@
-//pages
-import SignupPage from "@/pages/auth/signup/singup";
+// guest route wrapper for signup page
+import GuestRoute from "@/components/auth/GuestRoute";
+
+// signup page component
+import SignupPage from "@/pages/auth/signup/signup";
 
 export default function Signup() {
   return (
-   <SignupPage/>
+    <GuestRoute>
+      <SignupPage />
+    </GuestRoute>
   );
 }

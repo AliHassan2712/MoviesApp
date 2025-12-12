@@ -1,13 +1,17 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-
-import useResetPassword from "../hooks/useResetPassword";
-import { resetPasswordSchema, ResetPasswordSchemaType } from "../validation";
-
+//components
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
+
+//hooks
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import useResetPassword from "../hooks/useResetPassword";
+
+//validation Yup
+import { resetPasswordSchema, ResetPasswordSchemaType } from "../validation";
+
 
 export default function ResetPasswordForm({ token } : { token: string }) {
   const { resetPassword, isLoading, error } = useResetPassword();

@@ -1,18 +1,24 @@
 "use client";
 
+//components
 import Spinner from "./Spinner";
+
+type PrimaryButtonProps = {
+  children: React.ReactNode;
+  isLoading?: boolean;
+  className?: string;
+  [key: string]: any;
+}
+
 
 export default function PrimaryButton({
   children,
   isLoading,
   className = "",
   ...props
-}: {
-  children: React.ReactNode;
-  isLoading?: boolean;
-  className?: string;
-  [key: string]: any;
-}) {
+}: PrimaryButtonProps) {
+
+  
   return (
     <button
       {...props}

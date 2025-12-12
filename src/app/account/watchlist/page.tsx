@@ -1,6 +1,13 @@
+// protected route wrapper for watchlist page
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
-export default function WatchlistPage() {
+// watchlist page component
+import WatchlistPage from "@/pages/account/watchlist/watchlist";
+
+export default function Watchlist() {
   return (
-    <h1>Watchlist Page</h1>
+     <ProtectedRoute>
+      <WatchlistPage />
+     </ProtectedRoute>
   );
 }

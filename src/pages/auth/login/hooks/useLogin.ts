@@ -1,13 +1,23 @@
-import { PATHS } from "@/constant/PATHS";
+"use client"
+//Next 
 import { useRouter } from "next/navigation";
-import useApiHandler from "@/lib/useApiHandler";
+
+//path constant
+import { PATHS } from "@/constant/PATHS";
+
+//hooks
+import useApiHandler from "@/lib/api/useApiHandler";
+
+//validation Yup
 import { LoginSchemaType } from "../validation";
+
+//context
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function useLogin() {
   const router = useRouter();
   const { post, isLoading, error } = useApiHandler();
-  const { login: setLoginContext } = useAuth();
+  const { fetchUser } = useAuth();
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -15,12 +25,10 @@ export default function useLogin() {
     const res = await post(`${API_URL}/auth/login`, data);
 
     if (res.success) {
-      // بما أننا في Production → الكوكي HttpOnly محفوظة تلقائياً
-      setLoginContext();
 
-      setTimeout(() => {
-        router.push(PATHS.HOME);
-      }, 600);
+      await fetchUser();
+
+      router.push(PATHS.HOME);
     }
 
     return res.success;

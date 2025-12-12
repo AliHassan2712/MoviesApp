@@ -1,5 +1,3 @@
-"use client";
-
 //components
 import { Container } from "@/components/containers/Container";
 

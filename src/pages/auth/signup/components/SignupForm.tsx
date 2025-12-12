@@ -1,12 +1,17 @@
 "use client";
 
-import { signupSchema, SignupSchemaType } from "../validation";
-import useSignup from "../hooks/useSignup";
-
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+//components
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
+
+//hooks
+import useSignup from "../hooks/useSignup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+//validation
+import { signupSchema, SignupSchemaType } from "../validation";
+
 
 export default function SignupForm() {
   const { signup, isLoading } = useSignup();

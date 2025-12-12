@@ -1,10 +1,16 @@
 "use client";
 
+//React & Next
 import { useState } from "react";
-import useForgotPassword from "../hooks/useForgotPassword";
+import Link from "next/link";
+
+//components
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
-import Link from "next/link";
+
+//hooks
+import useForgotPassword from "../hooks/useForgotPassword";
+
 
 export default function ForgotPasswordForm() {
   const { sendResetEmail, isLoading, error } = useForgotPassword();

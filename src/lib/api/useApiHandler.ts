@@ -1,6 +1,9 @@
 "use client";
 
+//react
 import { useState } from "react";
+
+//toast notify
 import toast from "react-hot-toast";
 
 export default function useApiHandler() {
@@ -14,7 +17,7 @@ export default function useApiHandler() {
 
       const response = await fetch(url, {
         method: "POST",
-        credentials: "include", 
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });

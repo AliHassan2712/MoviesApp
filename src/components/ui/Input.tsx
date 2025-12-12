@@ -1,6 +1,15 @@
 "use client";
 
-import cn from "@/lib/cn";
+// helpers
+import cn from "@/lib/utils/cn";
+
+type InputProps ={
+  label?: string;
+  error?: string;
+
+  className?: string;
+  [key: string]: any;
+}
 
 export default function Input({
   label,
@@ -9,13 +18,8 @@ export default function Input({
   rightIcon,
   className = "",
   ...props
-}: {
-  label?: string;
-  error?: string;
-
-  className?: string;
-  [key: string]: any;
-}) {
+}: InputProps) {
+  
   return (
     <div className="space-y-1">
       

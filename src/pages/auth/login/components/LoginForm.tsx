@@ -1,15 +1,20 @@
 "use client";
 
+//Next
+import Link from "next/link";
+
+//hooks
+import useLogin from "../hooks/useLogin";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema, LoginSchemaType } from "../validation";
 
-import useLogin from "../hooks/useLogin";
+//components
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import SocialButtons from "@/components/ui/SocialButtons";
 
-import Link from "next/link";
+//validation Yup
+import { loginSchema, LoginSchemaType } from "../validation";
 
 export default function LoginForm() {
   const { login, isLoading, error } = useLogin();

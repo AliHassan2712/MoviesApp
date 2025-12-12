@@ -1,6 +1,13 @@
+// protected route wrapper for favorites page
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
-export default function FavoritesPage() {
+// favorites page component
+import FavoritesPage from "@/pages/account/favorites/favorites";
+
+export default function Favorites() {
   return (
-    <h1>Favorites Page</h1>
+     <ProtectedRoute>
+       <FavoritesPage />
+     </ProtectedRoute>
   );
 }

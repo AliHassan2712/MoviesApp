@@ -13,13 +13,19 @@ export const PATHS = {
   GENRES: "/genres",
   GENRE_DETAILS: (id: string | number) => `/genres/${id}`,
 
-  FAVORITES: "/favorites",
-  WATCHLIST: "/watchlist",
+  FAVORITES: "/account/favorites",
+  WATCHLIST: "/account/watchlist",
+
 
   // Auth
   LOGIN: "/auth/login",
   SIGNUP: "/auth/signup",
   FORGOT_PASSWORD: "/auth/forget-password",
 
-  PROFILE: "/profile",
+  // Account
+  PROFILE: "/account/profile",
+  PROFILE_EDIT: "/account/profile/edit",
+  CHANGE_PASSWORD: "/account/profile/change-password",
+  SETTINGS: "/account/settings",
+
 } as const;

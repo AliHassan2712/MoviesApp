@@ -2,7 +2,13 @@
 
 /* ================================================
    🎬 MOVIES APP COLOR SYSTEM (Tailwind v4)
+   - Dark & Light Mode
+   - Optimized for Cinematic UI
 ================================================ */
+
+/* ============================
+   DARK MODE (Default)
+=============================== */
 :root {
   /* BRAND COLORS */
   --color-primary: #e50914;
@@ -15,13 +21,13 @@
   --color-danger: #e63946;
 
   /* BACKGROUND LAYERS */
-  --color-background: #0a0a0a;
-  --color-background-soft: #111;
-  --color-background-card: #1f1f1f;
+  --color-background: #0a0a0a;        /* Main dark background */
+  --color-background-soft: #111;       /* Slightly lighter */
+  --color-background-card: #1f1f1f;    /* Card color */
 
   /* TEXT COLORS */
-  --color-text: #ffffff;
-  --color-text-muted: #9ca3af;
+  --color-text: #ffffff;               /* White */
+  --color-text-muted: #9ca3af;         /* Tailwind zinc-400 */
   --color-text-soft: #cfcfcf;
 
   /* BORDERS */
@@ -32,7 +38,9 @@
   --color-btn-primary-hover: #b20710;
 }
 
-/* Dark Mode Auto */
+/* ============================
+   AUTO DARK MODE (OS Setting)
+=============================== */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-background: #0a0a0a;
@@ -41,9 +49,54 @@
   }
 }
 
-/* ===========================
-   Utility Classes (Safe)
-========================== */
+/* ============================================================
+   LIGHT MODE (Cinematic Soft Theme)
+   - Clean, soft whites optimized for Movies UI
+============================================================ */
+html.light {
+  /* BACKGROUNDS */
+  --color-background: #ffffff;         /* Pure clean white */
+  --color-background-soft: #f4f4f5;    /* Soft grey layer */
+  --color-background-card: #fafafa;    /* Smooth card */
+
+  /* TEXT */
+  --color-text: #0a0a0a;               /* Black for strong contrast */
+  --color-text-muted: #636363;         /* Neutral grey */
+  --color-text-soft: #2d2d2d;
+
+  /* BORDERS */
+  --color-border: #d4d4d8;             /* Tailwind zinc-300 */
+
+  /* BUTTONS */
+  --color-btn-primary: #e50914;        /* Keep brand identity */
+  --color-btn-primary-hover: #b20710;
+}
+
+/* ============================================================
+   THEME TRANSITION (Dark ↔ Light)
+   - Smooth fade animation for background, text and UI elements.
+============================================================ */
+
+html {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    fill 0.35s ease,
+    stroke 0.35s ease;
+}
+
+/* Optional: smoother cards + buttons */
+* {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease;
+}
+
+/* ============================
+   Utility Classes
+=============================== */
 .bg-main { background-color: var(--color-background); }
 .bg-soft { background-color: var(--color-background-soft); }
 .bg-card { background-color: var(--color-background-card); }
@@ -63,9 +116,42 @@
   background-color: var(--color-btn-primary-hover);
 }
 
-/* Global */
+/* Global Base */
 body {
   background-color: var(--color-background);
   color: var(--color-text);
   font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+
+/* Dropdown Opening Animation */
+@keyframes dropdownOpen {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-dropdown-open {
+  animation: dropdownOpen 0.18s ease-out forwards;
+}
+
+/* Dropdown Closing Animation */
+@keyframes dropdownClose {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+}
+
+.animate-dropdown-close {
+  animation: dropdownClose 0.15s ease-in forwards;
 }

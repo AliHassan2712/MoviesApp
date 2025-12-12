@@ -1,5 +1,12 @@
-import useApiHandler from "@/lib/useApiHandler";
+"use client"
+
+//Next
 import { useRouter } from "next/navigation";
+
+//hooks
+import useApiHandler from "@/lib/api/useApiHandler";
+
+//path constant
 import { PATHS } from "@/constant/PATHS";
 
 export default function useResetPassword() {
