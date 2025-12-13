@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/* ================================================
+   🎬 MOVIES APP COLOR SYSTEM (Tailwind v4)
+================================================ */
+:root {
+  /* BRAND COLORS */
+  --color-primary: #e50914;
+  --color-secondary: #3a86ff;
+  --color-accent: #ff006e;
+
+  /* STATUS COLORS */
+  --color-warning: #ffbe0b;
+  --color-success: #2ecc71;
+  --color-danger: #e63946;
+
+  /* BACKGROUND LAYERS */
+  --color-background: #0a0a0a;
+  --color-background-soft: #111;
+  --color-background-card: #1f1f1f;
+
+  /* TEXT COLORS */
+  --color-text: #ffffff;
+  --color-text-muted: #9ca3af;
+  --color-text-soft: #cfcfcf;
+
+  /* BORDERS */
+  --color-border: #2b2b2b;
+
+  /* BUTTONS */
+  --color-btn-primary: #e50914;
+  --color-btn-primary-hover: #b20710;
+}
+
+/* Dark Mode Auto */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #0a0a0a;
+    --color-background-soft: #111;
+    --color-background-card: #1f1f1f;
+  }
+}
+
+/* ===========================
+   Utility Classes (Safe)
+========================== */
+.bg-main { background-color: var(--color-background); }
+.bg-soft { background-color: var(--color-background-soft); }
+.bg-card { background-color: var(--color-background-card); }
+
+.text-main { color: var(--color-text); }
+.text-muted { color: var(--color-text-muted); }
+.text-primary { color: var(--color-primary); }
+
+.border-main { border-color: var(--color-border); }
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--color-btn-primary);
+  color: white;
+}
+.btn-primary:hover {
+  background-color: var(--color-btn-primary-hover);
+}
+
+/* Global */
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
