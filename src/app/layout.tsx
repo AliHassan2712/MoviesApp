@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LangProvider } from "@/contexts/LangContext";
 import { FavoriteProvider } from "@/contexts/FavoriteContext";
 
+
 export const metadata: Metadata = {
   title: "Movies App",
   description: "Browse movies, series, actors and more.",
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             },
           }}
         />
+    
       </body>
     </html>
   );

@@ -4,6 +4,7 @@ export const PATHS = {
   MOVIES: "/movies",
   MOVIE_DETAILS: (id: string | number) => `/movies/${id}`,
 
+  
   SERIES: "/series",
   SERIES_DETAILS: (id: string | number) => `/series/${id}`,
 
@@ -28,4 +29,6 @@ export const PATHS = {
   CHANGE_PASSWORD: "/account/profile/change-password",
   SETTINGS: "/account/settings",
 
+
+  
 } as const;
