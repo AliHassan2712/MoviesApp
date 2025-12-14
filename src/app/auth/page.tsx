@@ -1,27 +1,22 @@
-"use client";
 // Next
 import Link from "next/link";
 
 // guest route wrapper for auth hub page
 import GuestRoute from "@/components/auth/GuestRoute";
 
-// assets
-import bgImg from "@/pages/auth/login/assets/imgs/background.png";
 
 // paths constant
 import { PATHS } from "@/constant/PATHS";
 
 //component 
-import AuthBackground from "@/components/ui/AuthBackground";
 import SocialButtons from "@/components/ui/SocialButtons";
 
 
 export default function AuthHubPage() {
     return (
         <GuestRoute>
-            <div className="relative min-h-screen flex items-center justify-center bg-main">
+            <div className=" min-h-screen flex items-center justify-center bg-main">
 
-                <AuthBackground image={bgImg} />
 
                 <div className="relative z-10 w-[90%] max-w-lg bg-card p-10 rounded-xl border border-main shadow-xl">
                     <h1 className="text-4xl font-extrabold text-center text-primary tracking-wide mb-4">

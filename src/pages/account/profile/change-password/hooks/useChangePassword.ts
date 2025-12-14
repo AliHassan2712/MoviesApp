@@ -1,8 +1,13 @@
 "use client";
 
+// React & Next
 import { useState } from "react";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+
+//toast notify
+import toast from "react-hot-toast";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
 

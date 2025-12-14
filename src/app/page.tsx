@@ -1,4 +1,3 @@
-"use client";
 
 // home page component
 import HomePageComponent from "@/pages/home/Home";

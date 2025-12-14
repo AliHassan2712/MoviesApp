@@ -1,8 +1,13 @@
 "use client";
 
+// React
+import { useState } from "react";
+
+//contexts
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLang } from "@/contexts/LangContext";
-import { useState } from "react";
+
+// react icons
 import { Globe, Moon, Bell } from "lucide-react";
 
 export default function SettingsPage() {

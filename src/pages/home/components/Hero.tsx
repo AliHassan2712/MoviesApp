@@ -1,46 +1,138 @@
 "use client";
 
-export default function Hero() {
+// React & Next
+import Image from "next/image";
+import Link from "next/link";
+import { useRef } from "react";
 
-    return (
-        <section className="relative w-full margin-bottom">
-            <div className="relative w-full h-[60vh] md:h-screen lg:h-[85vh]">
-                <img
-                    src={'../assets/images/img_hero.jpg'}
-                    alt="Hero background"
-                    className="w-full h-full object-cover object-center absolute inset-0"
-                />
+// paths
+import { PATHS } from "@/constant/PATHS";
 
-                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/40" aria-hidden="true" />
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/50" />
+// hooks
+import useHeroItems from "@/hooks/hero/useHeroItems";
 
+// skeleton
+import HeroSkeleton from "@/components/skeletons/HeroSkeleton";
 
-                <div className="absolute inset-0 flex px-6 md:px-12 py-12">
-                    <div className="max-w-4xl text-white">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight drop-shadow-md">
-                            Discover, Watch, and Share Your Favorite Movies
-                        </h1>
-                        <p className="mt-4 text-sm sm:text-base md:text-lg text-white/90 max-w-3xl">
-                            Explore thousands of movies and TV shows, get personalized recommendations, and keep track of what you love. Stream seamlessly and stay updated with the latest releases.
-                        </p>
+type HeroType = "movies" | "series";
 
+type HeroSliderProps = {
+  type: HeroType;
+  limit?: number;
+};
 
-                        <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                            <button className="px-6 py-3 rounded-2xl bg-white text-black font-semibold shadow-lg hover:shadow-xl transition-colors duration-500 hover:bg-gray-200">
-                                Get Started
-                            </button>
+export default function Hero({
+  type,
+  limit = 5,
+}: HeroSliderProps) {
+  const {
+    item,
+    loading,
+    activeIndex,
+    total,
+    setActiveIndex,
+  } = useHeroItems({ type, limit });
 
+  const startX = useRef<number | null>(null);
 
-                            <button className="px-6 py-3 rounded-2xl border border-white/30 text-white font-medium backdrop-blur-sm transition-colors duration-500 hover:bg-white/10 hover:text-gray-200">
-                                Browse Movies
-                            </button>
-                        </div>
+  /* ================= SKELETON ================= */
+  if (loading || !item) {
+    return <HeroSkeleton />;
+  }
 
-                    </div>
-                </div>
+  /* ================= DATA ================= */
+  const heroImage =
+    item.image && item.image.trim() !== ""
+      ? item.image
+      : "/assets/images/img_hero.jpg";
+
+  const detailsHref =
+    type === "movies"
+      ? PATHS.MOVIE_DETAILS(item._id)
+      : PATHS.SERIES_DETAILS(item._id);
+
+  /* ================= UI ================= */
+  return (
+    <section
+      className="relative w-full margin-bottom overflow-hidden"
+      onTouchStart={(e) =>
+        (startX.current = e.touches[0].clientX)
+      }
+      onTouchEnd={(e) => {
+        if (!startX.current) return;
+        const diff = startX.current - e.changedTouches[0].clientX;
+
+        if (diff > 50)
+          setActiveIndex((i) => (i + 1) % total);
+        if (diff < -50)
+          setActiveIndex((i) => (i - 1 + total) % total);
+
+        startX.current = null;
+      }}
+    >
+      <div className="relative h-[60vh] md:h-screen lg:h-[85vh]">
+
+        {/* BACKGROUND IMAGE */}
+        <Image
+          key={item._id}
+          src={heroImage}
+          alt={item.name}
+          fill
+          priority
+          className="object-cover animate-fade"
+        />
+
+        {/* OVERLAYS */}
+        <div className="absolute inset-0 bg-hero-gradient" />
+        <div className="absolute inset-0 bg-overlay" />
+
+        {/* CONTENT */}
+        <div className="absolute inset-0 flex items-end px-6 md:px-12 py-16">
+          <div className="max-w-4xl text-white animate-fade-up">
+
+            <h1 className="text-3xl md:text-5xl font-extrabold">
+              {item.name}
+            </h1>
+
+            <p className="mt-4 text-white/90 max-w-2xl">
+              {item.description ||
+                "Featured content you should watch 📺"}
+            </p>
+
+            <div className="mt-8 flex gap-4">
+              <Link
+                href={detailsHref}
+                className="px-6 py-3 bg-white text-black rounded-2xl font-semibold"
+              >
+                Watch Now
+              </Link>
+
+              <Link
+                href={type === "movies" ? PATHS.MOVIES : PATHS.SERIES}
+                className="px-6 py-3 border border-white/30 rounded-2xl"
+              >
+                Browse {type}
+              </Link>
             </div>
-        </section>
-    )
+          </div>
+        </div>
 
+        {/* DOTS */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+          {Array.from({ length: total }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveIndex(i)}
+              className={`w-3 h-3 rounded-full transition
+                ${
+                  i === activeIndex
+                    ? "bg-white"
+                    : "bg-white/40"
+                }`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }

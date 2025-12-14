@@ -1,13 +1,16 @@
 "use client";
 
+
+// cpmponents
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
+//hooks
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-
 import useChangePassword from "./hooks/useChangePassword";
 
+//validation
 import {
   ChangePasswordSchemaType,
   changePasswordSchema,

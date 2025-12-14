@@ -1,4 +1,3 @@
-"use client";
 
 // helpers
 import cn from "@/lib/utils/cn";

@@ -1,14 +1,11 @@
-
-import Hero from "../../pages/movies/components/Hero";
-import Movies from "../../pages/movies/components/Movies";
-
+// movies page component
+import MoviesPageComponent from "@/pages/movies/movies";
 
 export default function MoviesPage() {
 
   return (
     <>
-      <Hero />
-      <Movies />
+      <MoviesPageComponent />
     </>
   );
 }

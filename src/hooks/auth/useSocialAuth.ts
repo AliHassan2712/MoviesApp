@@ -1,59 +1,59 @@
 "use client";
 
+// React
 import { useState } from "react";
+
+//contexts
 import { useAuth } from "@/contexts/AuthContext";
+
+//hooks
 import useApiHandler from "@/lib/api/useApiHandler";
+
+//toast notify
 import toast from "react-hot-toast";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+type SocialProvider = "google" | "facebook";
+
 export default function useSocialAuth() {
   const { fetchUser } = useAuth();
   const { post } = useApiHandler();
-
   const [isLoading, setIsLoading] = useState(false);
-  
 
-  const googleLogin = async (idToken: string) => {
+  const socialLogin = async (
+    provider: SocialProvider,
+    token: string
+  ) => {
     try {
       setIsLoading(true);
 
-  const res = await post(`${API_URL}/auth/google-login`, {
-    idToken,   // ✅ SEND ID TOKEN
-    credentials: "include",
-  });
+      const endpoint =
+        provider === "google"
+          ? "/auth/google-login"
+          : "/auth/facebook-login";
+
+      const payload =
+        provider === "google"
+          ? { idToken: token }
+          : { accessToken: token };
+
+      const res = await post(
+        `${API_URL}${endpoint}`,
+        payload,
+        { credentials: "include" }
+      );
+
       if (res.success) {
-        toast.success("Logged in with Google 🎉");
+        toast.success(`Logged in with ${provider} 🎉`);
         await fetchUser();
       } else {
-        toast.error(res.message || "Google login failed");
+        toast.error(res.message || `${provider} login failed`);
       }
 
       return res;
-    } catch (err) {
-      toast.error("Google login failed");
-      return { success: false };
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const facebookLogin = async (accessToken: string) => {
-    try {
-      setIsLoading(true);
-
-      const res = await post(`${API_URL}/auth/facebook-login`, { accessToken });
-
-      if (res.success) {
-        toast.success("Logged in with Facebook 🎉");
-        await fetchUser();
-      } else {
-        toast.error(res.message || "Facebook login failed");
-      }
-
-      return res;
-    } catch (err) {
-      toast.error("Facebook login failed");
+    } catch {
+      toast.error(`${provider} login failed`);
       return { success: false };
     } finally {
       setIsLoading(false);
@@ -61,8 +61,7 @@ export default function useSocialAuth() {
   };
 
   return {
-    googleLogin,
-    facebookLogin,
+    socialLogin,
     isLoading,
   };
 }
