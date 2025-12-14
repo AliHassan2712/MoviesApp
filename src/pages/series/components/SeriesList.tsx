@@ -98,7 +98,7 @@ export default function SeriesList({ tab, className = "" }: SeriesListProp) {
           ))}
         </ul>
       )}
-      {currentSeries.length !== 0 && <Pagination currentPage={currentPage} totalPages={totalPages} onChangePage={handleChange} />
+      {visibleSeries.length !== 0 && <Pagination currentPage={currentPage} totalPages={totalPages} onChangePage={handleChange} />
       }    </section>
   );
 }
