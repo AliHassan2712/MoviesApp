@@ -41,9 +41,9 @@ export default function SeriesTap() {
     </div>
     
     <SectionTitle tag="الشائعة" className="mt-5 flex flex-row-reverse"/>
-    <div className="flex flex-col md:flex-row justify-start gap-0   mt-5">
+    <div className="flex flex-col md:flex-row justify-end gap-0 mt-5 ">
     <GenresList/>
-    <SeriesList tab="popular"/>
+    <SeriesList  tab="popular"/>
    
 </div>
 

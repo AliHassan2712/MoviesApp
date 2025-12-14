@@ -68,13 +68,16 @@ export default function SeriesList({tab,className=""}:SeriesListProp) {
 
   return (
 <section className="lg:w-[80%] md:w-[65%] flex flex-col items-center justify-center ">
-<div className="flex items-center justify-start gap-x-4 gap-y-4 flex-wrap p-5 ">
+<ul className="flex items-center justify-end gap-x-4 gap-y-4 flex-wrap p-5 ">
  
       {visibleSeries.map((item)=>(
+        <li>
+   
     <SeriesCard key={item.id} imdbRating={item.imdbRating} name={item.title} releaseYear={item.year} poster={item.poster} backdrop={item.backdrop}/>
+    </li>
       ))}
     
-    </div>
+    </ul>
     <Pagination currentPage={currentPage} totalPages={totalPages} onChangePage={handleChange}/>
     </section>
     
