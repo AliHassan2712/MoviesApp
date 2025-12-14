@@ -6,7 +6,7 @@ interface PaginationProps{
 }
 export default function Pagination({currentPage,totalPages,onChangePage}:PaginationProps) {
   return (
-    <section className=" md:w-[30%] w-screen flex items-center justify-around p-2">
+    <section className="  md:w-[35%] w-[70%] flex items-center justify-around p-2">
       <button
       disabled={currentPage===1}
       aria-disabled={currentPage===1}

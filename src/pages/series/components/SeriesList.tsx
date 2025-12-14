@@ -73,7 +73,7 @@ export default function SeriesList({tab,className=""}:SeriesListProp) {
       {visibleSeries.map((item)=>(
         <li>
    
-    <SeriesCard key={item.id} imdbRating={item.imdbRating} name={item.title} releaseYear={item.year} poster={item.poster} backdrop={item.backdrop}/>
+    <SeriesCard id={item.id} key={item.id} imdbRating={item.imdbRating} name={item.title} releaseYear={item.year} poster={item.poster} backdrop={item.backdrop}/>
     </li>
       ))}
     

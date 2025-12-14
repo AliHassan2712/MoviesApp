@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import Link from "next/link";
 interface Series {
   id: string;
   title: string;
@@ -61,9 +61,13 @@ export default function SeriesBanner() {
         <p className="mt-1 text-sm">
           <strong>Genre:</strong> {currentSeries.genre} | <strong>IMDB:</strong> {currentSeries.imdbRating}
         </p>
-        <button className="mt-4 w-[40%] md:w-[15%] px-0 py-2 bg-red-700 rounded font-semibold text-white cursor-pointer hover:bg-red-800 transition-all ease-in-out hover:scale-105 duration-300">
+        <Link href={`series/${currentSeries.id}`}
+        className="mt-4 w-[40%] md:w-[15%] flex justify-center items-center p-2 bg-red-700 rounded font-semibold text-white cursor-pointer hover:bg-red-800 transition-all ease-in-out hover:scale-105 duration-300">
+      
           Watch Now
-        </button>
+     
+        </Link>
+       
 
       </div>
 

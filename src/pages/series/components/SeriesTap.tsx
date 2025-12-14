@@ -44,6 +44,8 @@ export default function SeriesTap() {
     <div className="flex flex-col md:flex-row justify-end gap-0 mt-5 ">
     <GenresList/>
     <SeriesList  tab="popular"/>
+
+    
    
 </div>
 

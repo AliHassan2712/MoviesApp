@@ -1,17 +1,19 @@
 "use client";
 import { Play, Heart, Star } from "lucide-react";
+import Link from "next/link";
 interface SeriesCardProps {
   name: string;
   releaseYear: string;
   poster: string;
   imdbRating: string;
   backdrop?: string;
+  id: string
 
 
 }
 
-export default function SeriesCard({ name, releaseYear, poster ,imdbRating,backdrop=""}: SeriesCardProps) {
- 
+export default function SeriesCard({ name, releaseYear, poster, imdbRating, id, backdrop = "" }: SeriesCardProps) {
+
   return (
     <div className="bg-white rounded-b-xs hover:scale-105 transition-all duration-300 w-[200px] min-h-80 md:min-h-[360px] group hover:shadow-md hover:shadow-white/20
 ">
@@ -31,15 +33,17 @@ export default function SeriesCard({ name, releaseYear, poster ,imdbRating,backd
             </div>
 
             <div className="flex items-center gap-1 border-2 border-red-500 w-18 h-8 rounded-2xl text-xs bg-black/90 justify-center">
-              <Star className="fill-amber-400 text-amber-400" size={20} />
+              <Star className="fill-amber-400 text-amber-600" size={20} />
               <span className="text-white">{imdbRating}</span>
             </div>
           </div>
+          <Link href={`/series/${id}`} className={`bg-red-700 cursor-pointer group-hover:opacity-100 hover:bg-red-800 group-hover:-translate-y-25 opacity-0  flex items-center justify-center p-2 rounded-xl m-3 w-fit text-white transition-all duration-300 `}>
+        
+              <Play strokeWidth={1.5} />
+              مشاهدة
+          
+          </Link>
 
-          <button className={`bg-red-700 cursor-pointer group-hover:opacity-100 hover:bg-red-800 group-hover:-translate-y-25 opacity-0  flex items-center justify-center p-2 rounded-xl m-3 w-fit text-white transition-all duration-300 `}>
-            <Play strokeWidth={1.5} />
-            مشاهدة
-          </button>
         </div>
       </div>
 
