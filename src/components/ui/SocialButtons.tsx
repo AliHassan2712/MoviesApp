@@ -1,8 +1,7 @@
 "use client";
 
-import { FcGoogle } from "react-icons/fc";
+import { useEffect, useRef, useState } from "react";
 import { FaFacebook } from "react-icons/fa";
-import Spinner from "./Spinner";
 import toast from "react-hot-toast";
 import useSocialAuth from "../../hooks/auth/useSocialAuth";
 
@@ -10,94 +9,131 @@ declare global {
   interface Window {
     google?: any;
     FB?: any;
+    fbAsyncInit?: () => void;
   }
 }
 
-interface SocialButtonsProps {
-  mode?: "login" | "signup";
-}
+export default function SocialButtons() {
+  const { googleLogin, facebookLogin } = useSocialAuth();
 
-export default function SocialButtons({ mode = "login" }: SocialButtonsProps) {
-  const { googleLogin, facebookLogin, isLoading } = useSocialAuth();
+  const googleBtnRef = useRef<HTMLDivElement>(null);
+  const [googleReady, setGoogleReady] = useState(false);
+  const [facebookReady, setFacebookReady] = useState(false);
 
-  const handleGoogle = async () => {
-    if (!window.google || !process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
-      toast.error("Google SDK not loaded");
+  /* ================= GOOGLE ================= */
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) {
+      console.error("❌ GOOGLE CLIENT ID missing");
       return;
     }
 
-    try {
-      const client = window.google.accounts.oauth2.initTokenClient({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-        scope: "email profile",
-        callback: async (response: any) => {
-          if (response.access_token) {
-            await googleLogin(response.access_token);
-          } else {
-            toast.error("Google did not return access token");
+    if (window.google?.accounts?.id) {
+      initGoogle();
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = initGoogle;
+    script.onerror = () => toast.error("Failed to load Google SDK");
+
+    document.body.appendChild(script);
+
+    function initGoogle() {
+      window.google.accounts.id.initialize({
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
+        callback: (response: any) => {
+          if (!response.credential) {
+            toast.error("Google login failed");
+            return;
           }
+          googleLogin(response.credential);
         },
       });
 
-      client.requestAccessToken();
-    } catch (err) {
-      toast.error("Google login failed");
+      if (googleBtnRef.current) {
+        window.google.accounts.id.renderButton(googleBtnRef.current, {
+          theme: "outline",
+          size: "large",
+          width: "100%",
+        });
+        setGoogleReady(true);
+      }
     }
-  };
+  }, []);
 
-  const handleFacebook = async () => {
-    if (!window.FB) {
-      toast.error("Facebook SDK not loaded");
-      return;
-    }
+  /* ================= FACEBOOK ================= */
+  // useEffect(() => {
+  //   if (!process.env.NEXT_PUBLIC_FACEBOOK_APP_ID) {
+  //     console.error("❌ FACEBOOK APP ID missing");
+  //     return;
+  //   }
 
-    window.FB.login(
-      async (response: any) => {
-        if (response.authResponse?.accessToken) {
-          await facebookLogin(response.authResponse.accessToken);
-        } else {
-          toast.error("Facebook login cancelled");
-        }
-      },
-      { scope: "public_profile,email" }
-    );
-  };
+  //   if (window.FB) {
+  //     setFacebookReady(true);
+  //     return;
+  //   }
+
+  //   window.fbAsyncInit = function () {
+  //     window.FB.init({
+  //       appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID!,
+  //       cookie: true,
+  //       xfbml: false,
+  //       version: "v19.0",
+  //     });
+  //     setFacebookReady(true);
+  //   };
+
+  //   const script = document.createElement("script");
+  //   script.src = "https://connect.facebook.net/en_US/sdk.js";
+  //   script.async = true;
+  //   script.defer = true;
+  //   script.onerror = () => toast.error("Failed to load Facebook SDK");
+
+  //   document.body.appendChild(script);
+  // }, []);
+
+  // const handleFacebookLogin = () => {
+  //   if (!window.FB) {
+  //     toast.error("Facebook SDK not ready");
+  //     return;
+  //   }
+
+  //   window.FB.login(
+  //     (response: any) => {
+  //       if (!response.authResponse?.accessToken) {
+  //         toast.error("Facebook login failed");
+  //         return;
+  //       }
+
+  //       facebookLogin(response.authResponse.accessToken);
+  //     },
+  //     { scope: "public_profile,email" }
+  //   );
+  // };
 
   return (
-    <div className="space-y-3 mt-6">
-      <p className="text-center text-muted text-sm">
-        {mode === "login" ? "Or continue with" : "Or sign up using"}
-      </p>
+    <div className="space-y-4 mt-6">
+      {/* GOOGLE */}
+      <div className="w-full min-h-[44px]">
+        {!googleReady && (
+          <div className="w-full h-[44px] bg-gray-100 rounded-lg animate-pulse" />
+        )}
+        <div ref={googleBtnRef} />
+      </div>
 
-      {/* GOOGLE BUTTON */}
-      <button
-        type="button"
-        onClick={handleGoogle}
-        disabled={isLoading}
-        className="
-          w-full flex items-center justify-center gap-3
-          bg-white text-black py-3 rounded-lg shadow-md
-          hover:bg-gray-200 transition disabled:opacity-60
-        "
+      {/* FACEBOOK */}
+      {/* <button
+        onClick={handleFacebookLogin}
+        // disabled={!facebookReady}
+        className="w-full h-[44px] flex items-center justify-between gap-3 px-4 rounded-lg bg-[#1877F2] text-white font-medium hover:bg-[#166FE5] disabled:opacity-50"
       >
-        {isLoading ? <Spinner /> : <FcGoogle size={22} />}
-        Continue with Google
-      </button>
-
-      {/* FACEBOOK BUTTON */}
-      <button
-        type="button"
-        onClick={handleFacebook}
-        disabled={isLoading}
-        className="
-          w-full flex items-center justify-center gap-3
-          bg-[#1877f2] text-white py-3 rounded-lg shadow-md
-          hover:bg-[#145cc0] transition disabled:opacity-60
-        "
-      >
-        {isLoading ? <Spinner /> : <FaFacebook size={22} />}
-        Continue with Facebook
-      </button>
+        <FaFacebook size={20} />
+        <span>Continue with Facebook</span>
+        <span />
+      </button> */}
     </div>
   );
 }

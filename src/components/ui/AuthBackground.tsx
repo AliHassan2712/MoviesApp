@@ -1,10 +1,9 @@
 // Next
-import Image from "next/image";
-import { StaticImageData } from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 type AuthBackgroundProps = {
-image: StaticImageData
-}
+  image: StaticImageData;
+};
 
 export default function AuthBackground({ image }: AuthBackgroundProps) {
   return (
@@ -16,7 +15,9 @@ export default function AuthBackground({ image }: AuthBackgroundProps) {
         priority
         className="object-cover opacity-40"
       />
-      <div className="absolute inset-0 bg-black/40"></div>
+
+      {/* Dynamic Overlay */}
+      <div className="absolute inset-0 bg-overlay" />
     </div>
   );
 }

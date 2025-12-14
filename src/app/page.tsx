@@ -1,5 +1,8 @@
+"use client";
+
 // home page component
-import HomePageComponent from "@/pages/home";
+import HomePageComponent from "@/pages/home/Home";
+import "./globals.css";
 
 // components
 import Header from "@/components/header/Header";

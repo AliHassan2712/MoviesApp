@@ -18,8 +18,9 @@ export default function useSocialAuth() {
     try {
       setIsLoading(true);
 
-      const res = await post(`${API_URL}/auth/google-login`, {
-    accessToken: idToken,   // ✅ SEND ID TOKEN
+  const res = await post(`${API_URL}/auth/google-login`, {
+    idToken,   // ✅ SEND ID TOKEN
+    credentials: "include",
   });
       if (res.success) {
         toast.success("Logged in with Google 🎉");

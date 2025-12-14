@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 // layout for auth pages (login, signup, forgot password, reset password)
 import AuthBackground from "@/components/ui/AuthBackground";
-import defaultBg from "@/assets/imgs/background.png";
+import defaultBg from "../../../public/assets/images/background.jpg";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
