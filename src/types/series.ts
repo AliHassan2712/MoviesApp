@@ -8,6 +8,6 @@ export type Series={
   backdrop:string
 }
 export type Genre={
-  id:string,
+  _id:string,
   name_en:string
 }
