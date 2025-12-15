@@ -151,11 +151,11 @@ export default function Series() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {series.map((item) => (
-                  <div
+                  <Link href={`/series/${item._id}`}
                     key={item._id}
                     className="p-4 bg-card rounded-xl shadow transition hover:shadow-lg"
                   >
-                    <Link href={`/series/${item._id}`} className="relative overflow-hidden rounded-lg">
+                    <div  className="relative overflow-hidden rounded-lg">
                       <Image
                         src={
                           item.poster?.trim()
@@ -185,13 +185,13 @@ export default function Series() {
                           }`}
                         />
                       </button>
-                    </Link>
+                    </div>
 
                     <p className="font-bold mb-1">{item.name}</p>
                     <p className="text-sm text-muted">
                       {item.releaseYear?item.releaseYear:2023}
                     </p>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
