@@ -1,28 +1,42 @@
 "use client";
 
-// react icons
 import { X, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function SearchBar({ showSearch, setShowSearch, searchRef }: any) {
+export default function SearchBar({ showSearch, setShowSearch }: any) {
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+
   if (!showSearch) return null;
 
-  return (
-    <div className="dropdown absolute top-full left-0 w-full bg-card border-b border-main backdrop-blur-xl p-4 z-50 animate-dropdown-open">
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!query.trim()) return;
 
-      <div className="max-w-4xl mx-auto flex items-center gap-3">
+    router.push(`/search?q=${encodeURIComponent(query)}`);
+    setShowSearch(false);
+  }
+
+  return (
+    <div className="absolute top-full left-0 w-full bg-card border-b border-main p-4 z-50">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-4xl mx-auto flex items-center gap-3"
+      >
         <Search size={20} className="text-muted" />
 
         <input
-          ref={searchRef}
-          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           placeholder="Search movies, series, actors..."
-          className="flex-1 bg-transparent outline-none text-main placeholder:text-muted text-base"
+          className="flex-1 bg-transparent outline-none text-main"
         />
 
-        <button onClick={() => setShowSearch(false)} className="text-main hover:text-primary">
+        <button type="button" onClick={() => setShowSearch(false)}>
           <X size={22} />
         </button>
-      </div>
+      </form>
     </div>
   );
 }

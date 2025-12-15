@@ -16,6 +16,13 @@ import HeroSkeleton from "@/components/skeletons/HeroSkeleton";
 
 type HeroType = "movies" | "series";
 
+type HeroItem = {
+  _id: string;
+  name: string;
+  description?: string;
+  backdrop?: string; // Added the 'backdrop' property
+};
+
 type HeroSliderProps = {
   type: HeroType;
   limit?: number;
@@ -42,8 +49,8 @@ export default function Hero({
 
   /* ================= DATA ================= */
   const heroImage =
-    item.image && item.image.trim() !== ""
-      ? item.image
+    item.backdrop && item.backdrop.trim() !== ""
+      ? item.backdrop
       : "/assets/images/img_hero.jpg";
 
   const detailsHref =

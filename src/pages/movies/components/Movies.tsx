@@ -20,15 +20,22 @@ import { Container } from "@/components/containers/Container";
 import MoviesGridSkeleton from "@/components/skeletons/MoviesGridSkeleton";
 import GenresTabsSkeleton from "@/components/skeletons/GenresTabsSkeleton";
 import GenresSidebarSkeleton from "@/components/skeletons/GenresSidebarSkeleton";
+import { useGenres } from "@/pages/genres/hooks/useGenres";
 
 export default function Movies() {
   const {
-    movies,
     allGenres,
     activeTab,
-    loading,
     setActiveTab,
-  } = useMovies();
+  } = useGenres();
+
+  const query =
+    activeTab !== "0" ? `genresRefs=${activeTab}` : undefined;
+
+  const {
+    movies,
+    loading,
+  } = useMovies(query);
 
   const { favoriteList, toggleFavorite } = useFavorite();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -43,16 +50,15 @@ export default function Movies() {
           <div className="flex flex-wrap justify-center gap-4 bg-soft p-2 rounded-full w-full max-w-md sm:max-w-lg md:max-w-xl">
             {allGenres.slice(0, 4).map((genre) => (
               <button
-                key={genre}
-                onClick={() => setActiveTab(genre)}
+                key={genre._id}
+                onClick={() => setActiveTab(genre._id)}
                 className={`px-4 sm:px-6 py-2 rounded-full transition
-                  ${
-                    activeTab === genre
-                      ? "bg-card shadow text-main"
-                      : "text-muted hover:bg-card"
+                  ${activeTab === genre._id
+                    ? "bg-card shadow text-main"
+                    : "text-muted hover:bg-card"
                   }`}
               >
-                {genre}
+                {genre.name_en}
               </button>
             ))}
           </div>
@@ -83,19 +89,15 @@ export default function Movies() {
                 <div className="grid grid-cols-2 gap-3">
                   {allGenres.map((genre) => (
                     <button
-                      key={genre}
-                      onClick={() => {
-                        setActiveTab(genre);
-                        setSidebarOpen(false);
-                      }}
+                      key={genre._id}
+                      onClick={() => setActiveTab(genre._id)}
                       className={`px-4 py-2 rounded-lg transition
-                        ${
-                          activeTab === genre
-                            ? "bg-primary text-white"
-                            : "bg-soft text-main hover:bg-card"
+                      ${activeTab === genre._id
+                          ? "bg-[var(--color-primary)] text-white"
+                          : "bg-card text-main hover:bg-soft"
                         }`}
                     >
-                      {genre}
+                      {genre.name_en}
                     </button>
                   ))}
                 </div>
@@ -122,16 +124,15 @@ export default function Movies() {
               <div className="grid grid-cols-2 gap-3">
                 {allGenres.map((genre) => (
                   <button
-                    key={genre}
-                    onClick={() => setActiveTab(genre)}
+                    key={genre._id}
+                    onClick={() => setActiveTab(genre._id)}
                     className={`px-4 py-2 rounded-lg transition
-                      ${
-                        activeTab === genre
-                          ? "bg-[var(--color-primary)] text-white"
-                          : "bg-card text-main hover:bg-soft"
+                      ${activeTab === genre._id
+                        ? "bg-[var(--color-primary)] text-white"
+                        : "bg-card text-main hover:bg-soft"
                       }`}
                   >
-                    {genre}
+                    {genre.name_en}
                   </button>
                 ))}
               </div>
@@ -156,8 +157,8 @@ export default function Movies() {
                     <div className="relative overflow-hidden rounded-lg">
                       <Image
                         src={
-                          item.image?.trim()
-                            ? item.image
+                          item.poster
+                            ? item.poster
                             : "/assets/images/img_hero.jpg"
                         }
                         alt={item.name}
@@ -176,11 +177,10 @@ export default function Movies() {
                               ? faHeart
                               : faHeartRegular
                           }
-                          className={`text-xl ${
-                            favoriteList.includes(item._id)
-                              ? "text-red-500"
-                              : "text-muted"
-                          }`}
+                          className={`text-xl ${favoriteList.includes(item._id)
+                            ? "text-red-500"
+                            : "text-muted"
+                            }`}
                         />
                       </button>
                     </div>
