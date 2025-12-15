@@ -21,7 +21,7 @@ import MoviesGridSkeleton from "@/components/skeletons/MoviesGridSkeleton";
 import GenresTabsSkeleton from "@/components/skeletons/GenresTabsSkeleton";
 import GenresSidebarSkeleton from "@/components/skeletons/GenresSidebarSkeleton";
 
-export default function Movies() {
+export default function Series() {
   const {
     series,
     allGenres,
