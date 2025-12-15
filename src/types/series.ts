@@ -1,21 +1,13 @@
-export interface Series{
-  id: string;
-  title: string;
-  plot: string;
-  poster: string;
-  backdrop?: string;
-  actors: string;
-  director: string;
-  genre: string;
-  awards: string;
-  boxOffice: string;
-  country: string;
-  imdbId: string;
-  imdbRating: string;
-  language: string;
-  rated: string;
-  released: string;
-  runtime: string;
-  writer: string;
-  year: string;
+export type Series={
+  _id: string;
+  name: string;
+  description:string,
+  poster:string,
+  genres?:string[],
+  releaseYear?:string,
+  backdrop:string
+}
+export type Genre={
+  id:string,
+  name_en:string
 }
