@@ -6,7 +6,7 @@ export type Genre = {
 export type Movie = {
   _id: string;
   name: string;
-  image: string;
+  poster: string;
   releaseYear?: number;
   genresRefs?: string[];
 };

@@ -1,6 +1,9 @@
+import GenresPageComponent from "@/pages/genres/genres"
 
 export default function GenresPage() {
   return (
-    <h1>Genres Page</h1>
-  );
+    <>
+      <GenresPageComponent />
+    </>
+  )
 }

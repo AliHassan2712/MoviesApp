@@ -1,31 +1,21 @@
 "use client";
-import { Genre, Movie } from "@/types/movie";
-import { useState, useEffect, useMemo } from "react";
+import { Movie } from "@/types/movie";
+import { useState, useEffect } from "react";
 
-
-
-export const useMovies = () => {
+export const useMovies = (query?: string) => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [genres, setGenres] = useState<Genre[]>([]);
-  const [activeTab, setActiveTab] = useState("all");
   const [loading, setLoading] = useState(true);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  /* ================= FETCH DATA ================= */
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       try {
-        const [moviesRes, genresRes] = await Promise.all([
-          fetch(`${API_URL}/movies/`),
-          fetch(`${API_URL}/genres`),
-        ]);
-
+        const url = `${API_URL}/movies${query ? `?${query}` : ""}`;
+        const moviesRes = await fetch(url);
         const moviesData = await moviesRes.json();
-        const genresData = await genresRes.json();
-
         setMovies(moviesData.data);
-        setGenres(genresData.data);
       } catch (err) {
         console.error("Fetch error:", err);
       } finally {
@@ -34,20 +24,10 @@ export const useMovies = () => {
     }
 
     fetchData();
-  }, [API_URL]);
-
-
-
-  const allGenres = useMemo(() => {
-    return ["all", ...genres.map(g => g.name_en)]; 
-  }, [genres]);
-
+  }, [API_URL, query]); 
 
   return {
     movies,
-    allGenres,
-    activeTab,
     loading,
-    setActiveTab,
   };
 };

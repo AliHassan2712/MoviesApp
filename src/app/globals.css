@@ -72,7 +72,7 @@ html.light {
   --color-overlay: rgba(59, 55, 55, 0.3);
 
   /* HERO GRADIENT */
-  --color-hero-gradient-start: rgba(255, 255, 255, 0.8);
+  /* --color-hero-gradient-start: rgba(255, 255, 255, 0.8); */
   --color-hero-gradient-middle: rgba(141, 131, 131, 0.8);
   --color-hero-gradient-end: rgba(90, 88, 88, 0.3);
 }

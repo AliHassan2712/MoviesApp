@@ -16,6 +16,13 @@ import HeroSkeleton from "@/components/skeletons/HeroSkeleton";
 
 type HeroType = "movies" | "series";
 
+type HeroItem = {
+  _id: string;
+  name: string;
+  description?: string;
+  backdrop?: string; // Added the 'backdrop' property
+};
+
 type HeroSliderProps = {
   type: HeroType;
   limit?: number;

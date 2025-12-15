@@ -1,31 +1,22 @@
 "use client";
-import { Genre, Series } from "@/types/series";
-import { useState, useEffect, useMemo } from "react";
 
+import { Series } from "@/types/series";
+import { useState, useEffect } from "react";
 
-
-export const useSeries = () => {
-  const [series, setSeries] = useState<Series[]>([]);
-  const [genres, setGenres] = useState<Genre[]>([]);
-  const [activeTab, setActiveTab] = useState("all");
+export const useSeries = (query?: string) => {
+  const [series, setSeries ] = useState<Series[]>([]);
   const [loading, setLoading] = useState(true);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  /* ================= FETCH DATA ================= */
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       try {
-        const [seriesRes, genresRes] = await Promise.all([
-          fetch(`${API_URL}/series/`),
-          fetch(`${API_URL}/genres`),
-        ]);
-
+        const url = `${API_URL}/series${query ? `?${query}` : ""}`;
+        const seriesRes = await fetch(url);
         const seriesData = await seriesRes.json();
-        const genresData = await genresRes.json();
-
         setSeries(seriesData.data);
-        setGenres(genresData.data);
       } catch (err) {
         console.error("Fetch error:", err);
       } finally {
@@ -34,20 +25,10 @@ export const useSeries = () => {
     }
 
     fetchData();
-  }, [API_URL]);
-
-
-
-  const allGenres = useMemo(() => {
-    return ["all", ...genres.map(g => g.name_en)]; 
-  }, [genres]);
-
+  }, [API_URL, query]); 
 
   return {
     series,
-    allGenres,
-    activeTab,
     loading,
-    setActiveTab,
   };
 };
