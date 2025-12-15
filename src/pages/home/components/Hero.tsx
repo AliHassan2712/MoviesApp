@@ -42,8 +42,8 @@ export default function Hero({
 
   /* ================= DATA ================= */
   const heroImage =
-    item.image && item.image.trim() !== ""
-      ? item.image
+    item.backdrop && item.backdrop.trim() !== ""
+      ? item.backdrop
       : "/assets/images/img_hero.jpg";
 
   const detailsHref =

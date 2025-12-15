@@ -21,6 +21,8 @@ import MoviesGridSkeleton from "@/components/skeletons/MoviesGridSkeleton";
 import GenresTabsSkeleton from "@/components/skeletons/GenresTabsSkeleton";
 import GenresSidebarSkeleton from "@/components/skeletons/GenresSidebarSkeleton";
 
+import Link from "next/link"
+
 export default function Series() {
   const {
     series,
@@ -138,7 +140,7 @@ export default function Series() {
             </div>
           )}
 
-          {/* ===== MOVIES GRID ===== */}
+          {/* ===== Series GRID ===== */}
           <div className="flex-1 px-5">
             {loading ? (
               <MoviesGridSkeleton count={6} />
@@ -153,7 +155,7 @@ export default function Series() {
                     key={item._id}
                     className="p-4 bg-card rounded-xl shadow transition hover:shadow-lg"
                   >
-                    <div className="relative overflow-hidden rounded-lg">
+                    <Link href={`/series/${item._id}`} className="relative overflow-hidden rounded-lg">
                       <Image
                         src={
                           item.poster?.trim()
@@ -183,7 +185,7 @@ export default function Series() {
                           }`}
                         />
                       </button>
-                    </div>
+                    </Link>
 
                     <p className="font-bold mb-1">{item.name}</p>
                     <p className="text-sm text-muted">
