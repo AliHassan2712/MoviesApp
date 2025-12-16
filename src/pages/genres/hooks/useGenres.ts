@@ -40,6 +40,7 @@ export const useGenres = () => {
 
 
     return {
+        genres,
         allGenres,
         activeTab,
         loading,

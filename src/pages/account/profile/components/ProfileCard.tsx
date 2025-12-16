@@ -3,15 +3,26 @@
 // Next
 import Image from "next/image";
 
-//components
+// components
 import ProfileInfoRow from "./ProfileInfoRow";
 
-//context
+// contexts
 import { useAuth } from "@/contexts/AuthContext";
+import { useFavorite } from "@/contexts/FavoriteContext";
 
 export default function ProfileCard() {
   const { user } = useAuth();
+  const { favoriteList } = useFavorite();
+
   if (!user) return null;
+
+  const moviesCount = favoriteList.filter(
+    (f) => f.type === "movie"
+  ).length;
+
+  const seriesCount = favoriteList.filter(
+    (f) => f.type === "series"
+  ).length;
 
   return (
     <div className="bg-card border border-main rounded-xl p-6 md:p-8 shadow-xl">
@@ -28,9 +39,8 @@ export default function ProfileCard() {
             />
           ) : (
             <p className="text-primary text-3xl font-bold">
-              {user?.firstName?.[0] ?? "U"}
+              {user.firstName?.[0] ?? "U"}
             </p>
-
           )}
         </div>
 
@@ -43,11 +53,25 @@ export default function ProfileCard() {
       </div>
 
       <div className="space-y-3">
-        <ProfileInfoRow label="Full Name" value={`${user.firstName} ${user.lastName}`} />
+        <ProfileInfoRow
+          label="Full Name"
+          value={`${user.firstName} ${user.lastName}`}
+        />
         <ProfileInfoRow label="Email" value={user.email} />
         <ProfileInfoRow label="Role" value={user.role} />
-        <ProfileInfoRow label="Status" value={user.active ? "Active" : "Inactive"} />
-        <ProfileInfoRow label="Favorites" value={`${user.favorites?.length} Movies`} />
+        <ProfileInfoRow
+          label="Status"
+          value={user.active ? "Active" : "Inactive"}
+        />
+
+        <ProfileInfoRow
+          label="Favorite Movies"
+          value={`${moviesCount}`}
+        />
+        <ProfileInfoRow
+          label="Favorite Series"
+          value={`${seriesCount}`}
+        />
       </div>
 
     </div>

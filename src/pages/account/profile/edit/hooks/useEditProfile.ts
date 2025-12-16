@@ -9,11 +9,14 @@ import toast from "react-hot-toast";
 
 //context
 import { PATHS } from "@/constant/PATHS";
+import { useAuth } from "@/contexts/AuthContext";
 
 
 export default function useEditProfile() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const { setUser, fetchUser } = useAuth();
+
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -33,6 +36,9 @@ export default function useEditProfile() {
         toast.error(data.message);
         return false;
       }
+
+      await fetchUser();
+
 
       toast.success("Profile updated successfully!");
       router.push(`${PATHS.PROFILE}`)

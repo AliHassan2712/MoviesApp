@@ -1,12 +1,10 @@
-type PageProps = {
+import ActorDetailsComponent from "@/pages/actors/ActorDetails";
+
+export default async function ActorDetailsPage({
+  params,
+}: {
   params: Promise<{ id: string }>;
-};
-
-
-export default async function ActorDetailsPage({ params }: PageProps) {
+}) {
   const { id } = await params;
-
-  return (
-    <h1>Actor Details Page for ID: {id}</h1>
-  );
+  return <ActorDetailsComponent id={id} />;
 }

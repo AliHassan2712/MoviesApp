@@ -1,34 +1,52 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { BackendPagination } from "@/types/pagination";
 import { Series } from "@/types/series";
-import { useState, useEffect } from "react";
 
-export const useSeries = (query?: string) => {
-  const [series, setSeries ] = useState<Series[]>([]);
-  const [loading, setLoading] = useState(true);
-
+export function useSeries(query?: string) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+  const [series, setSeries] = useState<Series[]>([]);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] =
+    useState<BackendPagination | null>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    async function fetchData() {
+    async function fetchSeries() {
       setLoading(true);
       try {
-        const url = `${API_URL}/series${query ? `?${query}` : ""}`;
-        const seriesRes = await fetch(url);
-        const seriesData = await seriesRes.json();
-        setSeries(seriesData.data);
+        const params = new URLSearchParams({
+          page: String(page),
+          ...(query ? Object.fromEntries(new URLSearchParams(query)) : {}),
+        });
+
+        const res = await fetch(`${API_URL}/series?${params}`);
+        const data = await res.json();
+
+        setSeries(data.data || []);
+        setPagination(data.pagination);
       } catch (err) {
-        console.error("Fetch error:", err);
+        console.error("Series fetch error:", err);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchData();
-  }, [API_URL, query]); 
+    fetchSeries();
+  }, [API_URL, page, query]);
+
+  /* 🔑 لما يتغير genre نرجع الصفحة 1 */
+  useEffect(() => {
+    setPage(1);
+  }, [query]);
 
   return {
     series,
     loading,
+    page,
+    setPage,
+    pagination,
   };
-};
+}

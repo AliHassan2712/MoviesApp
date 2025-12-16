@@ -35,7 +35,7 @@ export default function ProfilePage() {
 
       {/* PROFILE CARD */}
       <div className="max-w-3xl mx-auto px-2 mb-16">
-        <ProfileCard />
+        <ProfileCard user={user} />
       </div>
 
       {/* ACTION GRID */}
