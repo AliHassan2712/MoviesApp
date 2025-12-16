@@ -1,51 +1,95 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+
+/* ================= TYPES ================= */
+
+export type FavoriteItem = {
+  id: string;
+  type: "movie" | "series";
+};
 
 type FavoriteContextType = {
-  favoriteList: (string | number)[];
-  toggleFavorite: (id: string | number) => void;
+  favoriteList: FavoriteItem[];
+  toggleFavorite: (item: FavoriteItem) => void;
+  isFavorite: (item: FavoriteItem) => boolean;
+  clearFavorites: () => void;
 };
-const FavoriteContext = createContext<FavoriteContextType | undefined>(undefined);
 
+/* ================= CONTEXT ================= */
 
-export const FavoriteProvider = ({ children }: { children: ReactNode }) => {
+const FavoriteContext = createContext<FavoriteContextType | undefined>(
+  undefined
+);
 
-const [favoriteList, setFavoriteList] = useState<(string | number)[]>([]);
-// const [favoriteList, setFavoriteList] = useState<string[]>([]);
+/* ================= PROVIDER ================= */
 
+export function FavoriteProvider({ children }: { children: ReactNode }) {
+  const [favoriteList, setFavoriteList] = useState<FavoriteItem[]>([]);
 
+  /* Load from localStorage */
   useEffect(() => {
     const stored = localStorage.getItem("favoriteList");
     if (stored) {
-      setFavoriteList(JSON.parse(stored));
+      try {
+        setFavoriteList(JSON.parse(stored));
+      } catch {
+        setFavoriteList([]);
+      }
     }
   }, []);
 
-  
+  /* Save to localStorage */
   useEffect(() => {
     localStorage.setItem("favoriteList", JSON.stringify(favoriteList));
   }, [favoriteList]);
 
-  const toggleFavorite = (id: string | number) => {
-  setFavoriteList(prev =>
-    prev.includes(id)
-      ? prev.filter(fav => fav !== id)
-      : [...prev, id]
-  );
-};
+  /* Toggle favorite (movie / series) */
+  const toggleFavorite = (item: FavoriteItem) => {
+    setFavoriteList(prev =>
+      prev.some(f => f.id === item.id && f.type === item.type)
+        ? prev.filter(f => !(f.id === item.id && f.type === item.type))
+        : [...prev, item]
+    );
+  };
 
+  /* Check if item is favorite */
+  const isFavorite = (item: FavoriteItem) =>
+    favoriteList.some(
+      f => f.id === item.id && f.type === item.type
+    );
+
+  /* Clear all favorites */
+  const clearFavorites = () => {
+    setFavoriteList([]);
+  };
 
   return (
-    <FavoriteContext.Provider value={{ favoriteList, toggleFavorite }}>
+    <FavoriteContext.Provider
+      value={{
+        favoriteList,
+        toggleFavorite,
+        isFavorite,
+        clearFavorites,
+      }}
+    >
       {children}
     </FavoriteContext.Provider>
   );
-};
+}
 
+/* ================= HOOK ================= */
 
-export const useFavorite = () => {
+export function useFavorite() {
   const context = useContext(FavoriteContext);
-  if (!context) throw new Error("useFavorite must be used inside FavoriteProvider");
+  if (!context) {
+    throw new Error("useFavorite must be used inside FavoriteProvider");
+  }
   return context;
-};
+}

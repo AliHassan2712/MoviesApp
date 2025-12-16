@@ -1,82 +1,180 @@
 "use client";
 
-// Next
+import Image from "next/image";
 import Link from "next/link";
 
-// context
-import { useAuth } from "@/contexts/AuthContext";
-
 // icons
-import { Heart } from "lucide-react";
+import { Heart, Film, Tv } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHeart as faHeartSolid,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  faHeart as faHeartRegular,
+} from "@fortawesome/free-regular-svg-icons";
 
-type FavoriteItem = string;
+// context
+import { useFavorite } from "@/contexts/FavoriteContext";
+
+// components
+import { Container } from "@/components/containers/Container";
+import GridSkeleton from "@/components/skeletons/GridSkeleton";
+import Pagination from "@/components/ui/Pagination";
+
+// hook
+import { useFavorites } from "./hooks/useFavorites";
 
 export default function FavoritesPage() {
-  const { user } = useAuth();
+  const { toggleFavorite, favoriteList } = useFavorite();
 
-  const favorites: FavoriteItem[] = user?.favorites || [];
+  const {
+    loading,
+    activeTab,
+    setActiveTab,
+    items,
+    page,
+    setPage,
+    pagination,
+  } = useFavorites();
 
   return (
-    <div className="min-h-screen pt-20 px-6 max-w-6xl mx-auto space-y-10 text-main">
+    <Container>
+      <div className="px-4 py-10 space-y-8">
 
-      {/* PAGE HEADER */}
-      <div>
-        <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-3">
-          <Heart className="text-primary" size={32} />
-          Your Favorites
-        </h1>
-
-        <p className="text-muted mt-2">
-          All the movies and series you marked as favorite
-        </p>
-      </div>
-
-      {/* EMPTY STATE */}
-      {favorites.length === 0 && (
-        <div className="text-center py-20 opacity-80">
-          <Heart size={80} className="mx-auto text-primary mb-4" />
-
-          <h2 className="text-2xl font-semibold">
-            No Favorites Yet
-          </h2>
-
+        {/* ================= HEADER ================= */}
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-3">
+            <Heart className="text-primary" />
+            Your Favorites
+          </h1>
           <p className="text-muted mt-1">
-            Start exploring and add movies to your favorites.
+            Movies & Series you marked as favorite
           </p>
+        </div>
 
-          <Link
-            href="/movies"
-            className="mt-6 inline-block btn-primary py-3 px-6 rounded-lg font-semibold"
+        {/* ================= TABS ================= */}
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={() => setActiveTab("movie")}
+            className={`flex items-center gap-2 px-5 py-2 rounded-full
+              ${
+                activeTab === "movie"
+                  ? "btn-primary text-white"
+                  : "bg-soft hover:bg-card"
+              }`}
           >
-            Browse Movies
-          </Link>
-        </div>
-      )}
+            <Film size={18} />
+            Movies
+          </button>
 
-      {/* GRID OF FAVORITES */}
-      {favorites.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-          {favorites.map((movieId) => (
+          <button
+            onClick={() => setActiveTab("series")}
+            className={`flex items-center gap-2 px-5 py-2 rounded-full
+              ${
+                activeTab === "series"
+                  ? "btn-primary text-white"
+                  : "bg-soft hover:bg-card"
+              }`}
+          >
+            <Tv size={18} />
+            Series
+          </button>
+        </div>
+
+        {/* ================= LOADING ================= */}
+        {loading && <GridSkeleton count={6} />}
+
+        {/* ================= EMPTY STATE ================= */}
+        {!loading && pagination.totalDocs === 0 && (
+          <div className="text-center py-20 space-y-4">
+            <p className="text-muted text-lg">
+              No {activeTab} favorites yet
+            </p>
+
             <Link
-              href={`/movies/${movieId}`}
-              key={movieId}
-              className="group bg-card border border-main rounded-xl overflow-hidden transition hover:border-primary"
+              href={activeTab === "movie" ? "/movies" : "/series"}
+              className="inline-block btn-primary px-6 py-3 rounded-lg font-semibold"
             >
-              {/* Placeholder for movie poster */}
-              <div className="h-48 bg-soft flex items-center justify-center text-muted">
-                Poster
-              </div>
-
-              <div className="p-3">
-                <p className="group-hover:text-primary transition">
-                  Movie ID: {movieId}
-                </p>
-              </div>
+              Browse {activeTab === "movie" ? "Movies" : "Series"}
             </Link>
-          ))}
-        </div>
-      )}
+          </div>
+        )}
 
-    </div>
+        {/* ================= GRID ================= */}
+        {!loading && items.length > 0 && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {items.map((item) => (
+                <div
+                  key={`${item.type}-${item._id}`}
+                  className="p-4 bg-card rounded-xl shadow"
+                >
+                  <div className="relative rounded-lg overflow-hidden">
+                    <Link href={`/${item.type}s/${item._id}`}>
+                      <Image
+                        src={item.poster || "/assets/images/img_hero.jpg"}
+                        alt={item.name}
+                        width={400}
+                        height={300}
+                        className="w-full h-52 object-cover"
+                      />
+                    </Link>
+
+                    <button
+                      className="absolute top-3 right-3 bg-soft p-2 rounded-full"
+                      onClick={() =>
+                        toggleFavorite({
+                          id: item._id,
+                          type: item.type,
+                        })
+                      }
+                    >
+                      <FontAwesomeIcon
+                        icon={
+                          favoriteList.some(
+                            (f) =>
+                              f.id === item._id &&
+                              f.type === item.type
+                          )
+                            ? faHeartSolid
+                            : faHeartRegular
+                        }
+                        className={`text-xl ${
+                          favoriteList.some(
+                            (f) =>
+                              f.id === item._id &&
+                              f.type === item.type
+                          )
+                            ? "text-red-500"
+                            : "text-muted"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  <p className="font-bold mt-2">{item.name}</p>
+                  {item.releaseYear && (
+                    <p className="text-sm text-muted">
+                      {item.releaseYear}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* ================= PAGINATION ================= */}
+            {pagination.totalPages > 1 && (
+              <Pagination
+                pagination={pagination}
+                onChange={(p) => {
+                  setPage(p);
+                  
+                }}
+              />
+            )}
+          </>
+        )}
+      </div>
+    </Container>
   );
 }

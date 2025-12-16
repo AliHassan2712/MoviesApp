@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Film,
@@ -16,11 +15,9 @@ import {
 
 import { Container } from "@/components/containers/Container";
 import { PATHS } from "@/constant/PATHS";
+import { useGenres } from "./hooks/useGenres";
+import GenreSkeleton from "@/components/skeletons/GenreSkeleton";
 
-type Genre = {
-  _id: string;
-  name_en: string;
-};
 
 const GENRE_ICONS: Record<string, any> = {
   action: Sword,
@@ -38,26 +35,8 @@ const GENRE_ICONS: Record<string, any> = {
 const SKELETON_COUNT = 10;
 
 export default function GenresPageComponent() {
-  const [genres, setGenres] = useState<Genre[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-  useEffect(() => {
-    async function fetchGenres() {
-      try {
-        const res = await fetch(`${API_URL}/genres`);
-        const data = await res.json();
-        setGenres(data.data || []);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchGenres();
-  }, [API_URL]);
+  const {loading , genres} = useGenres()
 
   return (
     <Container className="pt-20">
@@ -107,16 +86,5 @@ export default function GenresPageComponent() {
             })}
       </div>
     </Container>
-  );
-}
-
-/* ================= SKELETON ================= */
-function GenreSkeleton() {
-  return (
-    <div className="animate-pulse rounded-2xl bg-card border border-border px-6 py-8 flex flex-col items-center gap-4">
-      <div className="w-10 h-10 rounded-full bg-muted/40" />
-      <div className="h-4 w-24 rounded bg-muted/40" />
-      <div className="h-3 w-16 rounded bg-muted/30" />
-    </div>
   );
 }
