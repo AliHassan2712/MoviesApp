@@ -55,10 +55,10 @@ export default function FavoritesPage() {
         {/* ================= TABS ================= */}
         <div className="flex justify-center gap-4">
           <button
-            onClick={() => setActiveTab("movie")}
+            onClick={() => setActiveTab("movies")}
             className={`flex items-center gap-2 px-5 py-2 rounded-full
               ${
-                activeTab === "movie"
+                activeTab === "movies"
                   ? "btn-primary text-white"
                   : "bg-soft hover:bg-card"
               }`}
@@ -92,10 +92,10 @@ export default function FavoritesPage() {
             </p>
 
             <Link
-              href={activeTab === "movie" ? "/movies" : "/series"}
+              href={activeTab === "movies" ? "/movies" : "/series"}
               className="inline-block btn-primary px-6 py-3 rounded-lg font-semibold"
             >
-              Browse {activeTab === "movie" ? "Movies" : "Series"}
+              Browse {activeTab === "movies" ? "Movies" : "Series"}
             </Link>
           </div>
         )}
@@ -110,7 +110,7 @@ export default function FavoritesPage() {
                   className="p-4 bg-card rounded-xl shadow"
                 >
                   <div className="relative rounded-lg overflow-hidden">
-                    <Link href={`/${item.type}s/${item._id}`}>
+              <Link href={`/${item.type}/${item._id}`}>
                       <Image
                         src={item.poster || "/assets/images/img_hero.jpg"}
                         alt={item.name}

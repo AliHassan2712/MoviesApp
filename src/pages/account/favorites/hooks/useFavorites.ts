@@ -11,7 +11,7 @@ export type FavoriteItemUI = {
   name: string;
   poster?: string;
   releaseYear?: number;
-  type: "movie" | "series";
+  type: "movies" | "series";
 };
 
 /* ================= CONSTANTS ================= */
@@ -28,7 +28,7 @@ export function useFavorites() {
   const [loading, setLoading] = useState(false);
 
   const [activeTab, setActiveTab] =
-    useState<"movie" | "series">("movie");
+    useState<"movies" | "series">("movies");
 
   const [page, setPage] = useState(1);
 
@@ -67,7 +67,7 @@ export function useFavorites() {
         setLoading(true);
 
         const endpoint =
-          activeTab === "movie" ? "movies" : "series";
+          activeTab === "movies" ? "movies" : "series";
 
         const res = await fetch(
           `${API_URL}/${endpoint}?_id=${ids}&page=${page}&limit=${LIMIT}`

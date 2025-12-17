@@ -5,7 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 
 // hooks
-import { useSeries } from "../hooks/useSeries";
+import { useMovies } from "../hooks/useMovies";
 import { useGenres } from "@/pages/genres/hooks/useGenres";
 
 // contexts
@@ -22,15 +22,16 @@ import GridSkeleton from "@/components/skeletons/GridSkeleton";
 import GenresTabsSkeleton from "@/components/skeletons/GenresTabsSkeleton";
 import GenresSidebarSkeleton from "@/components/skeletons/GenresSidebarSkeleton";
 import Pagination from "@/components/ui/Pagination";
+import { useSeries } from "../hooks/useSeries";
 
-export default function Series() {
+export default function Movies() {
   /* ===== GENRES ===== */
   const { allGenres, activeTab, setActiveTab } = useGenres();
 
   const query =
     activeTab !== "0" ? `genres=${activeTab}` : undefined;
 
-  /* ===== SERIES ===== */
+  /* ===== MOVIES ===== */
   const {
     series,
     loading,
@@ -57,10 +58,9 @@ export default function Series() {
                 key={genre._id}
                 onClick={() => setActiveTab(genre._id)}
                 className={`px-4 sm:px-6 py-2 rounded-full transition
-                  ${
-                    activeTab === genre._id
-                      ? "bg-card shadow text-main"
-                      : "text-muted hover:bg-card"
+                  ${activeTab === genre._id
+                    ? "bg-card shadow text-main"
+                    : "text-muted hover:bg-card"
                   }`}
               >
                 {genre.name_en}
@@ -99,10 +99,9 @@ export default function Series() {
                         setSidebarOpen(false);
                       }}
                       className={`px-4 py-2 rounded-lg transition
-                        ${
-                          activeTab === genre._id
-                            ? "bg-primary text-white"
-                            : "bg-card text-main hover:bg-soft"
+                        ${activeTab === genre._id
+                          ? "btn-primary text-white"
+                          : "bg-card text-main hover:bg-soft"
                         }`}
                     >
                       {genre.name_en}
@@ -135,10 +134,9 @@ export default function Series() {
                     key={genre._id}
                     onClick={() => setActiveTab(genre._id)}
                     className={`px-4 py-2 rounded-lg transition
-                      ${
-                        activeTab === genre._id
-                          ? "bg-primary text-white"
-                          : "bg-card text-main hover:bg-soft"
+                      ${activeTab === genre._id
+                        ? "btn-primary text-white"
+                        : "bg-card text-main hover:bg-soft"
                       }`}
                   >
                     {genre.name_en}
@@ -148,13 +146,13 @@ export default function Series() {
             </div>
           )}
 
-          {/* ===== SERIES GRID ===== */}
+          {/* ===== MOVIES GRID ===== */}
           <div className="flex-1 px-5">
             {loading ? (
               <GridSkeleton count={6} />
             ) : series.length === 0 ? (
               <p className="text-center text-muted">
-                No series found for this genre.
+                No movies found for this genre.
               </p>
             ) : (
               <>
@@ -186,11 +184,10 @@ export default function Series() {
                                 ? faHeart
                                 : faHeartRegular
                             }
-                            className={`text-xl ${
-                              favoriteList.some(favorite => favorite.id === item._id)
+                            className={`text-xl ${favoriteList.some(favorite => favorite.id === item._id)
                                 ? "text-red-500"
                                 : "text-muted"
-                            }`}
+                              }`}
                           />
                         </button>
                       </div>
@@ -209,7 +206,7 @@ export default function Series() {
                     pagination={pagination}
                     onChange={(p) => {
                       setPage(p);
-                      
+
                     }}
                   />
                 )}

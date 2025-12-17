@@ -12,7 +12,7 @@ import {
 
 export type FavoriteItem = {
   id: string;
-  type: "movie" | "series";
+  type: "movies" | "series";
 };
 
 type FavoriteContextType = {

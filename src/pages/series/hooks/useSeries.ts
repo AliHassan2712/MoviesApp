@@ -11,7 +11,7 @@ export function useSeries(query?: string) {
   const [page, setPage] = useState(1);
   const [pagination, setPagination] =
     useState<BackendPagination | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchSeries() {
@@ -25,8 +25,8 @@ export function useSeries(query?: string) {
         const res = await fetch(`${API_URL}/series?${params}`);
         const data = await res.json();
 
-        setSeries(data.data || []);
-        setPagination(data.pagination);
+        setSeries(data.data ?? []);
+        setPagination(data.pagination ?? null);
       } catch (err) {
         console.error("Series fetch error:", err);
       } finally {
@@ -37,7 +37,7 @@ export function useSeries(query?: string) {
     fetchSeries();
   }, [API_URL, page, query]);
 
-  /* 🔑 لما يتغير genre نرجع الصفحة 1 */
+  // 🔑 Reset page when genre changes
   useEffect(() => {
     setPage(1);
   }, [query]);

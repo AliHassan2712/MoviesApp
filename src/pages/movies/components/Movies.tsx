@@ -175,7 +175,7 @@ export default function Movies() {
 
                         <button
                           className="absolute top-3 right-3 bg-soft p-2 rounded-full shadow"
-                          onClick={() => toggleFavorite({ id: item._id, type: "movie" })}
+                          onClick={() => toggleFavorite({ id: item._id, type: "movies" })}
                         >
                           <FontAwesomeIcon
                             icon={
