@@ -19,8 +19,10 @@ export const useMovies = () => {
   useEffect(() => {
     async function fetchMovies() {
       try {
-        const res = await fetch("https://movies-api-w3xb.onrender.com/api/v1/movies");
+      
+        const res = await fetch(process.env.NEXT_PUBLIC_MOVIES_API_URL!);
         const data = await res.json();
+      
         setMovies(data.data);
       } catch (error) {
         console.error("Error fetching movies:", error);

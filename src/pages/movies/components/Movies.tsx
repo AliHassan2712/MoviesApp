@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 import { useMovies } from "../hooks/useMovies";
 import { useFavorite } from "../../../contexts/FavoriteContext";
@@ -147,47 +148,52 @@ export default function Movies() {
 
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredMovies.map((item: any) => (
-                <div
-                  className="p-4 bg-white rounded-xl shadow transition transform shadow-xl text-black"
-                  key={item._id}
-                >
-                  <div className="relative overflow-hidden rounded-lg ">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-50 object-cover transition-transform duration-500 ease-in-out hover:scale-110 mb-3"
-                    />
-                    <button
-                      className="absolute top-3 right-3 bg-white p-2 rounded-full shadow"
-                      onClick={() => toggleFavorite(item._id)}
-                    >
-                      <FontAwesomeIcon
-                        icon={favoriteList.includes(item._id) ? faHeart : faHeartRegular}
-                        className={`text-xl ${favoriteList.includes(item._id)
-                          ? "text-red-500"
-                          : "text-gray-500"
-                          }`}
+                <Link href={`/movies/${item._id}`} key={item._id}>
+                  <div
+                    className="p-4 bg-white rounded-xl shadow-xl text-black 
+             flex flex-col h-full"
+                  >
+                    {/* Image wrapper */}
+                    <div className="relative overflow-hidden rounded-lg h-48">
+                      <img
+                        src={item.poster}
+                        alt={item.name}
+                        className="w-full h-full object-cover 
+                 transition-transform duration-500 ease-in-out hover:scale-110"
                       />
-                    </button>
-                    <button
-                      className="absolute top-3 right-3 bg-white p-2 rounded-full  cursor-pointer"
-                      onClick={() => toggleFavorite(item._id)}
-                    >
-                      <FontAwesomeIcon
-                        icon={
-                          favoriteList.includes(item._id) ? faHeart : faHeartRegular
-                        }
-                        className={`text-xl ${favoriteList.includes(item._id)
-                          ? "text-red-500"
-                          : "text-gray-500"
-                          }`}
-                      />
-                    </button>
-                    
-                    <p className="text-black font-bold mb-3">{item.name}</p>
-                    <p className="text-black font-bold">{item.releaseYear}</p>
+
+                      {/* Favorite button */}
+                      <button
+                        className="absolute top-3 right-3 bg-white p-2 rounded-full shadow cursor-pointer"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleFavorite(item._id);
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={favoriteList.includes(item._id) ? faHeart : faHeartRegular}
+                          className={`text-xl ${favoriteList.includes(item._id)
+                            ? "text-red-500"
+                            : "text-gray-500"
+                            }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex flex-col justify-between flex-1 mt-3">
+                      <p className="text-black font-bold line-clamp-2">
+                        {item.name}
+                      </p>
+
+                      <p className="text-gray-700 font-semibold mt-2">
+                        {item.releaseYear}
+                      </p>
+                    </div>
                   </div>
-                </div>
+
+                </Link>
               ))}
             </div>
           </div>
