@@ -3,33 +3,33 @@
 import { Series } from "@/types/series";
 import { useState, useEffect } from "react";
 
-export const useSeries = (query?: string) => {
-  const [series, setSeries ] = useState<Series[]>([]);
-  const [loading, setLoading] = useState(true);
+export const useSingleSeries = (id?: string) => {
+  const [singleSeries, setSingleSeries ] = useState<Series|null>(null);
+  const [isloading, setIsLoading] = useState(true);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     async function fetchData() {
-      setLoading(true);
+      setIsLoading(true);
       try {
-        const url = `${API_URL}/series${query ? `?${query}` : ""}`;
+        const url = `${API_URL}/series${id ? `/${id}` : ""}`;
         const seriesRes = await fetch(url);
         const seriesData = await seriesRes.json();
         console.log(url)
-        setSeries(seriesData.data);
+        setSingleSeries(seriesData.data);
       } catch (err) {
         console.error("Fetch error:", err);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     }
 
     fetchData();
-  }, [API_URL, query]); 
+  }, [API_URL, id]); 
 
   return {
-    series,
-    loading,
+    singleSeries,
+    isloading,
   };
 };

@@ -21,6 +21,8 @@ import GenresTabsSkeleton from "@/components/skeletons/GenresTabsSkeleton";
 import GenresSidebarSkeleton from "@/components/skeletons/GenresSidebarSkeleton";
 import { useGenres } from "@/pages/genres/hooks/useGenres";
 import { useSeries } from "../hooks/useSeries";
+import Link from "next/link";
+import {PATHS} from "@/constant/PATHS"
 
 export default function Series() {
   const {
@@ -150,7 +152,7 @@ export default function Series() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {series.map((item) => (
-                  <div
+                  <Link href={PATHS.SERIES_DETAILS(item._id)}
                     key={item._id}
                     className="p-4 bg-card rounded-xl shadow transition hover:shadow-lg"
                   >
@@ -189,7 +191,7 @@ export default function Series() {
                     <p className="text-sm text-muted">
                       {item.releaseYear}
                     </p>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
