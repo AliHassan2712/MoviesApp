@@ -16,7 +16,6 @@ export const useSeries = (query?: string) => {
         const url = `${API_URL}/series${query ? `?${query}` : ""}`;
         const seriesRes = await fetch(url);
         const seriesData = await seriesRes.json();
-        console.log(url)
         setSeries(seriesData.data);
       } catch (err) {
         console.error("Fetch error:", err);

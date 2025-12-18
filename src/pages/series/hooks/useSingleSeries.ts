@@ -16,7 +16,6 @@ export const useSingleSeries = (id?: string) => {
         const url = `${API_URL}/series${id ? `/${id}` : ""}`;
         const seriesRes = await fetch(url);
         const seriesData = await seriesRes.json();
-        console.log(url)
         setSingleSeries(seriesData.data);
       } catch (err) {
         console.error("Fetch error:", err);
