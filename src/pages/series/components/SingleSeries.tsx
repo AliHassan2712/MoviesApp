@@ -29,7 +29,7 @@ export default function SingleSeries({ id }: SingleSeriesProps) {
   // Similar series
   const similarSeries: Series[] = useMemo(() => {
     if (isloading || loading || !singleSeries || !series) return [];
-    const genreSet = singleSeries.genres?.map((g)=>g._id);
+    const genreSet = singleSeries.genres?.map((g) => g._id);
     return series.filter(
       (s) =>
         s._id !== singleSeries._id &&
@@ -103,25 +103,26 @@ function HeroSection({ series }: HeroSectionProps) {
         </div>
       </div>
     </div>
+    
   );
 }
 
 /* ------------------------- Series Details ------------------------- */
 type SeriesDetailsProps = {
   series: Series;
-  favoriteList: (string|number)[];
+  favoriteList: (string | number)[];
   toggleFavorite: (id: string) => void;
 };
 
 function SeriesDetails({ series, favoriteList, toggleFavorite }: SeriesDetailsProps) {
   return (
     <div className="mt-10 flex flex-col gap-y-8 py-10">
-      <h1 className="text-3xl font-bold text-red-500">{series.name}</h1>
+      <h1 className="text-3xl text-white mb-2 font-bold">{series.name}</h1>
 
       {/* Genres */}
       <ul className="flex flex-wrap md:flex-nowrap gap-5">
         {series.genres?.map((genre: Genre) => (
-          <li key={genre._id} className="bg-black text-muted px-2 py-1 rounded-xl">
+          <li key={genre._id} className="btn-primary text-white px-2 py-1 rounded-xl">
             {genre.name_en}
           </li>
         ))}
@@ -129,24 +130,22 @@ function SeriesDetails({ series, favoriteList, toggleFavorite }: SeriesDetailsPr
 
       {/* Description */}
       <div>
-        <p className="text-3xl text-red-500 mb-2">Description</p>
+        <p className="text-3xl text-white mb-2 font-bold">Description</p>
         <p className="text-[16px] text-muted mt-1">{series.description}</p>
       </div>
 
       {/* Actions */}
       <div className="w-[80%] md:w-[20%] flex justify-between items-center gap-2">
         <button
-          className={`cursor-pointer border p-2 rounded flex items-center gap-1 ${
-            favoriteList.includes(series._id) ? "bg-red-500" : "bg-muted"
-          }`}
+          className={`cursor-pointer border p-2 rounded flex items-center gap-1 ${favoriteList.includes(series._id) ? "bg-red-500" : "bg-muted"
+            }`}
           onClick={() => toggleFavorite(series._id)}
         >
           Add to favorite
           <FontAwesomeIcon
             icon={favoriteList.includes(series._id) ? faHeart : faHeartRegular}
-            className={`text-xl ${
-              favoriteList.includes(series._id) ? "text-white" : "text-red-500"
-            }`}
+            className={`text-xl ${favoriteList.includes(series._id) ? "text-white" : "text-red-500"
+              }`}
           />
         </button>
         <button className="cursor-pointer border p-2 rounded flex items-center gap-1">
@@ -168,7 +167,7 @@ function CastList({ cast }: CastListProps) {
 
   return (
     <>
-      <h1 className="text-3xl font-bold text-red-500">Cast</h1>
+      <h1 className="text-3xl text-white mb-2 font-bold">Cast</h1>
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-5 p-2">
         {cast.map((actor: Cast) => (
           <li
@@ -184,7 +183,7 @@ function CastList({ cast }: CastListProps) {
             />
             <div className="p-2 text-center flex flex-col items-center justify-center gap-2 text-[16px]">
               <h2 className="text-sm font-semibold text-main truncate">{actor.name}</h2>
-              <p className="text-xs text-muted">{`Popularity: ${actor.popularity.toFixed(
+              <p className="text-xs text-muted">{`Popularity: ${actor.popularity?.toFixed(
                 1
               )}`}</p>
             </div>
@@ -198,14 +197,14 @@ function CastList({ cast }: CastListProps) {
 /* ------------------------- Similar Series Grid ------------------------- */
 type SimilarSeriesGridProps = {
   series: Series[];
-  favoriteList: (number|string)[];
+  favoriteList: (number | string)[];
   toggleFavorite: (id: string) => void;
 };
 
 function SimilarSeriesGrid({ series, favoriteList, toggleFavorite }: SimilarSeriesGridProps) {
   return (
     <>
-      <h1 className="text-3xl font-bold text-red-500 mb-3 p-5">Similar Series</h1>
+      <h1 className="text-3xl text-white mb-2 font-bold p-5">Similar Series</h1>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {series.map((item) => (
           <Link
@@ -230,9 +229,8 @@ function SimilarSeriesGrid({ series, favoriteList, toggleFavorite }: SimilarSeri
               >
                 <FontAwesomeIcon
                   icon={favoriteList.includes(item._id) ? faHeart : faHeartRegular}
-                  className={`text-xl ${
-                    favoriteList.includes(item._id) ? "text-red-500" : "text-muted"
-                  }`}
+                  className={`text-xl ${favoriteList.includes(item._id) ? "text-red-500" : "text-muted"
+                    }`}
                 />
               </button>
             </div>

@@ -1,5 +1,5 @@
 import { PATHS } from "@/constant/PATHS";
-import { Item } from "@/types/geners";
+import { Item } from "@/types/genre";
 import Image from "next/image";
 import Link from "next/link";
 

@@ -17,7 +17,7 @@ export default function ProfileCard() {
   if (!user) return null;
 
   const moviesCount = favoriteList.filter(
-    (f) => f.type === "movie"
+    (f) => f.type === "movies"
   ).length;
 
   const seriesCount = favoriteList.filter(

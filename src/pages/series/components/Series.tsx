@@ -5,7 +5,6 @@ import { useState } from "react";
 import Image from "next/image";
 
 // hooks
-import { useMovies } from "../hooks/useMovies";
 import { useGenres } from "@/pages/genres/hooks/useGenres";
 
 // contexts
@@ -23,6 +22,8 @@ import GenresTabsSkeleton from "@/components/skeletons/GenresTabsSkeleton";
 import GenresSidebarSkeleton from "@/components/skeletons/GenresSidebarSkeleton";
 import Pagination from "@/components/ui/Pagination";
 import { useSeries } from "../hooks/useSeries";
+import Link from "next/link";
+import { PATHS } from "@/constant/PATHS";
 
 export default function Movies() {
   /* ===== GENRES ===== */
@@ -35,7 +36,6 @@ export default function Movies() {
   const {
     series,
     loading,
-    page,
     setPage,
     pagination,
   } = useSeries(query);
@@ -163,16 +163,26 @@ export default function Movies() {
                       className="p-4 bg-card rounded-xl shadow transition hover:shadow-lg"
                     >
                       <div className="relative overflow-hidden rounded-lg">
-                        <Image
-                          src={
-                            item.poster ||
-                            "/assets/images/img_hero.jpg"
-                          }
-                          alt={item.name}
-                          width={400}
-                          height={300}
-                          className="w-full h-50 object-cover transition-transform duration-500 hover:scale-110 mb-3"
-                        />
+                      <Link
+                          key={item._id}
+                          href={PATHS.SERIES_DETAILS(item._id)}
+                          className="bg-card rounded-xl overflow-hidden hover:scale-105 transition"
+                        >
+                          <Image
+                            src={item.poster || "/assets/images/img_hero.jpg"}
+                            alt={item.name}
+                            width={300}
+                            height={450}
+                            className="w-full h-64 object-cover"
+                          />
+                          <div className="p-3">
+                            <p className="font-semibold truncate">{item.name}</p>
+                            {item.releaseYear && (
+                              <p className="text-muted text-sm">{item.releaseYear}</p>
+                            )}
+                          </div>
+                        </Link>
+
 
                         <button
                           className="absolute top-3 right-3 bg-soft p-2 rounded-full shadow"
@@ -192,10 +202,7 @@ export default function Movies() {
                         </button>
                       </div>
 
-                      <p className="font-bold mb-1">{item.name}</p>
-                      <p className="text-sm text-muted">
-                        {item.releaseYear}
-                      </p>
+                   
                     </div>
                   ))}
                 </div>

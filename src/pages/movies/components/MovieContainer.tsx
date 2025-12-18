@@ -19,7 +19,7 @@ type ApiResponse<T> = {
 
 async function getMovieById(id: string): Promise<Movie> {
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_MOVIES_API_URL}/${id}`
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/movies/${id}`
 
     , {
     cache: "no-store",
@@ -71,16 +71,16 @@ export default async function MovieContainer({ id }: { id: string }) {
             alt={name}
             className="w-full rounded-2xl shadow-lg"
           />
-          <div className="mt-5 flex gap-4 text-sm">
-            <span className="px-3 py-2 bg-gray-100 rounded-full text-primary font-bold">🎬 {releaseYear}</span>
-            <span className="px-3 py-2 bg-gray-100 rounded-full text-primary font-bold">⏱ {duration} min</span>
+          <div className="mt-5 flex gap-4 ">
+            <span className="btn-primary text-white px-2 py-1 rounded-xl font-bold">🎬 {releaseYear}</span>
+            <span className="btn-primary text-white px-2 py-1 rounded-xl font-bold">⏱ {duration} min</span>
           </div>
           {/*begin- Genres */}
           <div className="flex flex-wrap gap-2 mt-4">
             {genresRefs.map((genre) => (
               <span
                 key={genre._id}
-                className="px-3 py-2 bg-blue-100 rounded-full text-primary text-xs font-bold"
+                className="btn-primary text-white px-2 py-1 rounded-xl"
               >
                 {genre.name_en}
               </span>
@@ -89,20 +89,22 @@ export default async function MovieContainer({ id }: { id: string }) {
         </div>
 
         {/* begin-Description + Cast */}
-        <div className="md:col-span-2">
-          <h2 className="text-3xl font-semibold mb-5">Overview</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">{description}</p>
+        <div className="md:col-span-2 ">
+          <h2 className="text-3xl text-white mb-2 font-bold">Overview</h2>
+          <p className="text-[16px] text-muted mt-1">{description}</p>
 
           {/* Cast */}
-          <h2 className="text-3xl font-semibold mb-5">Cast</h2>
+          <div className="mt-10 flex flex-col gap-y-8 py-10">
+
+          <h2 className="text-3xl text-white mb-2 font-bold">Cast</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {castRefs.map((cast) => (
               <div key={cast._id} className="text-center">
                 {cast.profilePath ? (
                   <img
-                    src={cast.profilePath}
-                    alt={cast.name}
-                    className="w-24 h-24 object-cover rounded-full text-primary mx-auto mb-2"
+                  src={cast.profilePath}
+                  alt={cast.name}
+                  className="w-24 h-24 object-cover rounded-full text-primary mx-auto mb-2"
                   />
                 ) : (
                   <div className="w-24 h-24 bg-gray-300 rounded-full text-primary mx-auto mb-2 flex items-center justify-center">
@@ -112,6 +114,7 @@ export default async function MovieContainer({ id }: { id: string }) {
                 <p className="text-sm font-medium">{cast.name}</p>
               </div>
             ))}
+            </div>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 
-// cpmponents
+// components
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
