@@ -2,39 +2,41 @@
 
 import { useEffect, useState } from "react";
 import { BackendPagination } from "@/types/pagination";
+import { Actor } from "@/types/actor";
+import { getActors } from "@/services/actors.service";
 
-export type Actor = {
-  _id: string;
-  name: string;
-  profilePath?: string;
-};
-
-export function useActors(page: number) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
+export function useActors() {
   const [actors, setActors] = useState<Actor[]>([]);
-  const [pagination, setPagination] =
-    useState<BackendPagination | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchActors() {
-      setLoading(true);
-      try {
-        const res = await fetch(`${API_URL}/actors?page=${page}`);
-        const data = await res.json();
+  const [page, setPage] = useState(1);
 
-        setActors(data.data || []);
-        setPagination(data.pagination);
-      } catch (e) {
-        console.error("Actors fetch error", e);
+  const [pagination, setPagination] =
+    useState<BackendPagination | null>(null);
+
+  useEffect(() => {
+    async function loadActors() {
+      try {
+        setLoading(true);
+        const { data, pagination } = await getActors(page);
+        setActors(data || []);
+        setPagination(pagination);
+      } catch (error) {
+        console.error("Actors fetch error", error);
+        setActors([]);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchActors();
-  }, [API_URL, page]);
+    loadActors();
+  }, [page]);
 
-  return { actors, pagination, loading };
+  return {
+    actors,
+    loading,
+    page,
+    setPage,
+    pagination,
+  };
 }

@@ -1,16 +1,8 @@
-"use client"
+"use client";
 
-//Next
-import { useRouter } from "next/navigation";
-
-//hooks
 import useApiHandler from "@/lib/api/useApiHandler";
 
-//path constant
-import { PATHS } from "@/constant/PATHS";
-
 export default function useResetPassword() {
-  const router = useRouter();
   const { post, isLoading, error } = useApiHandler();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -19,16 +11,10 @@ export default function useResetPassword() {
     password: string,
     confirmPassword: string
   ) => {
-    const res = await post(`${API_URL}/auth/reset-password/${token}`, {
-      password,
-      confirmPassword,
-    });
-
-    if (res.success) {
-      setTimeout(() => {
-        router.push(PATHS.LOGIN);
-      }, 1200);
-    }
+    const res = await post(
+      `${API_URL}/auth/reset-password/${token}`,
+      { password, confirmPassword }
+    );
 
     return res.success;
   };

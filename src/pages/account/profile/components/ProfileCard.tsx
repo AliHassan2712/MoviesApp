@@ -9,6 +9,7 @@ import ProfileInfoRow from "./ProfileInfoRow";
 // contexts
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorite } from "@/contexts/FavoriteContext";
+import { countFavorites } from "@/lib/utils/favorites";
 
 export default function ProfileCard() {
   const { user } = useAuth();
@@ -16,13 +17,9 @@ export default function ProfileCard() {
 
   if (!user) return null;
 
-  const moviesCount = favoriteList.filter(
-    (f) => f.type === "movies"
-  ).length;
+const moviesCount = countFavorites(favoriteList, "movies");
+const seriesCount = countFavorites(favoriteList, "series");
 
-  const seriesCount = favoriteList.filter(
-    (f) => f.type === "series"
-  ).length;
 
   return (
     <div className="bg-card border border-main rounded-xl p-6 md:p-8 shadow-xl">

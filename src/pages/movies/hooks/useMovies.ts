@@ -22,7 +22,7 @@ export function useMovies(query?: string) {
           ...(query ? Object.fromEntries(new URLSearchParams(query)) : {}),
         });
 
-        const res = await fetch(`${API_URL}/movies?${params}`);
+        const res = await fetch(`${API_URL}/movies?${params}&limit=12`);
         const data = await res.json();
 
         setMovies(data.data || []);

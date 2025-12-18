@@ -2,23 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+
 import { Container } from "@/components/containers/Container";
-import useSearch from "./hooks/useSearch";
-import MoviesResults from "./components/MoviesResults";
-import SeriesResults from "./components/SeriesResults";
-import ActorsResults from "./components/ActorsResults";
 import Pagination from "@/components/ui/Pagination";
+
+import useSearch from "./hooks/useSearch";
+import ActorsResults from "./components/ActorsResults";
+import MediaResultsSection from "./components/MediaResultsSection";
 
 export default function SearchPageComponent() {
   const params = useSearchParams();
   const query = params?.get("q") || "";
 
-  /* ===== PAGINATION STATE ===== */
   const [moviesPage, setMoviesPage] = useState(1);
   const [seriesPage, setSeriesPage] = useState(1);
   const [actorsPage, setActorsPage] = useState(1);
 
-  /* reset pagination on new search */
+  /* reset pagination when query changes */
   useEffect(() => {
     setMoviesPage(1);
     setSeriesPage(1);
@@ -39,49 +39,46 @@ export default function SearchPageComponent() {
 
   return (
     <Container className="pt-20 space-y-14">
-      <div>
-        <h1 className="text-3xl font-bold">
-          Search results for "{query}"
-        </h1>
-      </div>
+      <h1 className="text-3xl font-bold">
+        Search results for "{query}"
+      </h1>
 
       {loading ? (
         <p className="text-muted">Searching...</p>
       ) : (
         <>
-          {/* ===== MOVIES ===== */}
-          <MoviesResults data={movies} />
-          {pagination.movies && (
+          {/* Movies */}
+          <MediaResultsSection
+            title="Movies"
+            type="movies"
+            data={movies}
+          />
+          {pagination.movies && movies.length > 0 && (
             <Pagination
               pagination={pagination.movies}
-              onChange={(p) => {
-                setMoviesPage(p);
-                
-              }}
+              onChange={setMoviesPage}
             />
           )}
 
-          {/* ===== SERIES ===== */}
-          <SeriesResults data={series} />
-          {pagination.series && (
+          {/* Series */}
+          <MediaResultsSection
+            title="Series"
+            type="series"
+            data={series}
+          />
+          {pagination.series && series.length > 0 && (
             <Pagination
               pagination={pagination.series}
-              onChange={(p) => {
-                setSeriesPage(p);
-                
-              }}
+              onChange={setSeriesPage}
             />
           )}
 
-          {/* ===== ACTORS ===== */}
+          {/* Actors */}
           <ActorsResults data={actors} />
-          {pagination.actors && (
+          {pagination.actors && actors.length > 0 && (
             <Pagination
               pagination={pagination.actors}
-              onChange={(p) => {
-                setActorsPage(p);
-               
-              }}
+              onChange={setActorsPage}
             />
           )}
         </>

@@ -3,32 +3,19 @@
 import { useEffect, useState } from "react";
 import { useFavorite } from "@/contexts/FavoriteContext";
 import { BackendPagination } from "@/types/pagination";
-
-/* ================= TYPES ================= */
-
-export type FavoriteItemUI = {
-  _id: string;
-  name: string;
-  poster?: string;
-  releaseYear?: number;
-  type: "movies" | "series";
-};
-
-/* ================= CONSTANTS ================= */
+import { FavoriteItem, FavoriteType } from "@/types/favorite";
+import { getFavoritesByIds } from "@/services/favorites.service";
 
 const LIMIT = 6;
 
-/* ================= HOOK ================= */
-
 export function useFavorites() {
   const { favoriteList } = useFavorite();
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  const [items, setItems] = useState<FavoriteItemUI[]>([]);
+  const [items, setItems] = useState<FavoriteItem[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [activeTab, setActiveTab] =
-    useState<"movies" | "series">("movies");
+    useState<FavoriteType>("movies");
 
   const [page, setPage] = useState(1);
 
@@ -40,17 +27,12 @@ export function useFavorites() {
       totalPages: 0,
     });
 
-  /* ================= FETCH FAVORITES ================= */
-
   useEffect(() => {
-    if (!API_URL) return;
-
     const ids = favoriteList
       .filter((f) => f.type === activeTab)
       .map((f) => f.id)
       .join(",");
 
-    // no favorites
     if (!ids) {
       setItems([]);
       setPagination({
@@ -62,49 +44,34 @@ export function useFavorites() {
       return;
     }
 
-    async function fetchFavorites() {
+    async function load() {
       try {
         setLoading(true);
-
-        const endpoint =
-          activeTab === "movies" ? "movies" : "series";
-
-        const res = await fetch(
-          `${API_URL}/${endpoint}?_id=${ids}&page=${page}&limit=${LIMIT}`
+        const json = await getFavoritesByIds(
+          activeTab,
+          ids,
+          page,
+          LIMIT
         );
 
-        const json = await res.json();
-
-        setItems(
-          (json.data || []).map((item: any) => ({
-            ...item,
-            type: activeTab,
-          }))
-        );
-
+        setItems(json.data || []);
         setPagination(json.pagination);
-      } catch (err) {
-        console.error("Failed to fetch favorites", err);
+      } catch {
         setItems([]);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchFavorites();
-  }, [API_URL, favoriteList, activeTab, page]);
-
-  /* ================= RESET PAGE ON TAB CHANGE ================= */
+    load();
+  }, [favoriteList, activeTab, page]);
 
   useEffect(() => {
     setPage(1);
   }, [activeTab]);
 
-  /* ================= RETURN ================= */
-
   return {
     loading,
-
     items,
 
     activeTab,

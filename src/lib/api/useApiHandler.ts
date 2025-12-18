@@ -1,45 +1,66 @@
 "use client";
 
-//react
 import { useState } from "react";
 
-//toast notify
-import toast from "react-hot-toast";
+type ApiResponse<T> = {
+  success: boolean;
+  data: T | null;
+  message?: string;
+};
 
 export default function useApiHandler() {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
-  async function post<T>(url: string, body: T) {
+  async function post<TBody, TResponse = any>(
+    url: string,
+    body: TBody
+  ): Promise<ApiResponse<TResponse>> {
     try {
       setIsLoading(true);
-      setError("");
+      setError(null);
 
       const response = await fetch(url, {
         method: "POST",
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(body),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        toast.error(data.message || "Something went wrong");
-        return { success: false, data };
+        setError(data.message || "Something went wrong");
+        return {
+          success: false,
+          data: null,
+          message: data.message,
+        };
       }
 
-      toast.success(data.message || "Success");
-      return { success: true, data };
-
+      return {
+        success: true,
+        data,
+        message: data.message,
+      };
     } catch (err) {
       console.error(err);
-      toast.error("Network error");
-      return { success: false, data: null };
+      setError("Network error");
+      return {
+        success: false,
+        data: null,
+        message: "Network error",
+      };
     } finally {
       setIsLoading(false);
     }
   }
 
-  return { post, isLoading, error };
+  return {
+    post,
+    isLoading,
+    error,
+  };
 }

@@ -1,35 +1,63 @@
 "use client";
 
-//components
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
-//hooks
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+
 import useResetPassword from "../hooks/useResetPassword";
+import {
+  resetPasswordSchema,
+  ResetPasswordSchemaType,
+} from "../validation";
+import { PATHS } from "@/constant/PATHS";
 
-//validation Yup
-import { resetPasswordSchema, ResetPasswordSchemaType } from "../validation";
+export default function ResetPasswordForm({
+  token,
+}: {
+  token: string;
+}) {
+  const router = useRouter();
+  const { resetPassword, isLoading, error } =
+    useResetPassword();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ResetPasswordSchemaType>({
+    resolver: yupResolver(resetPasswordSchema),
+    mode: "onBlur",
+  });
 
-export default function ResetPasswordForm({ token } : { token: string }) {
-  const { resetPassword, isLoading, error } = useResetPassword();
+const onSubmit = async (data: ResetPasswordSchemaType) => {
+  const success = await resetPassword(
+    token,
+    data.password,
+    data.confirmPassword
+  );
 
-  const { register, handleSubmit, formState: { errors } } =
-    useForm<ResetPasswordSchemaType>({
-      resolver: yupResolver(resetPasswordSchema),
-      mode: "onBlur",
-    });
+  if (success) {
+    toast.success("Password reset successfully");
+    setTimeout(() => {
+      router.push(PATHS.LOGIN);
+    }, 1000);
+  }
+};
 
-  const onSubmit = async (data: ResetPasswordSchemaType) => {
-    await resetPassword(token, data.password , data.confirmPassword);
-  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
-      {error && <p className="text-primary text-sm font-bold">{error}</p>}
+      {error && (
+        <p className="text-red-500 text-sm font-semibold">
+          {error}
+        </p>
+      )}
 
       <Input
         label="New Password"
@@ -50,7 +78,6 @@ export default function ResetPasswordForm({ token } : { token: string }) {
       <PrimaryButton isLoading={isLoading} type="submit">
         Reset Password
       </PrimaryButton>
-
     </form>
   );
 }

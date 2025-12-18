@@ -1,33 +1,36 @@
 "use client";
 
-// react
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { useAuth } from "@/contexts/AuthContext";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
-// components
+import { useAuth } from "@/contexts/AuthContext";
+import { PATHS } from "@/constant/PATHS";
+
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
-// hooks
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import useEditProfile from "./hooks/useEditProfile";
 
-// validation
 import {
   editProfileSchema,
   EditProfileSchemaType,
 } from "./validation";
 
+import { useEditProfile } from "./hooks/useEditProfile";
+
 export default function EditProfilePage() {
+  const router = useRouter();
   const { user } = useAuth();
-  const { updateProfile, isLoading } = useEditProfile();
+  const { submit, isLoading } = useEditProfile();
 
   const [photo, setPhoto] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] =
+    useState<string | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
     register,
@@ -39,23 +42,16 @@ export default function EditProfilePage() {
   });
 
   useEffect(() => {
-    if (user) {
-      setValue("firstName", user.firstName);
-      setValue("lastName", user.lastName);
-      setValue("email", user.email);
-    }
+    if (!user) return;
+    setValue("firstName", user.firstName);
+    setValue("lastName", user.lastName);
+    setValue("email", user.email);
   }, [user, setValue]);
 
-  // create & cleanup preview URL
   useEffect(() => {
-    if (!photo) {
-      setPreviewUrl(null);
-      return;
-    }
-
+    if (!photo) return setPreviewUrl(null);
     const url = URL.createObjectURL(photo);
     setPreviewUrl(url);
-
     return () => URL.revokeObjectURL(url);
   }, [photo]);
 
@@ -66,33 +62,45 @@ export default function EditProfilePage() {
     formData.append("email", data.email);
     if (photo) formData.append("photo", photo);
 
-    await updateProfile(formData);
+    const result = await submit(formData);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success("Profile updated successfully");
+    router.push(PATHS.PROFILE);
   };
 
-  const openFilePicker = () => {
+  const openFilePicker = () =>
     fileInputRef.current?.click();
-  };
 
   return (
     <div className="min-h-screen flex justify-center py-20 px-6">
-      <div className="w-full max-w-3xl bg-[var(--color-background-card)] border border-main rounded-xl shadow-2xl p-10 backdrop-blur-lg">
+      <div className="w-full max-w-3xl bg-card  rounded-xl p-10 shadow-2xl">
 
-        <h1 className="text-3xl font-bold mb-2">Edit Profile</h1>
-        <p className="text-muted mb-6">Update your personal information</p>
+        <h1 className="text-3xl font-bold mb-2">
+          Edit Profile
+        </h1>
+        <p className="text-muted mb-6">
+          Update your personal information
+        </p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
           {/* Avatar */}
           <div className="flex flex-col items-center gap-4">
-
             <div
-              className="relative w-24 h-24 rounded-full overflow-hidden border border-main bg-soft cursor-pointer hover:opacity-80"
               onClick={openFilePicker}
+              className="relative w-24 h-24 rounded-full overflow-hidden bg-soft border cursor-pointer"
             >
               {previewUrl ? (
                 <Image
                   src={previewUrl}
-                  alt="Profile preview"
+                  alt="Preview"
                   fill
                   className="object-cover"
                   unoptimized
@@ -105,31 +113,33 @@ export default function EditProfilePage() {
                   className="object-cover"
                 />
               ) : (
-                <p className="flex items-center justify-center h-full text-primary font-bold text-xl">
+                <span className="flex items-center justify-center h-full font-bold text-primary text-xl">
                   {user?.firstName?.[0] ?? "U"}
-                </p>
+                </span>
               )}
             </div>
 
             <input
               ref={fileInputRef}
               type="file"
-              className="hidden"
+              hidden
               accept="image/*"
-              onChange={(e) => setPhoto(e.target.files?.[0] || null)}
+              onChange={(e) =>
+                setPhoto(e.target.files?.[0] || null)
+              }
             />
 
             <button
               type="button"
               onClick={openFilePicker}
-              className="text-primary hover:underline text-sm"
+              className="text-primary text-sm hover:underline"
             >
               Change Avatar
             </button>
           </div>
 
           {/* Fields */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-2 gap-4">
             <Input
               label="First Name"
               error={errors.firstName?.message}
@@ -148,10 +158,12 @@ export default function EditProfilePage() {
             {...register("email")}
           />
 
-          <PrimaryButton isLoading={isLoading} type="submit">
+          <PrimaryButton
+            isLoading={isLoading}
+            type="submit"
+          >
             Save Changes
           </PrimaryButton>
-
         </form>
       </div>
     </div>

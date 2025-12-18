@@ -1,21 +1,10 @@
-"use client"
-//Next 
-import { useRouter } from "next/navigation";
+"use client";
 
-//path constant
-import { PATHS } from "@/constant/PATHS";
-
-//hooks
 import useApiHandler from "@/lib/api/useApiHandler";
-
-//validation Yup
+import { useAuth } from "@/contexts/AuthContext";
 import { LoginSchemaType } from "../validation";
 
-//context
-import { useAuth } from "@/contexts/AuthContext";
-
 export default function useLogin() {
-  const router = useRouter();
   const { post, isLoading, error } = useApiHandler();
   const { fetchUser } = useAuth();
 
@@ -25,13 +14,11 @@ export default function useLogin() {
     const res = await post(`${API_URL}/auth/login`, data);
 
     if (res.success) {
-
       await fetchUser();
-
-      router.push(PATHS.HOME);
+      return true;
     }
 
-    return res.success;
+    return false;
   };
 
   return { login, isLoading, error };

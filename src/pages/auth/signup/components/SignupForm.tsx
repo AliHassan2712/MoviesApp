@@ -1,20 +1,21 @@
 "use client";
 
-//components
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
-//hooks
-import useSignup from "../hooks/useSignup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-//validation
+import useSignup from "../hooks/useSignup";
 import { signupSchema, SignupSchemaType } from "../validation";
-
+import { PATHS } from "@/constant/PATHS";
 
 export default function SignupForm() {
-  const { signup, isLoading } = useSignup();
+  const router = useRouter();
+  const { signup, isLoading, error } = useSignup();
 
   const {
     register,
@@ -25,15 +26,28 @@ export default function SignupForm() {
     mode: "onBlur",
   });
 
-  const onSubmit = async (data: SignupSchemaType) => {
-    await signup(data);
-  };
+const onSubmit = async (data: SignupSchemaType) => {
+  const success = await signup(data);
+
+  if (success) {
+    toast.success("Account created successfully");
+    setTimeout(() => {
+      router.push(PATHS.LOGIN);
+    }, 1000);
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {error && (
+        <p className="text-red-500 text-sm font-semibold">
+          {error}
+        </p>
+      )}
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
           label="First Name"
           placeholder="John"
@@ -47,7 +61,6 @@ export default function SignupForm() {
           error={errors.lastName?.message}
           {...register("lastName")}
         />
-
       </div>
 
       <Input
@@ -76,7 +89,6 @@ export default function SignupForm() {
       <PrimaryButton isLoading={isLoading} type="submit">
         Sign Up
       </PrimaryButton>
-
     </form>
   );
 }

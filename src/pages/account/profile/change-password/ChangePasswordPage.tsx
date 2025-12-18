@@ -1,23 +1,24 @@
 "use client";
 
-
-// components
-import Input from "@/components/ui/Input";
-import PrimaryButton from "@/components/ui/PrimaryButton";
-
-//hooks
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import useChangePassword from "./hooks/useChangePassword";
 
-//validation
+import Input from "@/components/ui/Input";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import { PATHS } from "@/constant/PATHS";
+
 import {
-  ChangePasswordSchemaType,
   changePasswordSchema,
+  ChangePasswordSchemaType,
 } from "./validation";
 
+import { useChangePassword } from "./hooks/useChangePassword";
+
 export default function ChangePasswordPage() {
-  const { changePassword, isLoading } = useChangePassword();
+  const router = useRouter();
+  const { submit, isLoading } = useChangePassword();
 
   const {
     register,
@@ -27,15 +28,32 @@ export default function ChangePasswordPage() {
     resolver: yupResolver(changePasswordSchema),
   });
 
-  return (
-    <div className=" flex justify-center pt-11 px-6 bg-main">
-      <div className="w-full max-w-3xl bg-[var(--color-background-card)]  border border-main rounded-xl shadow-2xl p-10 backdrop-blur-md">
-        
-        <h1 className="text-3xl font-bold text-main mb-3">Security Settings</h1>
-        <p className="text-muted mb-6">Change your password to keep your account safe.</p>
+  const onSubmit = async (data: ChangePasswordSchemaType) => {
+    const result = await submit(data);
 
-        <form onSubmit={handleSubmit(changePassword)} className="space-y-6">
-          
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
+    toast.success("Password updated successfully");
+    router.push(PATHS.PROFILE);
+  };
+
+  return (
+    <div className="flex justify-center pt-11 px-6 bg-main">
+      <div className="w-full max-w-3xl bg-card rounded-xl shadow-2xl p-10">
+        <h1 className="text-3xl font-bold mb-3">
+          Security Settings
+        </h1>
+        <p className="text-muted mb-6">
+          Change your password to keep your account safe.
+        </p>
+
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
           <Input
             label="Current Password"
             type="password"
@@ -60,7 +78,6 @@ export default function ChangePasswordPage() {
           <PrimaryButton type="submit" isLoading={isLoading}>
             Update Password
           </PrimaryButton>
-
         </form>
       </div>
     </div>

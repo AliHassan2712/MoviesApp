@@ -1,55 +1,28 @@
 "use client";
 
-//React & Next
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-
-//toast notify
-import toast from "react-hot-toast";
-
-//context
-import { PATHS } from "@/constant/PATHS";
+import { updateProfile } from "@/services/user.service";
 import { useAuth } from "@/contexts/AuthContext";
+import { ActionResult } from "@/types/user";
 
-
-export default function useEditProfile() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+export function useEditProfile() {
   const { fetchUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
-
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-  const updateProfile = async (formData: FormData) => {
+  const submit = async (
+    formData: FormData
+  ): Promise<ActionResult> => {
     try {
       setIsLoading(true);
-
-      const res = await fetch(`${API_URL}/users/update-me`, {
-        method: "PATCH",
-        credentials: "include",
-        body: formData,
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        toast.error(data.message);
-        return false;
-      }
-
+      await updateProfile(formData);
       await fetchUser();
-
-
-      toast.success("Profile updated successfully!");
-      router.push(`${PATHS.PROFILE}`)
-
-    } catch (error) {
-      toast.error("Something went wrong");
-      return false;
+      return { success: true };
+    } catch (error: any) {
+      return { success: false, message: error.message };
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { updateProfile, isLoading };
+  return { submit, isLoading };
 }

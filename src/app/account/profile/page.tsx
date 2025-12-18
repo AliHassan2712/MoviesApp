@@ -2,7 +2,7 @@
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // profile page component
-import Profile from "@/pages/account/profile/profilePage";
+import Profile from "@/pages/account/profile/ProfilePage";
 
 export default function ProfilePage() {
   return (

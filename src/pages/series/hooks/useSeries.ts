@@ -22,7 +22,7 @@ export function useSeries(query?: string) {
           ...(query ? Object.fromEntries(new URLSearchParams(query)) : {}),
         });
 
-        const res = await fetch(`${API_URL}/series?${params}`);
+        const res = await fetch(`${API_URL}/series?${params}&limit=12`);
         const data = await res.json();
 
         setSeries(data.data ?? []);
