@@ -2,7 +2,7 @@
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // change password page component
-import ChangePasswordPage from "@/pages/account/profile/change-password/ChangePasswordPage";
+import ChangePasswordPage from "@/_pages/account/profile/change-password/ChangePasswordPage";
 
 export default function ChangePassword() {
   return (

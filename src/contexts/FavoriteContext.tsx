@@ -10,9 +10,11 @@ import {
 
 /* ================= TYPES ================= */
 
+export type FavoriteType = "movies" | "series";
+
 export type FavoriteItem = {
   id: string;
-  type: "movie" | "series";
+  type: FavoriteType;
 };
 
 type FavoriteContextType = {
@@ -21,6 +23,10 @@ type FavoriteContextType = {
   isFavorite: (item: FavoriteItem) => boolean;
   clearFavorites: () => void;
 };
+
+/* ================= CONSTANTS ================= */
+
+const STORAGE_KEY = "favoriteList";
 
 /* ================= CONTEXT ================= */
 
@@ -33,28 +39,39 @@ const FavoriteContext = createContext<FavoriteContextType | undefined>(
 export function FavoriteProvider({ children }: { children: ReactNode }) {
   const [favoriteList, setFavoriteList] = useState<FavoriteItem[]>([]);
 
-  /* Load from localStorage */
+  /* Load favorites from localStorage */
   useEffect(() => {
-    const stored = localStorage.getItem("favoriteList");
-    if (stored) {
-      try {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
         setFavoriteList(JSON.parse(stored));
-      } catch {
-        setFavoriteList([]);
       }
+    } catch {
+      setFavoriteList([]);
     }
   }, []);
 
-  /* Save to localStorage */
+  /* Save favorites to localStorage */
   useEffect(() => {
-    localStorage.setItem("favoriteList", JSON.stringify(favoriteList));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(favoriteList)
+    );
   }, [favoriteList]);
 
-  /* Toggle favorite (movie / series) */
+  /* Toggle favorite item */
   const toggleFavorite = (item: FavoriteItem) => {
     setFavoriteList(prev =>
-      prev.some(f => f.id === item.id && f.type === item.type)
-        ? prev.filter(f => !(f.id === item.id && f.type === item.type))
+      prev.some(
+        f => f.id === item.id && f.type === item.type
+      )
+        ? prev.filter(
+          f =>
+            !(
+              f.id === item.id &&
+              f.type === item.type
+            )
+        )
         : [...prev, item]
     );
   };
@@ -89,7 +106,9 @@ export function FavoriteProvider({ children }: { children: ReactNode }) {
 export function useFavorite() {
   const context = useContext(FavoriteContext);
   if (!context) {
-    throw new Error("useFavorite must be used inside FavoriteProvider");
+    throw new Error(
+      "useFavorite must be used inside FavoriteProvider"
+    );
   }
   return context;
 }

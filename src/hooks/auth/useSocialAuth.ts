@@ -38,14 +38,10 @@ export default function useSocialAuth() {
           ? { idToken: token }
           : { accessToken: token };
 
-      const res = await post(
-        `${API_URL}${endpoint}`,
-        payload,
-        { credentials: "include" }
-      );
+      const res = await post(`${API_URL}${endpoint}`, payload);
 
       if (res.success) {
-        toast.success(`Logged in with ${provider} 🎉`);
+        toast.success(`Logged in with ${provider}`);
         await fetchUser();
       } else {
         toast.error(res.message || `${provider} login failed`);

@@ -1,6 +1,6 @@
 
 // home page component
-import HomePageComponent from "@/pages/home/Home";
+import HomePageComponent from "@/_pages/home/Home";
 import "./globals.css";
 
 // components

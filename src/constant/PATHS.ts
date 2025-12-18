@@ -7,6 +7,8 @@ export const PATHS = {
 
   SERIES: "/series",
   SERIES_DETAILS: (id: string | number) => `/series/${id}`,
+  SEASONS:(seriesId: string | number,seasonId:string|number) => `/series/${seriesId}/season/${seasonId}`,
+  EPISODES:(seriesId: string | number,seasonId:string|number,episodesId:string|number) => `/series/${seriesId}/season/${seasonId}/episodes/${episodesId}`,
 
   ACTORS: "/actors",
   ACTOR_DETAILS: (id: string | number) => `/actors/${id}`,

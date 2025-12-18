@@ -1,4 +1,4 @@
-import GenreDetailsComponent from "@/pages/genres/GenreDetails/GenreDetails";
+import GenreDetailsComponent from "@/_pages/genres/GenreDetails/GenreDetails";
 
 export default function GenreDetails({
   params,
