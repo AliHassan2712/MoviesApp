@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,6 +16,10 @@ import HeroSkeleton from "@/components/skeletons/HeroSkeleton";
 import { Container } from "@/components/containers/Container";
 import { PATHS } from "@/constant/PATHS";
 import GridSkeleton from "@/components/skeletons/GridSkeleton";
+import { Season } from "@/types/season";
+import SeriesDetailsSkeletons from "@/components/skeletons/SeriesDetailsSkeletons";
+import HeroSingleSkeleton from "@/components/skeletons/HeroSingleSkeleton";
+import { useSeason } from "../hooks/useSeason";
 
 type SingleSeriesProps = {
   id: string;
@@ -25,7 +29,9 @@ export default function SingleSeries({ id }: SingleSeriesProps) {
   const { singleSeries, isloading } = useSingleSeries(id);
   const { series, loading } = useSeries();
   const { favoriteList, toggleFavorite } = useFavorite();
+  const {season,isLoading}=useSeason(`${singleSeries?._id}`||"")
 
+    
   // Similar series
   const similarSeries: Series[] = useMemo(() => {
     if (isloading || loading || !singleSeries || !series) return [];
@@ -41,26 +47,27 @@ export default function SingleSeries({ id }: SingleSeriesProps) {
     <div className="flex-1">
       {/* Hero Section */}
       {!singleSeries || isloading ? (
-        <HeroSkeleton />
+        <HeroSingleSkeleton/>
       ) : (
         <HeroSection series={singleSeries} />
       )}
 
       <Container>
         {/* Series Details */}
-        {!singleSeries || isloading ? null : (
+        {!singleSeries || isloading||!season? <SeriesDetailsSkeletons/> : (
           <>
             <SeriesDetails
               series={singleSeries}
               favoriteList={favoriteList}
               toggleFavorite={toggleFavorite}
+              season={season}
             />
             <CastList cast={singleSeries.cast} />
           </>
         )}
 
         {/* Similar Series */}
-        <div className="flex-1 px-5 mt-10">
+        <div className="flex-1  my-10">
           {loading ? (
             <GridSkeleton />
           ) : similarSeries.length === 0 ? (
@@ -85,12 +92,13 @@ type HeroSectionProps = {
 
 function HeroSection({ series }: HeroSectionProps) {
   return (
-    <div className="relative h-[60vh] md:h-screen lg:h-[85vh] animate-fade">
+    <div className="relative h-[60vh] md:h-screen lg:h-[85vh] animate-fade py-10">
       <Image
         src={series.backdrop || "/assets/images/img_hero.jpg"}
         alt={series.name || ""}
         fill
         className="object-cover"
+        loading="eager"
       />
       <div className="absolute inset-0 bg-hero-gradient" />
       <div className="absolute inset-0 bg-overlay" />
@@ -112,9 +120,12 @@ type SeriesDetailsProps = {
   series: Series;
   favoriteList: (string | number)[];
   toggleFavorite: (id: string) => void;
+  season:Season[]
+  
 };
 
-function SeriesDetails({ series, favoriteList, toggleFavorite }: SeriesDetailsProps) {
+function SeriesDetails({ series, favoriteList, toggleFavorite,season }: SeriesDetailsProps) {
+
   return (
     <div className="mt-10 flex flex-col gap-y-8 py-10">
       <h1 className="text-3xl text-white mb-2 font-bold">{series.name}</h1>
@@ -127,10 +138,10 @@ function SeriesDetails({ series, favoriteList, toggleFavorite }: SeriesDetailsPr
           </li>
         ))}
       </ul>
-
+    
       {/* Description */}
       <div>
-        <p className="text-3xl text-white mb-2 font-bold">Description</p>
+        <p className="text-3xl font-bold text-red-500 mb-2">Description</p>
         <p className="text-[16px] text-muted mt-1">{series.description}</p>
       </div>
 
@@ -152,6 +163,34 @@ function SeriesDetails({ series, favoriteList, toggleFavorite }: SeriesDetailsPr
           Share <FontAwesomeIcon icon={faShareNodes} />
         </button>
       </div>
+
+        {/* {Seasons} */}
+       <div>
+       <h1 className="text-3xl font-bold text-red-500  p-5">Season</h1>
+        <ul  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-4 gap-x-1">
+         
+          
+          {season.map((s)=>(
+
+          <li  key={s._id}   className="shrink w-65 bg-card rounded-xl shadow-lg hover:shadow-xl transition-shadow ">
+                <Link href={PATHS.SEASONS(series._id,s._id)}>
+                <Image
+              src={s.poster || "/assets/images/img_hero.jpg"}
+              alt={"season poaster"}
+              width={400}
+              height={300}
+              className="w-full h-65 md:h-75 object-cover "
+            />
+             <div className="p-2 text-center flex flex-col items-start justify-between gap-2 text-[16px]">
+             <div className="text-[16px] text-white ">Season: {s.seasonNumber}</div>
+             {/* <p className="text-[16px] text-muted ">Number of Episodes <span>5</span> </p> */}
+             </div>
+             </Link>
+          </li>
+           
+          ))}
+        </ul>
+       </div>
     </div>
   );
 }
@@ -167,12 +206,12 @@ function CastList({ cast }: CastListProps) {
 
   return (
     <>
-      <h1 className="text-3xl text-white mb-2 font-bold">Cast</h1>
+      <h1 className="text-3xl font-bold text-red-500  p-5">Cast</h1>
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-5 p-2">
         {cast.map((actor: Cast) => (
           <li
             key={actor._id}
-            className="flex-shrink-1 w-60 bg-card rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+            className="shrink w-60 bg-card rounded-xl shadow-lg hover:shadow-xl transition-shadow"
           >
             <Image
               src={actor.profilePath || "/assets/images/img_hero.jpg"}
@@ -203,8 +242,8 @@ type SimilarSeriesGridProps = {
 
 function SimilarSeriesGrid({ series, favoriteList, toggleFavorite }: SimilarSeriesGridProps) {
   return (
-    <>
-      <h1 className="text-3xl text-white mb-2 font-bold p-5">Similar Series</h1>
+    < >
+      <h1 className="text-3xl font-bold text-red-500  p-5">Similar Series</h1>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {series.map((item) => (
           <Link
