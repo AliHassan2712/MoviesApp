@@ -1,4 +1,4 @@
-import ActorDetailsComponent from "@/pages/actors/ActorDetails";
+import ActorDetailsComponent from "@/_pages/actors/ActorDetails";
 
 export default async function ActorDetailsPage({
   params,

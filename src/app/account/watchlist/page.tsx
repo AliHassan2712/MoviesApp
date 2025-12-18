@@ -2,7 +2,7 @@
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // watchlist page component
-import WatchlistPage from "@/pages/account/watchlist/WatchlistPage";
+import WatchlistPage from "@/_pages/account/watchlist/WatchlistPage";
 
 export default function Watchlist() {
   return (

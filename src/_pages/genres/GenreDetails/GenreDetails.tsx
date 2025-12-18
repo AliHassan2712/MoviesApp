@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Container } from "@/components/containers/Container";
-import { useGenres } from "@/pages/genres/hooks/useGenres";
+import { useGenres } from "@/_pages/genres/hooks/useGenres";
 import Section from "./components/section";
 import { Item } from "@/types/genre";
 import Pagination from "@/components/ui/Pagination";

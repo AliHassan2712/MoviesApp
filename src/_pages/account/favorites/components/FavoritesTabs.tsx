@@ -36,3 +36,5 @@ export function FavoritesTabs({ activeTab, onChange }: FavoritesTabsProps) {
         </div>
     );
 }
+
+export default FavoritesTabs;

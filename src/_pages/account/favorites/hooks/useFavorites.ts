@@ -83,3 +83,5 @@ export function useFavorites() {
     pagination,
   };
 }
+
+export default useFavorites;

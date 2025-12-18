@@ -11,7 +11,10 @@ import { faShareNodes } from "@fortawesome/free-solid-svg-icons";
 import { Series, Genre, Cast } from "@/types/series";
 import { useSingleSeries } from "../hooks/useSingleSeries";
 import { useSeries } from "../hooks/useSeries";
-import { useFavorite } from "../../../contexts/FavoriteContext";
+import {
+  FavoriteItem,
+  useFavorite,
+} from "@/contexts/FavoriteContext";
 import HeroSkeleton from "@/components/skeletons/HeroSkeleton";
 import { Container } from "@/components/containers/Container";
 import { PATHS } from "@/constant/PATHS";
@@ -118,13 +121,16 @@ function HeroSection({ series }: HeroSectionProps) {
 /* ------------------------- Series Details ------------------------- */
 type SeriesDetailsProps = {
   series: Series;
-  favoriteList: (string | number)[];
-  toggleFavorite: (id: string) => void;
+  favoriteList: FavoriteItem[];
+  toggleFavorite: (item: FavoriteItem) => void;
   season:Season[]
-  
+ 
 };
 
 function SeriesDetails({ series, favoriteList, toggleFavorite,season }: SeriesDetailsProps) {
+  const isSeriesFavorite = favoriteList.some(
+    (fav) => fav.id === series._id && fav.type === "series"
+  );
 
   return (
     <div className="mt-10 flex flex-col gap-y-8 py-10">
@@ -148,14 +154,19 @@ function SeriesDetails({ series, favoriteList, toggleFavorite,season }: SeriesDe
       {/* Actions */}
       <div className="w-[80%] md:w-[20%] flex justify-between items-center gap-2">
         <button
-          className={`cursor-pointer border p-2 rounded flex items-center gap-1 ${favoriteList.includes(series._id) ? "bg-red-500" : "bg-muted"
+          className={`cursor-pointer border p-2 rounded flex items-center gap-1 ${isSeriesFavorite ? "bg-red-500" : "bg-muted"
             }`}
-          onClick={() => toggleFavorite(series._id)}
+          onClick={() =>
+            toggleFavorite({
+              id: series._id,
+              type: "series",
+            })
+          }
         >
           Add to favorite
           <FontAwesomeIcon
-            icon={favoriteList.includes(series._id) ? faHeart : faHeartRegular}
-            className={`text-xl ${favoriteList.includes(series._id) ? "text-white" : "text-red-500"
+            icon={isSeriesFavorite ? faHeart : faHeartRegular}
+            className={`text-xl ${isSeriesFavorite ? "text-white" : "text-red-500"
               }`}
           />
         </button>
@@ -236,8 +247,8 @@ function CastList({ cast }: CastListProps) {
 /* ------------------------- Similar Series Grid ------------------------- */
 type SimilarSeriesGridProps = {
   series: Series[];
-  favoriteList: (number | string)[];
-  toggleFavorite: (id: string) => void;
+  favoriteList: FavoriteItem[];
+  toggleFavorite: (item: FavoriteItem) => void;
 };
 
 function SimilarSeriesGrid({ series, favoriteList, toggleFavorite }: SimilarSeriesGridProps) {
@@ -263,13 +274,31 @@ function SimilarSeriesGrid({ series, favoriteList, toggleFavorite }: SimilarSeri
                 className="absolute top-3 right-3 bg-soft p-2 rounded-full shadow"
                 onClick={(e) => {
                   e.preventDefault();
-                  toggleFavorite(item._id);
+                  toggleFavorite({
+                    id: item._id,
+                    type: "series",
+                  });
                 }}
               >
                 <FontAwesomeIcon
-                  icon={favoriteList.includes(item._id) ? faHeart : faHeartRegular}
-                  className={`text-xl ${favoriteList.includes(item._id) ? "text-red-500" : "text-muted"
-                    }`}
+                  icon={
+                    favoriteList.some(
+                      (fav) =>
+                        fav.id === item._id &&
+                        fav.type === "series"
+                    )
+                      ? faHeart
+                      : faHeartRegular
+                  }
+                  className={`text-xl ${
+                    favoriteList.some(
+                      (fav) =>
+                        fav.id === item._id &&
+                        fav.type === "series"
+                    )
+                      ? "text-red-500"
+                      : "text-muted"
+                  }`}
                 />
               </button>
             </div>

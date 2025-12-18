@@ -65,7 +65,7 @@ export default function EditProfilePage() {
     const result = await submit(formData);
 
     if (!result.success) {
-      toast.error(result.message);
+      toast.error(result.message || "Profile update failed");
       return;
     }
 

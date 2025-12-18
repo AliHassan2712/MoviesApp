@@ -1,5 +1,5 @@
 "use client";
-import { useSeason } from "@/pages/series/hooks/useSeason";
+import { useSeason } from "@/_pages/series/hooks/useSeason";
 import { Season } from "@/types/season";
 import Image from "next/image";
 import HeroSingleSkeleton from "@/components/skeletons/HeroSingleSkeleton";

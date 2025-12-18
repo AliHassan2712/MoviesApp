@@ -15,7 +15,7 @@ export const useEpisodes = (seriesId?: string,seasonId?: string,episodesId?:stri
       setIsLoading(true);
       try {
         const url =!episodesId?`${API_URL}/series/${seriesId}/seasons/${seasonId}/episodes?sort=episodeNumber`:`${API_URL}/series/${seriesId}/seasons/${seasonId}/episodes/${episodesId}`
-        const episodesRes = await fetch(url);
+        const episodesRes = await fetch(url,{credentials: 'include'});
         const episodesData = await episodesRes.json();
         setEpisodes(episodesData.data);
       } catch (err) {

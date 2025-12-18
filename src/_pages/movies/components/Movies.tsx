@@ -6,7 +6,7 @@ import Image from "next/image";
 
 // hooks
 import { useMovies } from "../hooks/useMovies";
-import { useGenres } from "@/pages/genres/hooks/useGenres";
+import { useGenres } from "@/_pages/genres/hooks/useGenres";
 
 // contexts
 import { useFavorite } from "../../../contexts/FavoriteContext";

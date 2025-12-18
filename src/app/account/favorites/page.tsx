@@ -2,7 +2,7 @@
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 // favorites page component
-import FavoritesPage from "@/pages/account/favorites/FavoritesPage";
+import FavoritesPage from "@/_pages/account/favorites/FavoritesPage";
 
 export default function Favorites() {
   return (

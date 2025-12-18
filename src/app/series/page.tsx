@@ -1,4 +1,4 @@
-import SeriesPageComponent from "@/pages/series/series"
+import SeriesPageComponent from "@/_pages/series/series"
 export default function SeriesPage() {
   return (
     <>

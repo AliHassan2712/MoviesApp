@@ -1,4 +1,4 @@
-import SeasonDetails from "@/pages/series/components/season/SeasonDetails";
+import SeasonDetails from "@/_pages/series/components/season/SeasonDetails";
 type PageProps = {
   params: Promise<{ id: string,seasonId:string }>;
 };

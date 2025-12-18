@@ -2,7 +2,7 @@
 import GuestRoute from "@/components/auth/GuestRoute";
 
 // login page component
-import LoginPage from "@/pages/auth/login/login";
+import LoginPage from "@/_pages/auth/login/login";
 
 export default function Login() {
   return (

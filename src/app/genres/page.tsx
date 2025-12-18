@@ -1,4 +1,4 @@
-import GenresPageComponent from "@/pages/genres/genres"
+import GenresPageComponent from "@/_pages/genres/genres"
 
 export default function GenresPage() {
   return (
