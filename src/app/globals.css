@@ -1,25 +1,32 @@
 @import "tailwindcss";
 
 /* ================================================
-   🎬 MOVIES APP COLOR SYSTEM (Tailwind v4)
+   🎬 MOVIES APP – GLOBAL COLOR SYSTEM (Tailwind v4)
+   - Fully Dynamic (CSS Variables)
+   - Light / Dark Mode
+   - Cinematic UI Ready
 ================================================ */
+
+/* ============================
+   DARK MODE (DEFAULT)
+=============================== */
 :root {
-  /* BRAND COLORS */
+  /* BRAND */
   --color-primary: #e50914;
   --color-secondary: #3a86ff;
   --color-accent: #ff006e;
 
-  /* STATUS COLORS */
+  /* STATUS */
   --color-warning: #ffbe0b;
   --color-success: #2ecc71;
   --color-danger: #e63946;
 
-  /* BACKGROUND LAYERS */
+  /* BACKGROUNDS */
   --color-background: #0a0a0a;
-  --color-background-soft: #111;
+  --color-background-soft: #111111;
   --color-background-card: #1f1f1f;
 
-  /* TEXT COLORS */
+  /* TEXT */
   --color-text: #ffffff;
   --color-text-muted: #9ca3af;
   --color-text-soft: #cfcfcf;
@@ -30,42 +37,215 @@
   /* BUTTONS */
   --color-btn-primary: #e50914;
   --color-btn-primary-hover: #b20710;
+
+  /* OVERLAY */
+  --color-overlay: rgba(0, 0, 0, 0.55);
+
+  /* HERO GRADIENT */
+  --color-hero-gradient-start: rgba(0, 0, 0, 0.45);
+  --color-hero-gradient-middle: rgba(0, 0, 0, 0.25);
+  --color-hero-gradient-end: rgba(0, 0, 0, 0.45);
 }
 
-/* Dark Mode Auto */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #0a0a0a;
-    --color-background-soft: #111;
-    --color-background-card: #1f1f1f;
-  }
+/* ============================
+   LIGHT MODE
+=============================== */
+html.light {
+  /* BACKGROUNDS */
+  --color-background: #ffffff;
+  --color-background-soft: #f4f4f5;
+  --color-background-card: #fafafa;
+
+  /* TEXT */
+  --color-text: #0a0a0a;
+  --color-text-muted: #636363;
+  --color-text-soft: #2d2d2d;
+
+  /* BORDERS */
+  --color-border: #d4d4d8;
+
+  /* BUTTONS */
+  --color-btn-primary: #e50914;
+  --color-btn-primary-hover: #b20710;
+
+  /* OVERLAY */
+  --color-overlay: rgba(59, 55, 55, 0.3);
+
+  /* HERO GRADIENT */
+  /* --color-hero-gradient-start: rgba(255, 255, 255, 0.8); */
+  --color-hero-gradient-middle: rgba(141, 131, 131, 0.8);
+  --color-hero-gradient-end: rgba(90, 88, 88, 0.3);
 }
 
-/* ===========================
-   Utility Classes (Safe)
-========================== */
-.bg-main { background-color: var(--color-background); }
-.bg-soft { background-color: var(--color-background-soft); }
-.bg-card { background-color: var(--color-background-card); }
+/* ============================
+   GLOBAL TRANSITIONS
+=============================== */
+html {
+  transition: background-color 0.35s ease, color 0.35s ease,
+    border-color 0.35s ease;
+}
 
-.text-main { color: var(--color-text); }
-.text-muted { color: var(--color-text-muted); }
-.text-primary { color: var(--color-primary); }
+* {
+  transition: background-color 0.35s ease, color 0.35s ease,
+    border-color 0.35s ease;
+}
 
-.border-main { border-color: var(--color-border); }
+/* ============================
+   BASE STYLES
+=============================== */
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
 
-/* Buttons */
+/* ============================
+   UTILITY CLASSES
+=============================== */
+
+/* Backgrounds */
+.bg-main {
+  background-color: var(--color-background);
+}
+.bg-soft {
+  background-color: var(--color-background-soft);
+}
+.bg-card {
+  background-color: var(--color-background-card);
+}
+
+/* Text */
+.text-main {
+  color: var(--color-text);
+}
+.text-muted {
+  color: var(--color-text-muted);
+}
+.text-soft {
+  color: var(--color-text-soft);
+}
+.text-primary {
+  color: var(--color-primary);
+}
+
+/* Borders */
+.border-main {
+  border-color: var(--color-border);
+}
+
+/* ============================
+   BUTTONS
+=============================== */
 .btn-primary {
   background-color: var(--color-btn-primary);
-  color: white;
+  color: #ffffff;
 }
 .btn-primary:hover {
   background-color: var(--color-btn-primary-hover);
 }
 
-/* Global */
-body {
-  background-color: var(--color-background);
+.btn-secondary {
+  background-color: transparent;
   color: var(--color-text);
-  font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  border: 1px solid var(--color-border);
+}
+.btn-secondary:hover {
+  background-color: var(--color-background-soft);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-text-muted);
+}
+.btn-ghost:hover {
+  color: var(--color-text);
+}
+
+/* ============================
+   OVERLAYS & HERO
+=============================== */
+
+.text-hero {
+  color: #ffffff;
+}
+
+.text-hero-muted {
+  color: rgba(255, 255, 255, 0.9);
+}
+.bg-overlay {
+  background-color: var(--color-overlay);
+}
+
+.bg-hero-gradient {
+  background: linear-gradient(
+    to bottom,
+    var(--color-hero-gradient-start),
+    var(--color-hero-gradient-middle),
+    var(--color-hero-gradient-end)
+  );
+}
+
+/* ============================
+   SPINNER
+=============================== */
+.spinner {
+  border-color: var(--color-border);
+  border-top-color: transparent;
+}
+
+/* ============================
+   GLOBAL HELPERS
+=============================== */
+.margin-bottom {
+  margin-bottom: 100px;
+}
+
+/* ============================
+   DROPDOWN ANIMATIONS
+=============================== */
+@keyframes dropdownOpen {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-dropdown-open {
+  animation: dropdownOpen 0.18s ease-out forwards;
+}
+
+@keyframes dropdownClose {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+}
+
+.animate-dropdown-close {
+  animation: dropdownClose 0.15s ease-in forwards;
+}
+
+
+
+
+@keyframes fade {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+.animate-fade {
+  animation: fade 0.8s ease-in-out;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px) }
+  to { opacity: 1; transform: translateY(0) }
+}
+.animate-fade-up {
+  animation: fadeUp 0.6s ease-out;
 }

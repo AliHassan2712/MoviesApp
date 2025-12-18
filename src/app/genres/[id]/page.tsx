@@ -1,11 +1,11 @@
-type PageProps = {
+import GenreDetailsComponent from "@/_pages/genres/GenreDetails/GenreDetails";
+
+export default function GenreDetails({
+  params,
+}: {
   params: Promise<{ id: string }>;
-};
-
-export default async function GenreDetailsPage({ params }: PageProps) {
-  const { id } = await params;
-
+}) {
   return (
-    <h1>Genre Details Page for ID: {id}</h1>
-  );
+    <GenreDetailsComponent params={params} />
+  )
 }

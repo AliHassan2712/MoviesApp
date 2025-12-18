@@ -3,9 +3,12 @@ export const PATHS = {
 
   MOVIES: "/movies",
   MOVIE_DETAILS: (id: string | number) => `/movies/${id}`,
-  
+
+
   SERIES: "/series",
   SERIES_DETAILS: (id: string | number) => `/series/${id}`,
+  SEASONS:(seriesId: string | number,seasonId:string|number) => `/series/${seriesId}/season/${seasonId}`,
+  EPISODES:(seriesId: string | number,seasonId:string|number,episodesId:string|number) => `/series/${seriesId}/season/${seasonId}/episodes/${episodesId}`,
 
   ACTORS: "/actors",
   ACTOR_DETAILS: (id: string | number) => `/actors/${id}`,
@@ -13,12 +16,21 @@ export const PATHS = {
   GENRES: "/genres",
   GENRE_DETAILS: (id: string | number) => `/genres/${id}`,
 
-  FAVORITES: "/favorites",
-  WATCHLIST: "/watchlist",
+  FAVORITES: "/account/favorites",
+  WATCHLIST: "/account/watchlist",
 
-  LOGIN: "/login",
-  SIGNUP: "/signup",
-  RESET_PASSWORD: "/reset-password",
-  PROFILE: "/profile",
-  
+
+  // Auth
+  LOGIN: "/auth/login",
+  SIGNUP: "/auth/signup",
+  FORGOT_PASSWORD: "/auth/forget-password",
+
+  // Account
+  PROFILE: "/account/profile",
+  PROFILE_EDIT: "/account/profile/edit",
+  CHANGE_PASSWORD: "/account/profile/change-password",
+  SETTINGS: "/account/settings",
+
+
+
 } as const;

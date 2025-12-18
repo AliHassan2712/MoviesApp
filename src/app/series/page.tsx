@@ -1,6 +1,9 @@
-
+import SeriesPageComponent from "@/_pages/series/series"
 export default function SeriesPage() {
   return (
-    <h1>Series Page</h1>
+    <>
+    
+      <SeriesPageComponent/>
+    </>
   );
 }

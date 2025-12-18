@@ -1,6 +1,5 @@
+import ActorsPageComponent from "@/_pages/actors/Actors";
 
 export default function ActorsPage() {
-  return (
-    <h1>Actors Page</h1>
-  );
+  return <ActorsPageComponent />;
 }
