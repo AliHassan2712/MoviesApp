@@ -1,36 +1,172 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 Movies App
 
-## Getting Started
+A **production-ready Movies & Series web application** built with **Next.js App Router**, focused on scalability, clean architecture, and high-quality UI/UX.
 
-First, run the development server:
+This project is designed as a real-world application with reusable components, custom hooks, and optimized performance — suitable for learning, portfolio usage, or further extension.
+
+---
+
+## ✨ Key Highlights
+
+* ✅ Modern **Next.js 14+ App Router** architecture
+* ✅ Fully **TypeScript**-based
+* ✅ Clean & reusable component system
+* ✅ Custom hooks for data fetching
+* ✅ Skeleton loading states
+* ✅ Optimized images & performance
+* ✅ Ready for deployment
+
+---
+
+## 🏠 Home Page Sections
+
+* ⭐ **Top Rated** – Highest rated movies
+* 🆕 **Recent** – Newly added content
+* 👁️ **Most Viewed** – Popular movies based on views
+
+Each section is built as a **reusable component**, making the page easy to scale and maintain.
+
+---
+
+## 🎥 Movies & Series
+
+* Movie details page
+* Series details page
+* Seasons & Episodes support
+* Dynamic routing with App Router
+* Skeleton loaders while fetching data
+
+---
+
+## 👥 Actors
+
+* Actors listing page
+* Actor details page
+* Optimized images & clean UI
+
+---
+
+## 🧠 Architecture Principles
+
+* **Separation of Concerns**
+
+  * UI components are isolated from business logic
+  * Data fetching handled via custom hooks
+
+* **Reusability First**
+
+  * Shared cards for movies, series, and actors
+  * Shared section & layout components
+
+* **Performance Optimization**
+
+  * `useMemo` & `useCallback` where needed
+  * Skeleton loading instead of spinners
+  * `next/image` for image optimization
+
+---
+
+## 🛠️ Tech Stack
+
+* **Next.js 14+** (App Router)
+* **React**
+* **TypeScript**
+* **Tailwind CSS**
+* **FontAwesome Icons**
+* **REST API / External Movie API**
+
+---
+
+## 📂 Project Structure
+
+```
+movies-app/
+│
+├── app/                    # App Router pages
+│   ├── page.tsx            # Home page
+│   ├── movies/             # Movies routes
+│   ├── series/             # Series routes
+│   └── actors/             # Actors routes
+│
+├── components/             # Reusable UI components
+│   ├── cards/
+│   ├── sections/
+│   ├── containers/
+│   └── skeletons/
+│
+├── hooks/                  # Custom hooks
+├── types/                  # TypeScript types
+├── constants/              # Constants & paths
+├── lib/                    # Helpers & utilities
+├── public/                 # Static assets
+└── README.md
+```
+
+---
+
+## ⚙️ Installation & Running Locally
+
+1. Clone the repository
+
+```bash
+git clone <repository-url>
+```
+
+2. Navigate to the project directory
+
+```bash
+cd movies-app
+```
+
+3. Install dependencies
+
+```bash
+npm install
+```
+
+4. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🌍 Environment Variables
 
-## Learn More
+Create a `.env.local` file in the root directory:
 
-To learn more about Next.js, take a look at the following resources:
+```
+NEXT_PUBLIC_API_BASE_URL=your_api_url_here
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Deployment Checklist
 
-## Deploy on Vercel
+* [ ] Environment variables configured
+* [ ] Reusable components verified
+* [ ] No console errors
+* [ ] Skeleton loaders working
+* [ ] Image optimization enabled
+* [ ] SEO metadata added
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔮 Future Enhancements
+
+* 🔐 Authentication & user profiles
+* ❤️ Favorites & watchlist
+* 🔍 Advanced search & filters
+* ♾️ Infinite scroll / pagination
+* 🌙 Dark / Light mode
+
+---
+
+## 👨‍💻 Author
+
+Built with ❤️ as part of a **Movies App project Team**.
+
+If you find this project useful, feel free to ⭐ the repository and contribute!
