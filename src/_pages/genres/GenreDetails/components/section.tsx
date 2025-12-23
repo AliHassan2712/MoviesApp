@@ -1,17 +1,28 @@
-import { PATHS } from "@/constant/PATHS";
-import { Item } from "@/types/genre";
-import Image from "next/image";
-import Link from "next/link";
+// components
+import { MediaCard } from '@/components/cards/MediaCard'
+
+//paths constants
+import { PATHS } from '@/constant/PATHS'
+
+// types
+import { Item } from '@/types/genre'
+
+type SectionProps = {
+  title: string
+  items: Item[]
+  type: 'movies' | 'series'
+
+  favorites: string[]
+  onToggleFavorite: (item: Item, type: 'movies' | 'series') => void
+}
 
 export default function Section({
   title,
   items,
   type,
-}: {
-  title: string;
-  items: Item[];
-  type: "movies" | "series";
-}) {
+  favorites,
+  onToggleFavorite,
+}: SectionProps) {
   return (
     <section className="mb-14">
       <h2 className="text-2xl font-semibold mb-5">
@@ -25,44 +36,33 @@ export default function Section({
 
       {items.length === 0 ? (
         <p className="text-muted">
-          No {title.toLowerCase()} found.
+          Not found {type === 'movies' ? 'movies' : 'series'}.
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-          {items.map((item) => (
-            <Link
-              key={item._id}
-              href={
-                type === "movies"
-                  ? PATHS.MOVIE_DETAILS(item._id)
-                  : PATHS.SERIES_DETAILS(item._id)
-              }
-              className="bg-card rounded-xl overflow-hidden transition hover:scale-105"
-            >
-              <Image
-                src={
-                  item.poster?.trim()
-                    ? item.poster
-                    : "/assets/images/img_hero.jpg"
-                }
-                alt={item.name}
-                width={400}
-                height={300}
-                className="w-full h-56 object-cover"
-              />
+          {items.map((item) => {
+            const isFavorite = favorites.includes(item._id)
 
-              <div className="p-4">
-                <h3 className="font-semibold">{item.name}</h3>
-                {item.releaseYear && (
-                  <p className="text-muted text-sm">
-                    {item.releaseYear}
-                  </p>
-                )}
-              </div>
-            </Link>
-          ))}
+            return (
+              <MediaCard
+                key={item._id}
+                title={item.name}
+                poster={item.poster}
+                releaseYear={item.releaseYear}
+                href={
+                  type === 'movies'
+                    ? PATHS.MOVIE_DETAILS(item._id)
+                    : PATHS.SERIES_DETAILS(item._id)
+                }
+                isFavorite={isFavorite}
+                onToggleFavorite={() =>
+                  onToggleFavorite(item, type)
+                }
+              />
+            )
+          })}
         </div>
       )}
     </section>
-  );
+  )
 }

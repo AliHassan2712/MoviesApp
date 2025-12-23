@@ -1,5 +1,5 @@
-// forgot password page component 
-import ForgotPasswordPage from "@/_pages/auth/forget-password/forgetPassword";
+// components
+import ForgotPasswordPage from "@/_pages/auth/forget-password/ForgetPassword";
 
 export default function Login() {
   return (

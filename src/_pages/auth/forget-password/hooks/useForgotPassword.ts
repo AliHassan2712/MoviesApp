@@ -1,5 +1,6 @@
 "use client";
 
+//custom hook
 import useApiHandler from "@/lib/api/useApiHandler";
 
 export default function useForgotPassword() {

@@ -1,9 +1,14 @@
 "use client";
 
+//components
 import { Container } from "@/components/containers/Container";
 import Hero from "./components/Hero";
 import HomeSection from "./components/HomeSection";
+
+//hooks
 import { useHomeSection } from "./hooks/useHomeSection";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
 export default function HomePageComponent() {

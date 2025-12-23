@@ -1,3 +1,4 @@
+//components
 import AuthCard from "@/components/ui/AuthCard";
 import AuthHeader from "@/components/ui/AuthHeader";
 import SignupForm from "./components/SignupForm";

@@ -1,11 +1,13 @@
 "use client";
 
+//components
 import { Container } from "@/components/containers/Container";
 import Pagination from "@/components/ui/Pagination";
 import ActorsGridSkeleton from "@/components/skeletons/ActorsGridSkeleton";
-
-import { useActors } from "./hooks/useActors";
 import { ActorCard } from "./components/ActorCard";
+
+//hooks
+import { useActors } from "./hooks/useActors";
 
 export default function ActorsPageComponent() {
   const {

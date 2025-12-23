@@ -1,7 +1,10 @@
+//types
 import { ChangePasswordPayload } from "@/types/user";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
+
+//change Password user
 export async function changePassword(
   payload: ChangePasswordPayload
 ) {
@@ -24,7 +27,7 @@ export async function changePassword(
 }
 
 
-
+//update profile user
 export async function updateProfile(
   formData: FormData
 ) {

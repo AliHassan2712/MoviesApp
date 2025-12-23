@@ -1,5 +1,5 @@
-// reset password page component
-import ResetPasswordPage from "@/_pages/auth/reset-password/resetPassword";
+//  component
+import ResetPasswordPage from "@/_pages/auth/reset-password/ResetPassword";
 
 export default async function ResetPassword({ params }: {params:Promise<{token:string}>}) {
   const {token} = await params;

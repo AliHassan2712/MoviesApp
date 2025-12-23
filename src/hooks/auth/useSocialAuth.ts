@@ -12,10 +12,17 @@ import useApiHandler from "@/lib/api/useApiHandler";
 //toast notify
 import toast from "react-hot-toast";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+//types
 type SocialProvider = "google" | "facebook";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+// Social Auth Hook 
+//handles social login via Google or Facebook
+// and fetches user data upon successful login
+// manages loading state during the process
+// returns socialLogin function and isLoading state
 export default function useSocialAuth() {
   const { fetchUser } = useAuth();
   const { post } = useApiHandler();

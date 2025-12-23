@@ -1,5 +1,5 @@
 "use client";
-
+//React
 import {
   createContext,
   useContext,
@@ -8,8 +8,7 @@ import {
   ReactNode,
 } from "react";
 
-/* ================= TYPES ================= */
-
+//types
 export type FavoriteType = "movies" | "series";
 
 export type FavoriteItem = {
@@ -24,22 +23,19 @@ type FavoriteContextType = {
   clearFavorites: () => void;
 };
 
-/* ================= CONSTANTS ================= */
-
+//localStorage key
 const STORAGE_KEY = "favoriteList";
 
-/* ================= CONTEXT ================= */
-
+//context
 const FavoriteContext = createContext<FavoriteContextType | undefined>(
   undefined
 );
 
-/* ================= PROVIDER ================= */
-
+//provider
 export function FavoriteProvider({ children }: { children: ReactNode }) {
   const [favoriteList, setFavoriteList] = useState<FavoriteItem[]>([]);
 
-  /* Load favorites from localStorage */
+  // Load favorites from localStorage 
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -51,7 +47,7 @@ export function FavoriteProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  /* Save favorites to localStorage */
+  // Save favorites to localStorage 
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
@@ -59,7 +55,7 @@ export function FavoriteProvider({ children }: { children: ReactNode }) {
     );
   }, [favoriteList]);
 
-  /* Toggle favorite item */
+    // Toggle favorite item 
   const toggleFavorite = (item: FavoriteItem) => {
     setFavoriteList(prev =>
       prev.some(
@@ -101,8 +97,7 @@ export function FavoriteProvider({ children }: { children: ReactNode }) {
   );
 }
 
-/* ================= HOOK ================= */
-
+// Custom hook to use FavoriteContext
 export function useFavorite() {
   const context = useContext(FavoriteContext);
   if (!context) {

@@ -1,5 +1,5 @@
-// movies page component
-import MoviesPageComponent from "@/_pages/movies/movies";
+// components
+import MoviesPageComponent from "@/_pages/movies/Movies";
 
 export default function MoviesPage() {
 

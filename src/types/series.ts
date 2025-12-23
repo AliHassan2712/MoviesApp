@@ -14,8 +14,8 @@ export type Series = {
   _id: string;
   name: string;
   description: string;
-  poster?: string;
-  backdrop?: string;
+  poster?: string | undefined;
+  backdrop?: string | undefined;
   genres?: Genre[];
   releaseYear?: number | string;
   cast: Cast[];

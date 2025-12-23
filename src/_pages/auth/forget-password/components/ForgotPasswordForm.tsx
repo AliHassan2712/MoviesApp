@@ -1,19 +1,29 @@
 "use client";
 
+//Next
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+
+//toast
 import toast from "react-hot-toast";
+
+//hooks
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import useForgotPassword from "../hooks/useForgotPassword";
 
+//components
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
-import useForgotPassword from "../hooks/useForgotPassword";
+
+//validation
 import {
   forgotPasswordSchema,
   ForgotPasswordSchemaType,
 } from "../validation";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
 export default function ForgotPasswordForm() {

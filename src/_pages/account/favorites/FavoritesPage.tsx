@@ -1,15 +1,22 @@
 "use client";
 
-import { Heart } from "lucide-react";
 
+//components
 import { Container } from "@/components/containers/Container";
 import GridSkeleton from "@/components/skeletons/GridSkeleton";
 import Pagination from "@/components/ui/Pagination";
 import { MediaCard } from "@/components/cards/MediaCard";
-
-import { useFavorite } from "@/contexts/FavoriteContext";
-import { useFavorites } from "./hooks/useFavorites";
 import { FavoritesTabs } from "./components/FavoritesTabs";
+
+//contexts
+import { useFavorite } from "@/contexts/FavoriteContext";
+
+//hooks
+import { useFavorites } from "./hooks/useFavorites";
+
+//icons
+import { Heart } from "lucide-react";
+
 
 export default function FavoritesPage() {
   const { toggleFavorite, isFavorite } = useFavorite();
@@ -29,8 +36,10 @@ export default function FavoritesPage() {
 
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold">Your Favorites</h1>
-          <p className="text-muted">
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <Heart className="text-red-400" size={32} />
+            Your Favorites
+          </h1>          <p className="text-muted">
             Movies & Series you marked as favorite
           </p>
         </div>

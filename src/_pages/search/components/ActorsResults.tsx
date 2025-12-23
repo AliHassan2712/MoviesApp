@@ -1,5 +1,8 @@
+//React & Next
 import Link from "next/link";
 import Image from "next/image";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
 export default function ActorsResults({ data }: { data: any[] }) {

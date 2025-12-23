@@ -1,16 +1,30 @@
 "use client";
-import { useSeason } from "@/_pages/series/hooks/useSeason";
-import { Season } from "@/types/season";
+
+//React & Next
 import Image from "next/image";
+import Link from "next/link";
+
+//hooks
+import { useSeason } from "@/_pages/series/hooks/useSeason";
+import { useEpisodes } from "../../hooks/useEpisodes";
+
+//types
+import { Season } from "@/types/season";
+
+//components
 import HeroSingleSkeleton from "@/components/skeletons/HeroSingleSkeleton";
 import { Container } from "@/components/containers/Container";
-import { useEpisodes } from "../../hooks/useEpisodes";
-import Link from "next/link";
-import { PATHS } from "@/constant/PATHS";
-import { faPlay } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SeasonDetailsSkeleton from "@/components/skeletons/SeasonDetailsSkeleton"
 import EpisodesCardSkeleton from "@/components/skeletons/EpisodesCardSkeleton"
+
+//paths constants
+import { PATHS } from "@/constant/PATHS";
+
+//FontAwesome
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 type SeasonDetailsProps = {
   id: string;
   seasonId: string;

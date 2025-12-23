@@ -1,3 +1,4 @@
+//types
 import { FavoriteType } from "@/types/favorite";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;

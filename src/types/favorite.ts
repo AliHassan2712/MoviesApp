@@ -5,5 +5,5 @@ export interface FavoriteItem {
   name: string;
   poster: string;
   releaseYear?:number,
-  type: "movies" | "series";
+  type: FavoriteType;
 }

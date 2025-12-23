@@ -1,19 +1,28 @@
 "use client";
 
+//React & Next
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+
+//toast
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
+//context
 import { useAuth } from "@/contexts/AuthContext";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
+//components
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
+//hooks
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
+//validation
 import {
   editProfileSchema,
   EditProfileSchemaType,
@@ -26,10 +35,11 @@ export default function EditProfilePage() {
   const { user } = useAuth();
   const { submit, isLoading } = useEditProfile();
 
+  //form state
   const [photo, setPhoto] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] =
     useState<string | null>(null);
-
+    //file input ref
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -48,6 +58,11 @@ export default function EditProfilePage() {
     setValue("email", user.email);
   }, [user, setValue]);
 
+  //preview photo effect
+  //updates previewUrl when photo changes
+  // creates object URL for preview
+  // cleans up URL on unmount or photo change
+  
   useEffect(() => {
     if (!photo) return setPreviewUrl(null);
     const url = URL.createObjectURL(photo);

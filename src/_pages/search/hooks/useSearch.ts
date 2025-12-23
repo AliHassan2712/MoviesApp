@@ -1,6 +1,9 @@
 "use client";
 
+//React
 import { useEffect, useState } from "react";
+
+//types
 import { BackendPagination } from "@/types/pagination";
 import { MediaItem } from "@/types/media";
 
@@ -40,6 +43,7 @@ export default function useSearch(
 
     async function fetchAll() {
       setLoading(true);
+      //Fetch movies, series, and actors in parallel
       try {
         const [m, s, a] = await Promise.all([
           fetch(`${API_URL}/movies?search=${query}&page=${pages.movies}`),
@@ -51,10 +55,13 @@ export default function useSearch(
         const seriesData = await s.json();
         const actorsData = await a.json();
 
+        //Set states 
+        
         setMovies(moviesData.data || []);
         setSeries(seriesData.data || []);
         setActors(actorsData.data || []);
 
+        //Set pagination
         setPagination({
           movies: moviesData.pagination,
           series: seriesData.pagination,

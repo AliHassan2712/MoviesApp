@@ -1,18 +1,26 @@
 "use client";
 
+//Next
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+
+//toast
 import toast from "react-hot-toast";
 
+//hooks
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import useLogin from "../hooks/useLogin";
+
+//validation
 import { loginSchema, LoginSchemaType } from "../validation";
 
+//components
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import SocialButtons from "@/components/ui/SocialButtons";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
 export default function LoginForm() {

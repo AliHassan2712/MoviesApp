@@ -1,3 +1,4 @@
+// component
 import ActorDetailsComponent from "@/_pages/actors/ActorDetails";
 
 export default async function ActorDetailsPage({

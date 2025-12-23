@@ -1,20 +1,29 @@
 "use client";
 
-import toast from "react-hot-toast";
+//React & Next
 import { useRouter } from "next/navigation";
+
+//toast
+import toast from "react-hot-toast";
+
+//hooks
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
+import { useChangePassword } from "./hooks/useChangePassword";
 
+//components
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
+//validation 
 import {
   changePasswordSchema,
   ChangePasswordSchemaType,
 } from "./validation";
 
-import { useChangePassword } from "./hooks/useChangePassword";
 
 export default function ChangePasswordPage() {
   const router = useRouter();

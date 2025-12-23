@@ -1,12 +1,19 @@
 "use client";
 
+//React
 import { useEffect, useState } from "react";
+
+//contexts
 import { useFavorite } from "@/contexts/FavoriteContext";
+
+//types
 import { BackendPagination } from "@/types/pagination";
 import { FavoriteItem, FavoriteType } from "@/types/favorite";
+
+//services
 import { getFavoritesByIds } from "@/services/favorites.service";
 
-const LIMIT = 6;
+const LIMIT = 8;
 
 export function useFavorites() {
   const { favoriteList } = useFavorite();
@@ -27,6 +34,7 @@ export function useFavorites() {
       totalPages: 0,
     });
 
+    // fetch favorites when favoriteList, activeTab, or page changes
   useEffect(() => {
     const ids = favoriteList
       .filter((f) => f.type === activeTab)
@@ -44,6 +52,7 @@ export function useFavorites() {
       return;
     }
 
+    // fetch favorites
     async function load() {
       try {
         setLoading(true);

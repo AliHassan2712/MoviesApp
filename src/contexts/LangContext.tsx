@@ -3,6 +3,8 @@
 //react
 import { createContext, useContext, useEffect, useState } from "react";
 
+
+//types
 type Lang = "en" | "ar";
 
 type LangContextType = {
@@ -10,11 +12,13 @@ type LangContextType = {
   toggleLang: () => void;
 };
 
+//context
 const LangContext = createContext<LangContextType>({
   lang: "en",
   toggleLang: () => {},
 });
 
+//provider
 export const LangProvider = ({ children }: { children: React.ReactNode }) => {
   const [lang, setLang] = useState<Lang>("en");
 
@@ -23,6 +27,7 @@ export const LangProvider = ({ children }: { children: React.ReactNode }) => {
     if (saved) setLang(saved);
   }, []);
 
+  // Toggle language between English and Arabic
   const toggleLang = () => {
     setLang((prev) => {
       const newLang = prev === "en" ? "ar" : "en";
@@ -39,4 +44,5 @@ export const LangProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Custom hook to use LangContext
 export const useLang = () => useContext(LangContext);

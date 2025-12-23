@@ -1,4 +1,5 @@
-import SearchPageComponent from "@/_pages/search/search";
+//components
+import SearchPageComponent from "@/_pages/search/Search";
 
 export default function SearchPage() {
   return <SearchPageComponent />;

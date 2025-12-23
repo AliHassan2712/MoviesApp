@@ -1,6 +1,11 @@
+//Next
 import Image from "next/image";
 import Link from "next/link";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
+
+// types
 import { Actor } from "@/types/actor";
 
 type ActorCardProps = {

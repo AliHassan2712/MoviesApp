@@ -1,10 +1,14 @@
 "use client";
 
-import { Bookmark } from "lucide-react";
-
+//components
 import { MediaCard } from "@/components/cards/MediaCard";
-import { useWatchlist } from "./hooks/useWatchlist";
 import { WatchlistEmpty } from "./components/WatchlistEmpty";
+
+//hooks
+import { useWatchlist } from "./hooks/useWatchlist";
+
+//icons
+import { Bookmark } from "lucide-react";
 
 export default function WatchlistPage() {
   const { items, isEmpty } = useWatchlist();

@@ -1,4 +1,6 @@
-import SeriesPageComponent from "@/_pages/series/series"
+//components
+import SeriesPageComponent from "@/_pages/series/Series"
+
 export default function SeriesPage() {
   return (
     <>

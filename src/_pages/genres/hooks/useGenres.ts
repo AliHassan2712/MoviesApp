@@ -1,49 +1,50 @@
-"use client";
-import { Genre } from "@/types/movie";
-import { useState, useEffect, useMemo } from "react";
+'use client'
 
+// React
+import { useEffect, useMemo, useState } from 'react'
 
+// types
+import { Genre } from '@/types/movie'
+
+// services
+import { fetchGenres } from '@/services/genre.service'
 
 export const useGenres = () => {
-    const [genres, setGenres] = useState<Genre[]>([]);
-    const [activeTab, setActiveTab] = useState("0");
-    const [loading, setLoading] = useState(true);
+  const [genres, setGenres] = useState<Genre[]>([])
+  const [activeTab, setActiveTab] = useState('0')
+  const [loading, setLoading] = useState(true)
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  // fetch genres on mount
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await fetchGenres()
+        setGenres(data)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-    /* ================= FETCH DATA ================= */
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const genresRes = await
-                    fetch(`${API_URL}/genres`
-                    );
-
-                const genresData = await genresRes.json();
-
-                setGenres(genresData.data);
-            } catch (err) {
-                console.error("Fetch error:", err);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchData();
-    }, [API_URL]);
+    load()
+  }, [])
 
 
+  // all genres with "All" option
+  const allGenres = useMemo(() => {
+    return [{ _id: '0', name_en: 'All' }, ...genres]
+  }, [genres])
 
-    const allGenres = useMemo(() => {
-        return [{_id: "0", name_en: "all"}].concat(genres);     
-    }, [genres]);
+  const getGenreById = (id: string) =>
+    genres.find((g) => g._id === id)
 
-
-    return {
-        genres,
-        allGenres,
-        activeTab,
-        loading,
-        setActiveTab,
-    };
-};
+  return {
+    genres,
+    allGenres,
+    activeTab,
+    loading,
+    setActiveTab,
+    getGenreById,
+  }
+}
