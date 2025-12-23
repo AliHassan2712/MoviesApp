@@ -1,9 +1,9 @@
 "use client";
 
-//types 
+// types 
 import { Series } from "@/types/series";
 
-//contexts
+// contexts
 import { FavoriteItem } from "@/contexts/FavoriteContext";
 
 // components
@@ -19,20 +19,21 @@ export default function SimilarSeriesGrid({ series, favoriteList, toggleFavorite
   return (
     <>
       <h1 className="text-3xl font-bold text-red-500 p-5">Similar Series</h1>
-     <div className="flex-1 my-10">
-          <MediaGrid
-            items={series.map(s => ({
-              _id: s._id,
-              name: s.name,
-              poster: s.poster,
-              releaseYear: s.releaseYear,
-            }))}
-            favorites={favoriteList}
-            mediaType="series"
-            getHref={id => `/series/${id}`}
-            onToggleFavorite={toggleFavorite}
-          />
-        </div>
+      <div className="flex-1 my-10">
+        <MediaGrid
+          items={series.map((s) => ({
+            _id: s._id,
+            name: s.name,
+            poster: s.poster,
+            releaseYear: s.releaseYear ? Number(s.releaseYear) : undefined,
+          }))}
+          loading={false} 
+          favorites={favoriteList}
+          mediaType="series"
+          getHref={(id) => `/series/${id}`}
+          onToggleFavorite={toggleFavorite}
+        />
+      </div>
     </>
   );
 }
