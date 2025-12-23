@@ -19,7 +19,7 @@ import { Film } from 'lucide-react'
 
 const SKELETON_COUNT = 10
 
-export default function GenresPage() {
+export default function GenresPageComponent() {
   const { loading, genres } = useGenres()
 
   return (
