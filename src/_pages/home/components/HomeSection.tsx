@@ -1,8 +1,12 @@
 "use client";
-
+//Next
 import Link from "next/link";
+
+//components
 import GridSkeleton from "@/components/skeletons/GridSkeleton";
 import HomeMediaCard from "./HomeMediaCard";
+
+//types
 import { Movie } from "@/types/movie";
 
 type HomeSectionProps = {
@@ -33,7 +37,7 @@ export default function HomeSection({
 
       {/* Content */}
       {loading ? (
-        <GridSkeleton count={4} />
+        <GridSkeleton count={6} />
       ) : items.length === 0 ? (
         <p className="text-muted">No items found.</p>
       ) : (

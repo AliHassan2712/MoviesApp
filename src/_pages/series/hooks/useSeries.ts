@@ -1,30 +1,26 @@
 "use client";
 
+//React
 import { useEffect, useState } from "react";
-import { BackendPagination } from "@/types/pagination";
+
+//types
 import { Series } from "@/types/series";
+import { BackendPagination } from "@/types/pagination";
+
+//services
+import { fetchSeries } from "@/services/series.service";
 
 export function useSeries(query?: string) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
   const [series, setSeries] = useState<Series[]>([]);
   const [page, setPage] = useState(1);
-  const [pagination, setPagination] =
-    useState<BackendPagination | null>(null);
+  const [pagination, setPagination] = useState<BackendPagination | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchSeries() {
+    async function loadSeries() {
       setLoading(true);
       try {
-        const params = new URLSearchParams({
-          page: String(page),
-          ...(query ? Object.fromEntries(new URLSearchParams(query)) : {}),
-        });
-
-        const res = await fetch(`${API_URL}/series?${params}&limit=12`);
-        const data = await res.json();
-
+        const data = await fetchSeries({ page, query, limit: 12 });
         setSeries(data.data ?? []);
         setPagination(data.pagination ?? null);
       } catch (err) {
@@ -34,19 +30,13 @@ export function useSeries(query?: string) {
       }
     }
 
-    fetchSeries();
-  }, [API_URL, page, query]);
+    loadSeries();
+  }, [page, query]);
 
-  // 🔑 Reset page when genre changes
+  // Reset page when query changes
   useEffect(() => {
     setPage(1);
   }, [query]);
 
-  return {
-    series,
-    loading,
-    page,
-    setPage,
-    pagination,
-  };
+  return { series, loading, page, setPage, pagination };
 }

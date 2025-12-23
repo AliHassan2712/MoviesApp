@@ -1,4 +1,7 @@
+//types
 import { FavoriteType } from "@/types/favorite";
+
+//icons
 import { Film, Tv } from "lucide-react";
 
 

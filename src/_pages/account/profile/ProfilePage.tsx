@@ -1,11 +1,18 @@
 "use client";
 
-import { useAuth } from "@/contexts/AuthContext";
+
+//components
 import ProfileCard from "./components/ProfileCard";
 import { ActionCard } from "./components/ActionCard";
+
+//contexts
+import { useAuth } from "@/contexts/AuthContext";
+
+//config
 import { getProfileActions } from "./config/profileActions";
 
 export default function ProfilePage() {
+  //Auth context
   const { user, logout } = useAuth();
 
   if (!user) return null;

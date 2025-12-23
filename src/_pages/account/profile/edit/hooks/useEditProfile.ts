@@ -1,8 +1,15 @@
 "use client";
 
+//React
 import { useState } from "react";
+
+//services
 import { updateProfile } from "@/services/user.service";
+
+//context
 import { useAuth } from "@/contexts/AuthContext";
+
+//types
 import { ActionResult } from "@/types/user";
 
 export function useEditProfile() {
@@ -15,6 +22,7 @@ export function useEditProfile() {
     try {
       setIsLoading(true);
       await updateProfile(formData);
+      //refetch user data after successful update
       await fetchUser();
       return { success: true };
     } catch (error: any) {

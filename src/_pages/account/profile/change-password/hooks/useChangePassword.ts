@@ -1,7 +1,12 @@
 "use client";
 
+//React
 import { useState } from "react";
+
+//services
 import { changePassword } from "@/services/user.service";
+
+//types
 import { ChangePasswordPayload } from "@/types/user";
 
 export function useChangePassword() {

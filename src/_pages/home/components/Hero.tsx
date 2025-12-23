@@ -11,17 +11,11 @@ import { PATHS } from "@/constant/PATHS";
 // hooks
 import useHeroItems from "@/hooks/hero/useHeroItems";
 
-// skeleton
+// components
 import HeroSkeleton from "@/components/skeletons/HeroSkeleton";
 
 type HeroType = "movies" | "series";
 
-type HeroItem = {
-  _id: string;
-  name: string;
-  description?: string;
-  backdrop?: string; // Added the 'backdrop' property
-};
 
 type HeroSliderProps = {
   type: HeroType;

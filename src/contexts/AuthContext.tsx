@@ -1,6 +1,6 @@
 "use client";
 
-//react 
+//React 
 import { createContext, useContext, useEffect, useState } from "react";
 
 //path constant
@@ -10,6 +10,7 @@ import { PATHS } from "@/constant/PATHS";
 import { AuthContextType, UserType } from "@/types/user";
 
 
+//context
 const AuthContext = createContext<AuthContextType>({
   user: null,
   setUser: () => { },
@@ -19,13 +20,14 @@ const AuthContext = createContext<AuthContextType>({
   logout: () => { },
 });
 
+//provider
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
-  // *** Fetch user by calling /auth/me ***
+  // Fetch user by calling /auth/me ****************
   async function fetchUser() {
     try {
       const res = await fetch(`${API_URL}/auth/me`, {
@@ -50,6 +52,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     fetchUser();
   }, []);
 
+
+  // Logout user ****************
   const logout = async () => {
     await fetch(`${API_URL}/auth/logout`, {
       method: "GET",

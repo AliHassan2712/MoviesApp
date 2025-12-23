@@ -1,11 +1,11 @@
 "use client";
 
-type Props = {
+type MovieVideoModalProps = {
   videoUrl: string;
   onClose: () => void;
 };
 
-export default function MovieVideoModal({ videoUrl, onClose }: Props) {
+export default function MovieVideoModal({ videoUrl, onClose }: MovieVideoModalProps) {
   return (
     <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center">
       <div className="relative w-full max-w-5xl">

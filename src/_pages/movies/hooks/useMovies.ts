@@ -1,52 +1,57 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { BackendPagination } from "@/types/pagination";
-import { Movie } from "@/types/movie";
+//React
+import { useEffect, useState } from 'react'
+
+//types
+import { Movie } from '@/types/movie'
+import { BackendPagination } from '@/types/pagination'
+
+//services
+import { fetchMovies } from '@/services/movie.service'
 
 export function useMovies(query?: string) {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [page, setPage] = useState(1);
+  const [movies, setMovies] = useState<Movie[]>([])
+  const [page, setPage] = useState(1)
   const [pagination, setPagination] =
-    useState<BackendPagination | null>(null);
-  const [loading, setLoading] = useState(true);
+    useState<BackendPagination | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    async function fetchMovies() {
-      setLoading(true);
+    async function load() {
+      setLoading(true)
+      setError(null)
+
       try {
-        const params = new URLSearchParams({
-          page: String(page),
-          ...(query ? Object.fromEntries(new URLSearchParams(query)) : {}),
-        });
+        const res = await fetchMovies({
+          page,
+          query,
+        })
 
-        const res = await fetch(`${API_URL}/movies?${params}&limit=12`);
-        const data = await res.json();
-
-        setMovies(data.data || []);
-        setPagination(data.pagination);
+        setMovies(res.data || [])
+        setPagination(res.pagination)
       } catch (err) {
-        console.error("Movies fetch error:", err);
+        console.error('Movies fetch error:', err)
+        setError('Failed to load movies')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
 
-    fetchMovies();
-  }, [API_URL, page, query]);
-
+    load()
+  }, [page, query])
 
   useEffect(() => {
-    setPage(1);
-  }, [query]);
+    setPage(1)
+  }, [query])
 
   return {
     movies,
     loading,
+    error,
+    pagination,
     page,
     setPage,
-    pagination,
-  };
+  }
 }

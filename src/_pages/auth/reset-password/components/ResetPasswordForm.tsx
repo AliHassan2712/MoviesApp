@@ -1,19 +1,27 @@
 "use client";
 
+//Next
 import { useRouter } from "next/navigation";
+
+//toast
 import toast from "react-hot-toast";
 
+//components
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
+//hooks
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import useResetPassword from "../hooks/useResetPassword";
+
+//validation
 import {
   resetPasswordSchema,
   ResetPasswordSchemaType,
 } from "../validation";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
 export default function ResetPasswordForm({

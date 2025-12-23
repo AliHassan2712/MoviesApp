@@ -1,12 +1,18 @@
 "use client";
 
+//Next
 import Image from "next/image";
+
+//components 
 import { Container } from "@/components/containers/Container";
 import ActorDetailsSkeleton from "@/components/skeletons/ActorDetailsSkeleton";
+import { MediaCard } from "@/components/cards/MediaCard";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
+//hooks
 import { useActorDetails } from "./hooks/useActorDetails";
-import { MediaCard } from "@/components/cards/MediaCard";
 
 export default function ActorDetailsComponent({
   id,

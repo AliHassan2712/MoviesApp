@@ -1,7 +1,10 @@
 "use client";
 
+//React
 import { useState } from "react";
 
+
+//types
 type ApiResponse<T> = {
   success: boolean;
   data: T | null;

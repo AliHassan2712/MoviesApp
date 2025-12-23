@@ -1,6 +1,9 @@
 "use client";
 
+//React
 import { useEffect, useState } from "react";
+
+//types
 import { Movie } from "@/types/movie";
 
 export function useHomeSection(endpoint: string) {

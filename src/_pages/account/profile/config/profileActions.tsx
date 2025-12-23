@@ -1,4 +1,7 @@
+//icons
 import { User, Shield, LogOut } from "lucide-react";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
 export function getProfileActions(logout: () => void) {

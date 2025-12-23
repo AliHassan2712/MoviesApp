@@ -1,16 +1,24 @@
 "use client";
 
+//Next
 import { useRouter } from "next/navigation";
+
+//toast
 import toast from "react-hot-toast";
 
+//components
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 
+//hooks
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import useSignup from "../hooks/useSignup";
+
+//validation
 import { signupSchema, SignupSchemaType } from "../validation";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
 export default function SignupForm() {

@@ -1,6 +1,9 @@
 "use client";
 
+//custom hook
 import useApiHandler from "@/lib/api/useApiHandler";
+
+//validation types
 import { SignupSchemaType } from "../validation";
 
 export default function useSignup() {

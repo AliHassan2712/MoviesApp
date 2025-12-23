@@ -1,10 +1,15 @@
 "use client";
 
-import { Container } from "@/components/containers/Container";
-import { useEpisodes } from "@/_pages/series/hooks/useEpisodes";
-import EpisodesDetailsSkeleton from "@/components/skeletons/EpisodesDetailsSkeleton";
+//React & Next
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+
+//components
+import { Container } from "@/components/containers/Container";
+import EpisodesDetailsSkeleton from "@/components/skeletons/EpisodesDetailsSkeleton";
+
+//hooks
+import { useEpisodes } from "@/_pages/series/hooks/useEpisodes";
 
 type SeasonDetailsProps = {
   id: string;
@@ -19,13 +24,14 @@ export default function EpisodesDetails({
 }: SeasonDetailsProps) {
   const router = useRouter();
 
-  // 🔒 Not logged in message
+  //  Not logged in message
   const [showLoginMsg, setShowLoginMsg] = useState(true);
 
-  // 🔹 list كل الحلقات
+  // all episodes of the season
   const { episodes: episodesList, isloading } = useEpisodes(id, seasonId);
 
-  // 🔹 الحلقة الحالية
+  // current episode details
+
   const { episodes: currentEpisodeData } = useEpisodes(
     id,
     seasonId,
@@ -48,18 +54,23 @@ export default function EpisodesDetails({
     );
   }
 
+  // Find index of current episode to get prev and next episodes
   const currentIndex = episodesList.findIndex(
     (ep) => ep._id === currentEpisode._id
   );
 
+
+  // Get previous and next episodes
   const prevEpisode =
     currentIndex > 0 ? episodesList[currentIndex - 1] : null;
 
+    // Get next episode
   const nextEpisode =
     currentIndex < episodesList.length - 1
       ? episodesList[currentIndex + 1]
       : null;
 
+      // Navigate to episode details
   const goToEpisode = (episodeId: string) => {
     router.push(`/series/${id}/season/${seasonId}/episodes/${episodeId}`);
   };
@@ -76,7 +87,7 @@ export default function EpisodesDetails({
               object-cover rounded-b-2xl bg-black"
           />
 
-          {/* ⏮ ⏭ Navigation */}
+          {/*  Navigation */}
           <div className="flex justify-between items-center px-6 mt-6">
             <button
               onClick={() => prevEpisode && goToEpisode(prevEpisode._id)}
@@ -85,7 +96,7 @@ export default function EpisodesDetails({
                 bg-card hover:bg-soft
                 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              ⬅ Previous Episode
+              ⬅ Prev Episode
             </button>
 
             <button
@@ -101,7 +112,7 @@ export default function EpisodesDetails({
         </>
       )}
 
-      {/* 🔒 Not Logged In Message (same as movies) */}
+      {/*  Not Logged In Message (same as movies) */}
       {!currentEpisode.videoUrl && showLoginMsg && (
         <div className="container mx-auto px-4 md:px-10 mt-8">
           <div className="flex items-center justify-between gap-4 bg-red-500/10 border border-red-500/30 text-red-400 px-6 py-4 rounded-2xl">

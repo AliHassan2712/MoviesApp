@@ -1,3 +1,4 @@
+//Count Favorites by Type
 export function countFavorites(
   list: { type: "movies" | "series" }[],
   type: "movies" | "series"

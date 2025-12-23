@@ -1,11 +1,18 @@
+// components
 import GenreDetailsComponent from "@/_pages/genres/GenreDetails/GenreDetails";
 
-export default function GenreDetails({
-  params,
-}: {
+
+type GenreDetailsProps = {
   params: Promise<{ id: string }>;
-}) {
+};
+
+
+export default async function GenreDetails({
+  params }: GenreDetailsProps) {
+  const { id } = await params;
+
+
   return (
-    <GenreDetailsComponent params={params} />
+    <GenreDetailsComponent id={id} />
   )
 }

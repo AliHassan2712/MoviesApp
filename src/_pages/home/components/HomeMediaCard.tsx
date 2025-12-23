@@ -1,16 +1,25 @@
 "use client";
 
+// components
 import { MediaCard } from "@/components/cards/MediaCard";
+
+// paths constants
 import { PATHS } from "@/constant/PATHS";
+
+// types
 import { Movie } from "@/types/movie";
-import { Heart } from "lucide-react";
+
+// context
 import { useFavorite } from "@/contexts/FavoriteContext";
 
-type Props = {
+// icons
+import { Heart } from "lucide-react";
+
+type HomeMediaCardProps = {
   item: Movie;
 };
 
-export default function HomeMediaCard({ item }: Props) {
+export default function HomeMediaCard({ item }: HomeMediaCardProps) {
   const { toggleFavorite, isFavorite } = useFavorite();
 
   return (

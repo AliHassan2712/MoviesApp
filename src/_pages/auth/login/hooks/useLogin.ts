@@ -1,7 +1,12 @@
 "use client";
 
+//custom hook
 import useApiHandler from "@/lib/api/useApiHandler";
+
+//contexts
 import { useAuth } from "@/contexts/AuthContext";
+
+//validation types
 import { LoginSchemaType } from "../validation";
 
 export default function useLogin() {

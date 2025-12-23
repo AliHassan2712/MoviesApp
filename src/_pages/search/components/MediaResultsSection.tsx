@@ -1,9 +1,12 @@
+//components
 import { MediaCard } from "@/components/cards/MediaCard";
+
+//paths constants
 import { PATHS } from "@/constant/PATHS";
 
 type MediaType = "movies" | "series";
 
-type Props = {
+type MediaResultsSectionProps = {
   title: string;
   type: MediaType;
   data: any[];
@@ -13,7 +16,7 @@ export default function MediaResultsSection({
   title,
   type,
   data,
-}: Props) {
+}: MediaResultsSectionProps) {
   if (!data.length) return null;
 
   return (

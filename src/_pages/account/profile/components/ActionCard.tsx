@@ -1,7 +1,8 @@
+//React & Next
 import Link from "next/link";
 import { ReactNode } from "react";
 
-type Props = {
+type ActionCardProps = {
   title: string;
   description: string;
   icon: ReactNode;
@@ -17,7 +18,7 @@ export function ActionCard({
   href,
   onClick,
   accentClass,
-}: Props) {
+}: ActionCardProps) {
   const content = (
     <div className="bg-card border border-main rounded-xl p-8 shadow-lg flex flex-col items-center text-center gap-4 group cursor-pointer">
       <div

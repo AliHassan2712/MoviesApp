@@ -9,6 +9,7 @@ import { HeroItem } from "@/types/hero";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+// Hero Types
 type HeroType = "movies" | "series";
 
 type UseHeroItemsProps = {
