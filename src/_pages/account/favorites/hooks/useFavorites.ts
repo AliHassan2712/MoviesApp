@@ -13,7 +13,7 @@ import { FavoriteItem, FavoriteType } from "@/types/favorite";
 //services
 import { getFavoritesByIds } from "@/services/favorites.service";
 
-const LIMIT = 6;
+const LIMIT = 8;
 
 export function useFavorites() {
   const { favoriteList } = useFavorite();

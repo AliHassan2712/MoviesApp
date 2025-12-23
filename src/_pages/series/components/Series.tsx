@@ -84,7 +84,10 @@ export default function SeriesPage() {
 
           {/* ===== Series GRID ===== */}
           <MediaGrid
-            items={series}
+            items={series.map((s) => ({
+              ...s,
+              releaseYear: s.releaseYear ? Number(s.releaseYear) : undefined
+            }))}
             loading={loading}
             favorites={favoriteList}
             mediaType="series"
