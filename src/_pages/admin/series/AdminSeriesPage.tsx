@@ -1,0 +1,240 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import toast from "react-hot-toast";
+
+import AdminTable from "@/components/admin/AdminTable";
+import Modal from "@/components/admin/Modal";
+import Input from "@/components/ui/Input";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import Pagination from "@/components/ui/Pagination";
+import { PATHS } from "@/constant/PATHS";
+
+import type { AdminSeries, UpsertSeriesPayload } from "@/services/admin/series.service";
+import { useAdminSeriesMutations, useAdminSeriesQuery } from "./hooks/useAdminSeries";
+
+// ✅ UI Form type (separate from API payload)
+type SeriesForm = {
+  name: string;
+  description: string;
+  poster: string;
+  releaseYear?: number;
+};
+
+export default function AdminSeriesPage() {
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+
+  const { data, isLoading, isError, error, isFetching } = useAdminSeriesQuery(page, search);
+  const { create, update, remove } = useAdminSeriesMutations();
+
+  const list = data?.data ?? [];
+  const pagination = data?.pagination ?? null;
+
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<AdminSeries | null>(null);
+
+  const title = useMemo(() => (editing ? "Edit Series" : "Create Series"), [editing]);
+
+  const [form, setForm] = useState<SeriesForm>({
+    name: "",
+    description: "",
+    poster: "",
+    releaseYear: undefined,
+  });
+
+  const openCreate = () => {
+    setEditing(null);
+    setForm({ name: "", description: "", poster: "", releaseYear: undefined });
+    setOpen(true);
+  };
+
+  const openEdit = (s: AdminSeries) => {
+    setEditing(s);
+    setForm({
+      name: s.name || "",
+      description: s.description || "",
+      poster: s.poster || "",
+      releaseYear: s.releaseYear,
+    });
+    setOpen(true);
+  };
+
+  const submit = async () => {
+    if (!form.name.trim()) return toast.error("Series name is required");
+
+    try {
+     const payload: UpsertSeriesPayload = {
+  name: form.name.trim(),
+  description: form.description.trim(), 
+  poster: form.poster.trim() ? form.poster.trim() : undefined,
+  releaseYear: form.releaseYear ? Number(form.releaseYear) : undefined,
+};
+
+
+      if (editing) {
+        await update.mutateAsync({ id: editing._id, payload });
+        toast.success("Series updated");
+      } else {
+        await create.mutateAsync(payload);
+        toast.success("Series created");
+      }
+      setOpen(false);
+    } catch (e: any) {
+      toast.error(e?.message || "Operation failed");
+    }
+  };
+
+  const onDelete = async (id: string) => {
+    if (!confirm("Delete this series?")) return;
+    try {
+      await remove.mutateAsync(id);
+      toast.success("Series deleted");
+    } catch (e: any) {
+      toast.error(e?.message || "Delete failed");
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">Series</h1>
+          <p className="text-muted text-sm">Click a series to manage its seasons</p>
+        </div>
+        {isFetching && <span className="text-xs text-muted">Updating…</span>}
+      </div>
+
+      <AdminTable
+        title="Series"
+        toolbar={
+          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+            <input
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              placeholder="Search series..."
+              className="px-4 py-2 bg-main border border-main rounded-lg text-sm"
+            />
+            <button onClick={openCreate} className="btn-primary px-4 py-2 rounded-lg">
+              + Create
+            </button>
+          </div>
+        }
+        head={
+          <tr className="text-left">
+            <th className="p-3">Name</th>
+            <th className="p-3">Year</th>
+            <th className="p-3">Seasons</th>
+            <th className="p-3 w-44">Actions</th>
+          </tr>
+        }
+      >
+        {isLoading && (
+          <tr>
+            <td className="p-4 text-muted" colSpan={4}>
+              Loading…
+            </td>
+          </tr>
+        )}
+
+        {isError && (
+          <tr>
+            <td className="p-4 text-red-500" colSpan={4}>
+              {String((error as any)?.message || "Error")}
+            </td>
+          </tr>
+        )}
+
+        {!isLoading && !isError && list.length === 0 && (
+          <tr>
+            <td className="p-4 text-muted" colSpan={4}>
+              No series found.
+            </td>
+          </tr>
+        )}
+
+        {!isLoading &&
+          !isError &&
+          list.map((s) => (
+            <tr key={s._id} className="hover:bg-soft/40">
+              <td className="p-3 font-medium">
+                <Link className="hover:underline" href={PATHS.ADMIN_SERIES_SEASONS(s._id)}>
+                  {s.name}
+                </Link>
+              </td>
+              <td className="p-3">{s.releaseYear ?? "-"}</td>
+              <td className="p-3">
+                <Link className="text-sm text-primary hover:underline" href={PATHS.ADMIN_SERIES_SEASONS(s._id)}>
+                  Manage seasons →
+                </Link>
+              </td>
+              <td className="p-3">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => openEdit(s)}
+                    className="px-3 py-1 rounded-lg bg-soft border border-main hover:border-primary"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => onDelete(s._id)}
+                    className="px-3 py-1 rounded-lg bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/20"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+      </AdminTable>
+
+      {/* ✅ safe pagination */}
+      {(pagination?.totalPages ?? 0) > 1 && <Pagination pagination={pagination!} onChange={setPage} />}
+
+      <Modal open={open} title={title} onClose={() => setOpen(false)}>
+        <div className="space-y-4">
+          <Input
+            label="Name"
+            value={form.name}
+            onChange={(e: any) => setForm((p) => ({ ...p, name: e.target.value }))}
+          />
+
+          <Input
+            label="Poster URL"
+            value={form.poster}
+            onChange={(e: any) => setForm((p) => ({ ...p, poster: e.target.value }))}
+          />
+
+          <Input
+            label="Release Year"
+            type="number"
+            value={form.releaseYear ?? ""}
+            onChange={(e: any) =>
+              setForm((p) => ({
+                ...p,
+                releaseYear: e.target.value ? Number(e.target.value) : undefined,
+              }))
+            }
+          />
+
+          <div className="space-y-2">
+            <p className="text-text-soft block mb-1 font-medium">Description</p>
+            <textarea
+              value={form.description}
+              onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
+              className="w-full min-h-[110px] bg-card text-main border border-main rounded-lg p-3 outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
+
+          <PrimaryButton type="button" isLoading={create.isPending || update.isPending} onClick={submit}>
+            Save
+          </PrimaryButton>
+        </div>
+      </Modal>
+    </div>
+  );
+}

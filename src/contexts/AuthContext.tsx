@@ -28,25 +28,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
   // Fetch user by calling /auth/me ****************
-  async function fetchUser() {
-    try {
-      const res = await fetch(`${API_URL}/auth/me`, {
-        credentials: "include",
-      });
+ // AuthContext
+async function fetchUser() {
+  try {
+    const res = await fetch(`${API_URL}/auth/me`, {
+      credentials: "include",
+    });
 
-      const data = await res.json();
+    const data = await res.json();
+    // console.log("ME RESPONSE:", data);
 
-      if (!res.ok) {
-        setUser(null);
-      } else {
-        setUser(data.data.user);
-      }
-    } catch (err) {
+    if (!res.ok) {
       setUser(null);
-    } finally {
-      setLoading(false);
+      return null;
+    } else {
+      const u = data.data.user;
+      setUser(u);
+      return u; 
     }
+  } catch (err) {
+    setUser(null);
+    return null;
+  } finally {
+    setLoading(false);
   }
+}
+
 
   useEffect(() => {
     fetchUser();
