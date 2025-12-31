@@ -14,7 +14,7 @@ export type AuthContextType = {
   setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
   isLoggedIn: boolean;
   loading: boolean;
-  fetchUser: () => Promise<void>;
+  fetchUser: () => Promise<void> | any;
   logout: () => void;
 };
 

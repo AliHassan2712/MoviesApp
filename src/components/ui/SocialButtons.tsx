@@ -53,7 +53,7 @@ export default function SocialButtons() {
         window.google.accounts.id.renderButton(googleBtnRef.current, {
           theme: "outline",
           size: "large",
-          width: 300,
+          width: 500,
         });
         setGoogleReady(true);
       }

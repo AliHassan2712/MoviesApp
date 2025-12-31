@@ -1,3 +1,56 @@
+export type ApiResponse<T> = {
+  success: boolean;
+  data: T | null;
+  message?: string;
+  status?: number;
+};
+
+async function safeJson(res: Response) {
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function apiPost<TBody, TData = any>(
+  url: string,
+  body: TBody
+): Promise<ApiResponse<TData>> {
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    const json = await safeJson(res);
+
+    if (!res.ok) {
+      return {
+        success: false,
+        data: null,
+        message: json?.message || "Something went wrong",
+        status: res.status,
+      };
+    }
+
+    return {
+      success: true,
+      data: (json?.data ?? json) as TData,
+      message: json?.message,
+      status: res.status,
+    };
+  } catch {
+    return { success: false, data: null, message: "Network error" };
+  }
+}
+
+
+
+
+
 // const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 

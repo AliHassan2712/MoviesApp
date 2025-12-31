@@ -1,69 +1,26 @@
 "use client";
 
-//React
+import { apiPost, ApiResponse } from "@/services/auth.service";
 import { useState } from "react";
-
-
-//types
-type ApiResponse<T> = {
-  success: boolean;
-  data: T | null;
-  message?: string;
-};
 
 export default function useApiHandler() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function post<TBody, TResponse = any>(
+  async function post<TBody, TData = any>(
     url: string,
     body: TBody
-  ): Promise<ApiResponse<TResponse>> {
-    try {
-      setIsLoading(true);
-      setError(null);
+  ): Promise<ApiResponse<TData>> {
+    setIsLoading(true);
+    setError(null);
 
-      const response = await fetch(url, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
+    const result = await apiPost<TBody, TData>(url, body);
 
-      const data = await response.json();
+    if (!result.success) setError(result.message || "Something went wrong");
 
-      if (!response.ok) {
-        setError(data.message || "Something went wrong");
-        return {
-          success: false,
-          data: null,
-          message: data.message,
-        };
-      }
-
-      return {
-        success: true,
-        data,
-        message: data.message,
-      };
-    } catch (err) {
-      console.error(err);
-      setError("Network error");
-      return {
-        success: false,
-        data: null,
-        message: "Network error",
-      };
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(false);
+    return result;
   }
 
-  return {
-    post,
-    isLoading,
-    error,
-  };
+  return { post, isLoading, error };
 }

@@ -32,5 +32,14 @@ export const PATHS = {
   SETTINGS: "/account/settings",
 
 
+  ADMIN: "/admin",
+  ADMIN_USERS: "/admin/users",
+  ADMIN_MOVIES: "/admin/movies",
 
+ADMIN_SERIES: "/admin/series",
+
+  // dynamic helpers
+  ADMIN_SERIES_SEASONS: (seriesId: string) => `/admin/series/${seriesId}/seasons`,
+  ADMIN_SEASON_EPISODES: (seriesId: string, seasonId: string) =>
+    `/admin/series/${seriesId}/seasons/${seasonId}/episodes`,
 } as const;

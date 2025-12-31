@@ -1,17 +1,12 @@
 "use client";
 
-//custom hook
 import useApiHandler from "@/lib/api/useApiHandler";
-
-//contexts
 import { useAuth } from "@/contexts/AuthContext";
-
-//validation types
 import { LoginSchemaType } from "../validation";
 
 export default function useLogin() {
   const { post, isLoading, error } = useApiHandler();
-  const { fetchUser } = useAuth();
+  const { user , fetchUser } = useAuth();
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -19,11 +14,11 @@ export default function useLogin() {
     const res = await post(`${API_URL}/auth/login`, data);
 
     if (res.success) {
-      await fetchUser();
-      return true;
+      const user = await fetchUser(); 
+      return user; 
     }
 
-    return false;
+    return null;
   };
 
   return { login, isLoading, error };

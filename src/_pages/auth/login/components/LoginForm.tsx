@@ -22,10 +22,12 @@ import SocialButtons from "@/components/ui/SocialButtons";
 
 //paths constants
 import { PATHS } from "@/constant/PATHS";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginForm() {
   const router = useRouter();
   const { login, isLoading, error } = useLogin();
+  const {fetchUser } = useAuth()
 
   const {
     register,
@@ -36,28 +38,34 @@ export default function LoginForm() {
     mode: "onBlur",
   });
 
-const onSubmit = async (data: LoginSchemaType) => {
-  const success = await login(data);
+  const onSubmit = async (data: LoginSchemaType) => {
+    const success = await login(data);
+    const user = await fetchUser()
 
-  if (success) {
-    toast.success("Welcome back!");
-    setTimeout(() => {
-      router.push(PATHS.HOME);
-    }, 1000);
-  }
-};
+
+    if (success) {
+      if (user?.role == "admin") {
+        router.push(PATHS.ADMIN)
+      } else {
+        toast.success("Welcome back!");
+        setTimeout(() => {
+          router.push(PATHS.HOME);
+        }, 1000);
+      }
+    }
+  };
 
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
-{error && (
-  <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
-    <p className="text-red-500 text-sm font-semibold">
-      {error}
-    </p>
-  </div>
-)}
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
+          <p className="text-red-500 text-sm font-semibold">
+            {error}
+          </p>
+        </div>
+      )}
 
       <Input
         label="Email"
