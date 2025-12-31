@@ -13,7 +13,7 @@ type GenresResponse = {
 export async function fetchGenres(): Promise<Genre[]> {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/genres`,
-    { cache: 'no-store' }
+    { cache: 'force-cache' }
   )
 
   if (!res.ok) {
