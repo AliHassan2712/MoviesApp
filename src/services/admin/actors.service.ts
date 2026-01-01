@@ -9,29 +9,21 @@ export type BackendPagination = {
   nextPage?: number;
 };
 
-export type AdminMovie = {
+export type AdminActor = {
   _id: string;
-  name: string;
-
-  description?: string;
-  videoUrl?: string;
-
-  releaseYear?: number;
-  poster?: string;
-  duration?: number;
-
-  genresRefs?: Array<string | { _id: string }>;
-  castRefs?: Array<string | { _id: string }>;
-
+  name?: string;
+  profilePath?: string;
+  tmdbId?: number;
+  popularity?: number;
   createdAt?: string;
 };
 
-export type MoviesListResponse = {
-  data: AdminMovie[];
+export type ActorsListResponse = {
+  data: AdminActor[];
   pagination: BackendPagination | null;
 };
 
-function normalizeList(json: any): MoviesListResponse {
+function normalizeList(json: any): ActorsListResponse {
   const data = json?.data?.data ?? json?.data ?? [];
   const pagination = json?.pagination ?? json?.data?.pagination ?? null;
   return { data, pagination };
@@ -46,43 +38,36 @@ async function safeJson(res: Response) {
   }
 }
 
-export async function fetchAdminMovies(params: {
+export async function fetchAdminActors(params: {
   page: number;
   limit?: number;
   search?: string;
-}): Promise<MoviesListResponse> {
+}): Promise<ActorsListResponse> {
   const sp = new URLSearchParams({
     page: String(params.page),
     ...(params.limit ? { limit: String(params.limit) } : {}),
     ...(params.search ? { search: params.search } : {}),
   });
 
-  const res = await fetch(`${API_URL}/movies?${sp.toString()}`, {
+  const res = await fetch(`${API_URL}/actors?${sp.toString()}`, {
     credentials: "include",
     cache: "no-store",
   });
 
   const json = await safeJson(res);
-  if (!res.ok) throw new Error(json?.message || "Failed to fetch movies");
+  if (!res.ok) throw new Error(json?.message || "Failed to fetch actors");
   return normalizeList(json);
 }
 
-export type UpsertMoviePayload = {
+export type UpsertActorPayload = {
   name: string;
-
-  description: string;
-  videoUrl: string;
-
-  releaseYear?: number;
-  poster?: string;
-  duration?: number;
-
-  genresRefs?: string[];
-  castRefs?: string[];
+  profilePath?: string;
+  tmdbId?: number;
+  popularity?: number;
 };
 
-export async function createAdminMovie(payload: UpsertMoviePayload) {
-  const res = await fetch(`${API_URL}/movies`, {
+export async function createAdminActor(payload: UpsertActorPayload) {
+  const res = await fetch(`${API_URL}/actors`, {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -90,12 +75,12 @@ export async function createAdminMovie(payload: UpsertMoviePayload) {
   });
 
   const json = await safeJson(res);
-  if (!res.ok) throw new Error(json?.message || "Failed to create movie");
+  if (!res.ok) throw new Error(json?.message || "Failed to create actor");
   return json;
 }
 
-export async function updateAdminMovie(id: string, payload: UpsertMoviePayload) {
-  const res = await fetch(`${API_URL}/movies/${id}`, {
+export async function updateAdminActor(id: string, payload: UpsertActorPayload) {
+  const res = await fetch(`${API_URL}/actors/${id}`, {
     method: "PATCH",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
@@ -103,17 +88,17 @@ export async function updateAdminMovie(id: string, payload: UpsertMoviePayload) 
   });
 
   const json = await safeJson(res);
-  if (!res.ok) throw new Error(json?.message || "Failed to update movie");
+  if (!res.ok) throw new Error(json?.message || "Failed to update actor");
   return json;
 }
 
-export async function deleteAdminMovie(id: string) {
-  const res = await fetch(`${API_URL}/movies/${id}`, {
+export async function deleteAdminActor(id: string) {
+  const res = await fetch(`${API_URL}/actors/${id}`, {
     method: "DELETE",
     credentials: "include",
   });
 
-  const json = await safeJson(res);
-  if (!res.ok) throw new Error(json?.message || "Failed to delete movie");
+  const json = await safeJson(res); 
+  if (!res.ok) throw new Error(json?.message || "Failed to delete actor");
   return json;
 }

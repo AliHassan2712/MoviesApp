@@ -12,19 +12,20 @@ import Modal from "@/components/admin/Modal";
 
 import type { AdminUser, UpsertUserPayload } from "@/services/admin/users.service";
 import { useAdminUsersMutations, useAdminUsersQuery } from "./hooks/useAdminUsers";
+import ConfirmDeleteModal from "@/components/admin/ConfirmDeleteModal";
 
-// ✅ UI Form type (avoid TS optional issues)
 type UserForm = {
   firstName: string;
   lastName: string;
   email: string;
   role: "user" | "admin";
-  password: string; // نخليه string في الفورم ثم نحوله undefined لو فاضي
+  password: string;
 };
 
 export default function AdminUsersPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<AdminUser | null>(null);
@@ -64,7 +65,7 @@ export default function AdminUsersPage() {
       lastName: u.lastName || "",
       email: u.email || "",
       role: (u.role as "user" | "admin") || "user",
-      password: "", // عادة ما نتركها فاضية عند التعديل
+      password: "",
     });
     setOpen(true);
   };
@@ -87,9 +88,6 @@ export default function AdminUsersPage() {
         await update.mutateAsync({ id: editing._id, payload });
         toast.success("User updated");
       } else {
-        // عند الإنشاء قد يكون الباسورد مطلوب عندك
-        // إذا لازم: تحقق هنا
-        // if (!payload.password) return toast.error("Password is required");
         await create.mutateAsync(payload);
         toast.success("User created");
       }
@@ -100,14 +98,16 @@ export default function AdminUsersPage() {
     }
   };
 
-  const onDelete = async (id: string) => {
-    if (!confirm("Delete this user?")) return;
+  const confirmDelete = async () => {
+    if (!deleteId) return;
 
     try {
-      await remove.mutateAsync(id);
+      await remove.mutateAsync(deleteId);
       toast.success("User deleted");
     } catch (e: any) {
       toast.error(e?.message || "Delete failed");
+    } finally {
+      setDeleteId(null);
     }
   };
 
@@ -191,12 +191,12 @@ export default function AdminUsersPage() {
                     Edit
                   </button>
                   <button
-                    type="button"
-                    onClick={() => onDelete(u._id)}
+                    onClick={() => setDeleteId(u._id)}
                     className="px-3 py-1 rounded-lg bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/20"
                   >
                     Delete
                   </button>
+
                 </div>
               </td>
             </tr>
@@ -255,6 +255,14 @@ export default function AdminUsersPage() {
           </PrimaryButton>
         </div>
       </Modal>
+      <ConfirmDeleteModal
+        open={!!deleteId}
+        isLoading={isLoading}
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
+        description="Are you sure you want to delete this user? This action cannot be undone."
+      />
+
     </div>
   );
 }
