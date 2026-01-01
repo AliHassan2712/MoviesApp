@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
 
 import AdminTable from "@/components/admin/AdminTable";
 import Modal from "@/components/admin/Modal";
@@ -11,15 +12,28 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 import Pagination from "@/components/ui/Pagination";
 import { PATHS } from "@/constant/PATHS";
 
+import MultiSelect from "@/components/ui/multi-select";
+
 import type { AdminSeries, UpsertSeriesPayload } from "@/services/admin/series.service";
 import { useAdminSeriesMutations, useAdminSeriesQuery } from "./hooks/useAdminSeries";
 
-// ✅ UI Form type (separate from API payload)
+import { fetchAdminGenres } from "@/services/admin/genres.service";
+import { fetchAdminActors } from "@/services/admin/actors.service";
+import ConfirmDeleteModal from "@/components/admin/ConfirmDeleteModal";
+
+function toIds(arr: any): string[] {
+  return (arr ?? [])
+    .map((x: any) => (typeof x === "string" ? x : x?._id))
+    .filter(Boolean);
+}
+
 type SeriesForm = {
   name: string;
   description: string;
   poster: string;
   releaseYear?: number;
+  genres: string[];
+  cast: string[];
 };
 
 export default function AdminSeriesPage() {
@@ -32,21 +46,59 @@ export default function AdminSeriesPage() {
   const list = data?.data ?? [];
   const pagination = data?.pagination ?? null;
 
+  const genresQuery = useQuery({
+    queryKey: ["admin-genres-all"],
+    queryFn: () => fetchAdminGenres({ page: 1, limit: 500 }),
+    staleTime: 60_000,
+  });
+
+  const actorsQuery = useQuery({
+    queryKey: ["admin-actors-all"],
+    queryFn: () => fetchAdminActors({ page: 1, limit: 500 }),
+    staleTime: 60_000,
+  });
+
+  const genres = genresQuery.data?.data ?? [];
+  const actors = actorsQuery.data?.data ?? [];
+
+  const genreOptions = genres
+    .filter((g: any) => !g.type || g.type === "series" || g.type === "both")
+    .map((g: any) => ({
+      value: g._id,
+      label: g.name_en || g.name_ar || g._id,
+      meta: g.type ? `type: ${g.type}` : undefined,
+    }));
+
+  const actorOptions = actors.map((a: any) => ({
+    value: a._id,
+    label: a.name || a._id,
+    meta: a.tmdbId ? `tmdb: ${a.tmdbId}` : undefined,
+  }));
+
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<AdminSeries | null>(null);
-
   const title = useMemo(() => (editing ? "Edit Series" : "Create Series"), [editing]);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const [form, setForm] = useState<SeriesForm>({
     name: "",
     description: "",
     poster: "",
     releaseYear: undefined,
+    genres: [],
+    cast: [],
   });
 
   const openCreate = () => {
     setEditing(null);
-    setForm({ name: "", description: "", poster: "", releaseYear: undefined });
+    setForm({
+      name: "",
+      description: "",
+      poster: "",
+      releaseYear: undefined,
+      genres: [],
+      cast: [],
+    });
     setOpen(true);
   };
 
@@ -54,9 +106,11 @@ export default function AdminSeriesPage() {
     setEditing(s);
     setForm({
       name: s.name || "",
-      description: s.description || "",
+      description: (s as any).description || "",
       poster: s.poster || "",
       releaseYear: s.releaseYear,
+      genres: toIds((s as any).genres),
+      cast: toIds((s as any).cast),
     });
     setOpen(true);
   };
@@ -65,13 +119,14 @@ export default function AdminSeriesPage() {
     if (!form.name.trim()) return toast.error("Series name is required");
 
     try {
-     const payload: UpsertSeriesPayload = {
-  name: form.name.trim(),
-  description: form.description.trim(), 
-  poster: form.poster.trim() ? form.poster.trim() : undefined,
-  releaseYear: form.releaseYear ? Number(form.releaseYear) : undefined,
-};
-
+      const payload: UpsertSeriesPayload = {
+        name: form.name.trim(),
+        description: form.description.trim(),
+        poster: form.poster.trim() ? form.poster.trim() : undefined,
+        releaseYear: form.releaseYear ? Number(form.releaseYear) : undefined,
+        genres: form.genres.length ? form.genres : undefined,
+        cast: form.cast.length ? form.cast : undefined,
+      };
 
       if (editing) {
         await update.mutateAsync({ id: editing._id, payload });
@@ -86,15 +141,19 @@ export default function AdminSeriesPage() {
     }
   };
 
-  const onDelete = async (id: string) => {
-    if (!confirm("Delete this series?")) return;
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+
     try {
-      await remove.mutateAsync(id);
+      await remove.mutateAsync(deleteId);
       toast.success("Series deleted");
     } catch (e: any) {
       toast.error(e?.message || "Delete failed");
+    } finally {
+      setDeleteId(null);
     }
   };
+
 
   return (
     <div className="space-y-6">
@@ -181,22 +240,23 @@ export default function AdminSeriesPage() {
                     Edit
                   </button>
                   <button
-                    onClick={() => onDelete(s._id)}
+                    onClick={() => setDeleteId(s._id)}
                     className="px-3 py-1 rounded-lg bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/20"
                   >
                     Delete
                   </button>
+
                 </div>
               </td>
             </tr>
           ))}
       </AdminTable>
 
-      {/* ✅ safe pagination */}
       {(pagination?.totalPages ?? 0) > 1 && <Pagination pagination={pagination!} onChange={setPage} />}
 
       <Modal open={open} title={title} onClose={() => setOpen(false)}>
-        <div className="space-y-4">
+        {/* ✅ Scroll container */}
+        <div className="max-h-[75vh] overflow-auto pr-1 space-y-4">
           <Input
             label="Name"
             value={form.name}
@@ -222,7 +282,7 @@ export default function AdminSeriesPage() {
           />
 
           <div className="space-y-2">
-            <p className="text-text-soft block mb-1 font-medium">Description</p>
+            <p className="text-soft block mb-1 font-medium">Description</p>
             <textarea
               value={form.description}
               onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
@@ -230,11 +290,38 @@ export default function AdminSeriesPage() {
             />
           </div>
 
+          <MultiSelect
+            label="Genres"
+            placeholder="Search genres..."
+            options={genreOptions}
+            value={form.genres ?? []}
+            onChange={(ids) => setForm((p) => ({ ...p, genres: ids }))}
+            disabled={genresQuery.isLoading && genreOptions.length === 0}
+            maxNamesOnButton={2}
+          />
+
+          <MultiSelect
+            label="Actors"
+            placeholder="Search actors..."
+            options={actorOptions}
+            value={form.cast}
+            onChange={(ids) => setForm((p) => ({ ...p, cast: ids }))}
+            disabled={actorsQuery.isLoading && actorOptions.length === 0}
+          />
+
           <PrimaryButton type="button" isLoading={create.isPending || update.isPending} onClick={submit}>
             Save
           </PrimaryButton>
         </div>
       </Modal>
+      <ConfirmDeleteModal
+        open={!!deleteId}
+        isLoading={isLoading}
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
+        description="Are you sure you want to delete this series? This action cannot be undone."
+      />
+
     </div>
   );
 }

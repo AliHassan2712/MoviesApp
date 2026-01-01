@@ -10,6 +10,7 @@ import PrimaryButton from "@/components/ui/PrimaryButton";
 
 import type { AdminEpisode, UpsertEpisodePayload } from "@/services/admin/episodes.service";
 import { useAdminEpisodesMutations, useAdminEpisodesQuery } from "../series/hooks/useAdminEpisodes";
+import ConfirmDeleteModal from "@/components/admin/ConfirmDeleteModal";
 
 function isValidUrl(url?: string) {
   if (!url) return true;
@@ -28,13 +29,15 @@ export default function AdminEpisodesPage({
   seriesId: string;
   seasonId: string;
 }) {
-  const { data, isLoading, isError, error, isFetching } = useAdminEpisodesQuery(seasonId,seriesId);
+  const { data, isLoading, isError, error, isFetching } = useAdminEpisodesQuery(seasonId, seriesId);
   const { create, update, remove } = useAdminEpisodesMutations(seasonId, seriesId);
 
   const list = data ?? [];
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<AdminEpisode | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
   const title = useMemo(() => (editing ? "Edit Episode" : "Create Episode"), [editing]);
 
   const [form, setForm] = useState<UpsertEpisodePayload>({
@@ -90,15 +93,19 @@ export default function AdminEpisodesPage({
     }
   };
 
-  const onDelete = async (id: string) => {
-    if (!confirm("Delete this episode?")) return;
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+
     try {
-      await remove.mutateAsync(id);
+      await remove.mutateAsync(deleteId);
       toast.success("Episode deleted");
     } catch (e: any) {
       toast.error(e?.message || "Delete failed");
+    } finally {
+      setDeleteId(null);
     }
   };
+
 
   return (
     <div className="space-y-6">
@@ -176,11 +183,12 @@ export default function AdminEpisodesPage({
                     Edit
                   </button>
                   <button
-                    onClick={() => onDelete(ep._id)}
+                    onClick={() => setDeleteId(ep._id)}
                     className="px-3 py-1 rounded-lg bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/20"
                   >
                     Delete
                   </button>
+
                 </div>
               </td>
             </tr>
@@ -231,6 +239,15 @@ export default function AdminEpisodesPage({
           </PrimaryButton>
         </div>
       </Modal>
+
+      <ConfirmDeleteModal
+        open={!!deleteId}
+        isLoading={isLoading}
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
+        description="Are you sure you want to delete this episode? This action cannot be undone."
+      />
+
     </div>
   );
 }

@@ -50,8 +50,8 @@ export async function updateAdminSeason(seasonId: string, payload: UpsertSeasonP
   return json;
 }
 
-export async function deleteAdminSeason(seasonId: string) {
-  const res = await fetch(`${API_URL}/seasons/${seasonId}`, {
+export async function deleteAdminSeason(seriesId: string,seasonId: string) {
+  const res = await fetch(`${API_URL}/series/${seriesId}/seasons/${seasonId}`, {
     method: "DELETE",
     credentials: "include",
   });

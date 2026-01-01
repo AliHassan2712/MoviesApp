@@ -14,12 +14,11 @@ export const useGenres = () => {
   const [activeTab, setActiveTab] = useState('0')
   const [loading, setLoading] = useState(true)
 
-  // fetch genres on mount
   useEffect(() => {
     async function load() {
       try {
-        const data = await fetchGenres()
-        setGenres(data)
+        const res = await fetchGenres({ page: 1, limit: 1000 })
+        setGenres(res.data)
       } catch (e) {
         console.error(e)
       } finally {
@@ -30,14 +29,11 @@ export const useGenres = () => {
     load()
   }, [])
 
-
-  // all genres with "All" option
   const allGenres = useMemo(() => {
     return [{ _id: '0', name_en: 'All' }, ...genres]
   }, [genres])
 
-  const getGenreById = (id: string) =>
-    genres.find((g) => g._id === id)
+  const getGenreById = (id: string) => genres.find((g) => g._id === id)
 
   return {
     genres,
