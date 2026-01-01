@@ -5,7 +5,7 @@ import { PATHS } from "@/constant/PATHS";
 import { useAuth } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
 
-import { BarChart3, Users, Film, LogOut, Tv } from "lucide-react";
+import { BarChart3, Users, Film, LogOut, Tv, Layers } from "lucide-react";
 import NavItem from "@/components/admin/NavItem";
 
 export default function AdminSidebar() {
@@ -55,6 +55,9 @@ export default function AdminSidebar() {
         />
 
         <NavItem href={PATHS.ADMIN_SERIES} icon={<Tv size={18} />} label="Series" />
+
+        <NavItem href={PATHS.ADMIN_GENRES} icon={<Layers size={18} />} label="Genres" />
+        <NavItem href={PATHS.ADMIN_ACTORS} icon={<Users size={18} />} label="Actors" />
 
       </nav>
 

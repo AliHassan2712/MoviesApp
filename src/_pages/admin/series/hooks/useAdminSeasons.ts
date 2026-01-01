@@ -32,7 +32,7 @@ export function useAdminSeasonsMutations(seriesId: string) {
   });
 
   const remove = useMutation({
-    mutationFn: (id: string) => deleteAdminSeason(id),
+    mutationFn: (id: string) => deleteAdminSeason(seriesId,id),
     onSuccess: invalidate,
   });
 

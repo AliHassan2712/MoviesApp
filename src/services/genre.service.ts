@@ -4,34 +4,41 @@ import { BackendPagination } from '@/types/pagination'
 import { Genre } from '@/types/movie'
 import { Series } from '@/types/series'
 
-
 type GenresResponse = {
   data: Genre[]
+  pagination: BackendPagination
+  results?: number
 }
 
-//All Genres
-export async function fetchGenres(): Promise<Genre[]> {
+export async function fetchGenres(params?: {
+  page?: number
+  limit?: number
+}): Promise<GenresResponse> {
+  const page = params?.page ?? 1
+  const limit = params?.limit ?? 20
+
+  const searchParams = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  })
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/genres`,
-    { cache: 'force-cache' }
+    `${process.env.NEXT_PUBLIC_API_URL}/genres?${searchParams.toString()}`,
+    { cache: 'no-store' } 
   )
 
   if (!res.ok) {
     throw new Error('Failed to fetch genres')
   }
 
-  const json: GenresResponse = await res.json()
-  return json.data
+  return res.json()
 }
-
-
-
-
 
 type GenreMoviesResponse = {
   data: Movie[]
   pagination: BackendPagination
 }
+
 //Movies
 export async function fetchGenreMovies(params: {
   genreId: string
@@ -58,14 +65,12 @@ export async function fetchGenreMovies(params: {
   return res.json()
 }
 
-
-
-
 //Series
 type GenreSeriesResponse = {
   data: Series[]
   pagination: BackendPagination
 }
+
 export async function fetchGenreSeries(params: {
   genreId: string
   page: number

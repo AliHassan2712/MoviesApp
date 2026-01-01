@@ -7,8 +7,8 @@ export const PATHS = {
 
   SERIES: "/series",
   SERIES_DETAILS: (id: string | number) => `/series/${id}`,
-  SEASONS:(seriesId: string | number,seasonId:string|number) => `/series/${seriesId}/season/${seasonId}`,
-  EPISODES:(seriesId: string | number,seasonId:string|number,episodesId:string|number) => `/series/${seriesId}/season/${seasonId}/episodes/${episodesId}`,
+  SEASONS: (seriesId: string | number, seasonId: string | number) => `/series/${seriesId}/season/${seasonId}`,
+  EPISODES: (seriesId: string | number, seasonId: string | number, episodesId: string | number) => `/series/${seriesId}/season/${seasonId}/episodes/${episodesId}`,
 
   ACTORS: "/actors",
   ACTOR_DETAILS: (id: string | number) => `/actors/${id}`,
@@ -35,10 +35,9 @@ export const PATHS = {
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
   ADMIN_MOVIES: "/admin/movies",
-
-ADMIN_SERIES: "/admin/series",
-
-  // dynamic helpers
+  ADMIN_SERIES: "/admin/series",
+  ADMIN_GENRES: "/admin/genres",
+  ADMIN_ACTORS: "/admin/actors",
   ADMIN_SERIES_SEASONS: (seriesId: string) => `/admin/series/${seriesId}/seasons`,
   ADMIN_SEASON_EPISODES: (seriesId: string, seasonId: string) =>
     `/admin/series/${seriesId}/seasons/${seasonId}/episodes`,

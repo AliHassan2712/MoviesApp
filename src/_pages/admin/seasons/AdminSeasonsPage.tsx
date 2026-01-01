@@ -12,10 +12,13 @@ import { PATHS } from "@/constant/PATHS";
 
 import type { AdminSeason, UpsertSeasonPayload } from "@/services/admin/seasons.service";
 import { useAdminSeasonsMutations, useAdminSeasonsQuery } from "../series/hooks/useAdminSeasons";
+import ConfirmDeleteModal from "@/components/admin/ConfirmDeleteModal";
 
 export default function AdminSeasonsPage({ seriesId }: { seriesId: string }) {
   const { data, isLoading, isError, error, isFetching } = useAdminSeasonsQuery(seriesId);
   const { create, update, remove } = useAdminSeasonsMutations(seriesId);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
   const list = data ?? [];
 
   const [open, setOpen] = useState(false);
@@ -64,15 +67,19 @@ export default function AdminSeasonsPage({ seriesId }: { seriesId: string }) {
     }
   };
 
-  const onDelete = async (id: string) => {
-    if (!confirm("Delete this season?")) return;
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+
     try {
-      await remove.mutateAsync(id);
+      await remove.mutateAsync(deleteId);
       toast.success("Season deleted");
     } catch (e: any) {
       toast.error(e?.message || "Delete failed");
+    } finally {
+      setDeleteId(null);
     }
   };
+
 
   return (
     <div className="space-y-6">
@@ -156,11 +163,12 @@ export default function AdminSeasonsPage({ seriesId }: { seriesId: string }) {
                     Edit
                   </button>
                   <button
-                    onClick={() => onDelete(s._id)}
+                    onClick={() => setDeleteId(s._id)}
                     className="px-3 py-1 rounded-lg bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/20"
                   >
                     Delete
                   </button>
+
                 </div>
               </td>
             </tr>
@@ -189,6 +197,14 @@ export default function AdminSeasonsPage({ seriesId }: { seriesId: string }) {
           </PrimaryButton>
         </div>
       </Modal>
+      <ConfirmDeleteModal
+        open={!!deleteId}
+        isLoading={isLoading}
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
+        description="Are you sure you want to delete this season? This action cannot be undone."
+      />
+
     </div>
   );
 }

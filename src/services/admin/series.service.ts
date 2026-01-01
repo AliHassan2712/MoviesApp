@@ -20,6 +20,9 @@ export type AdminSeries = {
   poster?: string;
   seasons?: number;
 
+  genres?: Array<string | { _id: string }>;
+  cast?: Array<string | { _id: string }>;
+
   createdAt?: string;
 };
 
@@ -32,6 +35,15 @@ function normalizeList(json: any): SeriesListResponse {
   const data = json?.data?.data ?? json?.data ?? [];
   const pagination = json?.pagination ?? json?.data?.pagination ?? null;
   return { data, pagination };
+}
+
+async function safeJson(res: Response) {
+  try {
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function fetchAdminSeries(params: {
@@ -50,7 +62,7 @@ export async function fetchAdminSeries(params: {
     cache: "no-store",
   });
 
-  const json = await res.json().catch(() => null);
+  const json = await safeJson(res);
   if (!res.ok) throw new Error(json?.message || "Failed to fetch series");
   return normalizeList(json);
 }
@@ -62,6 +74,9 @@ export type UpsertSeriesPayload = {
   releaseYear?: number;
   poster?: string;
   seasons?: number;
+
+  genres?: string[];
+  cast?: string[];
 };
 
 export async function createAdminSeries(payload: UpsertSeriesPayload) {
@@ -72,7 +87,7 @@ export async function createAdminSeries(payload: UpsertSeriesPayload) {
     body: JSON.stringify(payload),
   });
 
-  const json = await res.json().catch(() => null);
+  const json = await safeJson(res);
   if (!res.ok) throw new Error(json?.message || "Failed to create series");
   return json;
 }
@@ -85,7 +100,7 @@ export async function updateAdminSeries(id: string, payload: UpsertSeriesPayload
     body: JSON.stringify(payload),
   });
 
-  const json = await res.json().catch(() => null);
+  const json = await safeJson(res);
   if (!res.ok) throw new Error(json?.message || "Failed to update series");
   return json;
 }
@@ -96,7 +111,7 @@ export async function deleteAdminSeries(id: string) {
     credentials: "include",
   });
 
-  const json = await res.json().catch(() => null);
+  const json = await safeJson(res);
   if (!res.ok) throw new Error(json?.message || "Failed to delete series");
   return json;
 }

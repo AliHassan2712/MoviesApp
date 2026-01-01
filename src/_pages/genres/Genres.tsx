@@ -2,36 +2,59 @@
 
 // React & Next
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 // Components
 import { Container } from '@/components/containers/Container'
 import GenreSkeleton from '@/components/skeletons/GenreSkeleton'
+import Pagination from '@/components/ui/Pagination'
 
 // Constants
 import { PATHS } from '@/constant/PATHS'
 import { GENRE_ICONS } from '@/constant/GENRE_ICONS'
 
-// Hooks
-import { useGenres } from './hooks/useGenres'
+// Types
+import { Genre } from '@/types/movie'
+import { BackendPagination } from '@/types/pagination'
+
+// Services
+import { fetchGenres } from '@/services/genre.service'
 
 // Icons fallback
 import { Film } from 'lucide-react'
 
 const SKELETON_COUNT = 10
+const PAGE_LIMIT = 10
 
 export default function GenresPageComponent() {
-  const { loading, genres } = useGenres()
+  const [genres, setGenres] = useState<Genre[]>([])
+  const [pagination, setPagination] = useState<BackendPagination | null>(null)
+  const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true)
+      try {
+        const res = await fetchGenres({ page, limit: PAGE_LIMIT })
+        setGenres(res.data)
+        setPagination(res.pagination)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    load()
+  }, [page])
 
   return (
     <Container className="pt-20">
       {/* ===== HEADER ===== */}
       <div className="mb-12 text-left">
-        <h1 className="text-4xl font-extrabold mb-3">
-          Genres
-        </h1>
-        <p className="text-muted">
-          Explore movies & series by genre
-        </p>
+        <h1 className="text-4xl font-extrabold mb-3">Genres</h1>
+        <p className="text-muted">Explore movies & series by genre</p>
       </div>
 
       {/* ===== GRID ===== */}
@@ -41,10 +64,7 @@ export default function GenresPageComponent() {
               <GenreSkeleton key={i} />
             ))
           : genres.map((genre) => {
-              const key = genre.name_en
-                .toLowerCase()
-                .replace(/\s+/g, '_')
-
+              const key = genre.name_en.toLowerCase().replace(/\s+/g, '_')
               const Icon = GENRE_ICONS[key] || Film
 
               return (
@@ -55,9 +75,7 @@ export default function GenresPageComponent() {
                 >
                   <Icon className="mx-auto mb-4 text-primary/80 group-hover:text-primary w-9 h-9" />
 
-                  <h3 className="font-semibold text-lg">
-                    {genre.name_en}
-                  </h3>
+                  <h3 className="font-semibold text-lg">{genre.name_en}</h3>
 
                   <span className="mt-3 inline-block text-xs text-primary bg-primary/10 px-3 py-1 rounded-full">
                     Explore
@@ -66,6 +84,13 @@ export default function GenresPageComponent() {
               )
             })}
       </div>
+
+      {/* ===== PAGINATION ===== */}
+      {(pagination?.totalPages ?? 0) > 1 && (
+        <div className="mt-10">
+          <Pagination pagination={pagination!} onChange={setPage} />
+        </div>
+      )}
     </Container>
   )
 }

@@ -11,7 +11,7 @@ type NavItemProps = {
 
 export default function NavItem({ href, icon, label }: NavItemProps) {
   const pathname = usePathname();
-  const isActive = pathname === href || pathname.startsWith(`${href}/`);
+  const isActive = pathname === href ;
 
   return (
     <Link
