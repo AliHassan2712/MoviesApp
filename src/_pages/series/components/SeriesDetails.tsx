@@ -13,11 +13,10 @@ import { faHeart as faHeartRegular } from "@fortawesome/free-regular-svg-icons";
 import { Series, Genre } from "@/types/series";
 import { Season } from "@/types/season";
 
-//contexts
-import { FavoriteItem } from "@/contexts/FavoriteContext";
 
 //constants
 import { PATHS } from "@/constant/PATHS";
+import { FavoriteItem } from "@/types/favorite";
 
 type SeriesDetailsProps = {
   series: Series;
@@ -32,7 +31,7 @@ export default function SeriesDetails({ series, favoriteList, toggleFavorite, se
 
   return (
     <div className="mt-10 flex flex-col gap-y-8 py-10">
-      <h1 className="text-3xl text-white mb-2 font-bold">{series.name}</h1>
+      <h1 className="text-3xl  mb-2 font-bold">{series.name}</h1>
 
       {/* Genres */}
       <ul className="flex flex-wrap md:flex-nowrap gap-5">
@@ -72,7 +71,7 @@ export default function SeriesDetails({ series, favoriteList, toggleFavorite, se
               <Link href={PATHS.SEASONS(series._id, s._id)}>
                 <Image src={s.poster || "/assets/images/img_hero.jpg"} alt={"season poster"} width={400} height={300} className="w-full h-65 md:h-75 object-cover" />
                 <div className="p-2 text-center flex flex-col items-start justify-between gap-2 text-[16px]">
-                  <div className="text-[16px] text-white">Season: {s.seasonNumber}</div>
+                  <div className="text-[16px] ">Season: {s.seasonNumber}</div>
                 </div>
               </Link>
             </li>

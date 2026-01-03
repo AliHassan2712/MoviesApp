@@ -1,43 +1,84 @@
-//components
+"use client";
+
+import { memo, useCallback, useMemo } from "react";
 import { MediaCard } from "@/components/cards/MediaCard";
-
-//paths constants
+import Pagination from "@/components/ui/Pagination";
 import { PATHS } from "@/constant/PATHS";
+import type { BackendPagination } from "@/types/pagination";
+import type { MediaItem } from "@/types/media";
 
-type MediaType = "movies" | "series";
-
-type MediaResultsSectionProps = {
+type Props = {
   title: string;
-  type: MediaType;
-  data: any[];
+  items: MediaItem[];
+  loading: boolean;
+  page: number;
+  pagination?: BackendPagination;
+  onPageChange: (page: number) => void;
+  type: "movies" | "series";
 };
 
-export default function MediaResultsSection({
+function MediaResultsSectionComponent({
   title,
+  items,
+  loading,
+  page,
+  pagination,
+  onPageChange,
   type,
-  data,
-}: MediaResultsSectionProps) {
-  if (!data.length) return null;
+}: Props) {
+  const countLabel = useMemo(() => (items.length > 0 ? ` (${items.length})` : ""), [items.length]);
+
+  const getHref = useCallback(
+    (id: string) => (type === "movies" ? PATHS.MOVIE_DETAILS(id) : PATHS.SERIES_DETAILS(id)),
+    [type]
+  );
+
+  if (loading) {
+    return (
+      <section className="space-y-5">
+        <h2 className="text-2xl font-bold">
+          {title}
+          {countLabel}
+        </h2>
+        <div className="text-muted">Loading...</div>
+      </section>
+    );
+  }
 
   return (
-    <section>
-      <h2 className="text-2xl font-bold mb-4">{title}</h2>
+    <section className="space-y-5">
+      <h2 className="text-2xl font-bold">
+        {title}
+        {countLabel}
+      </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {data.map((item) => (
-          <MediaCard
-            key={item._id}
-            title={item.name}
-            poster={item.poster}
-            releaseYear={item.releaseYear}
-            href={
-              type === "movies"
-                ? PATHS.MOVIE_DETAILS(item._id)
-                : PATHS.SERIES_DETAILS(item._id)
-            }
-          />
-        ))}
-      </div>
+      {items.length === 0 ? (
+        <p className="text-muted">Not found.</p>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+            {items.map((item) => (
+              <MediaCard
+              id={item._id}
+                key={item._id}
+                title={item.name}
+                poster={item.poster}
+                releaseYear={item.releaseYear}
+                href={getHref(item._id)}
+              />
+            ))}
+          </div>
+
+          {pagination && (
+            <Pagination
+            pagination={pagination}
+              onChange={onPageChange}
+            />
+          )}
+        </>
+      )}
     </section>
   );
 }
+
+export default memo(MediaResultsSectionComponent);

@@ -1,6 +1,14 @@
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 if (!API_URL) throw new Error("NEXT_PUBLIC_API_URL is not set");
+
+async function safeJson(res: Response) {
+  const text = await res.text();
+  const json = text ? JSON.parse(text) : null;
+  if (!res.ok) {
+    throw new Error(json?.message || `Request failed: ${res.status}`);
+  }
+  return json;
+}
 
 export async function searchAll(
   query: string,
@@ -15,9 +23,11 @@ export async function searchAll(
     fetch(`${API_URL}/actors?search=${q}&page=${pages.actors}`, { signal }),
   ]);
 
-  const moviesData = await m.json();
-  const seriesData = await s.json();
-  const actorsData = await a.json();
+  const [moviesData, seriesData, actorsData] = await Promise.all([
+    safeJson(m),
+    safeJson(s),
+    safeJson(a),
+  ]);
 
   return { moviesData, seriesData, actorsData };
 }

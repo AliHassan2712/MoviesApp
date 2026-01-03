@@ -1,69 +1,67 @@
-//Skeleton
-import GridSkeleton from '@/components/skeletons/GridSkeleton'
+"use client";
 
-//components
-import { MediaCard } from '../cards/MediaCard'
+import { memo, useMemo } from "react";
+
+import GridSkeleton from "@/components/skeletons/GridSkeleton";
+import { MediaCard } from "@/components/cards/MediaCard";
 
 type MediaItem = {
-  _id: string
-  name: string
-  poster?: string
-  releaseYear?: number
-}
+  _id: string;
+  name: string;
+  poster?: string;
+  releaseYear?: number;
+};
+
+type FavoriteItem = {
+  id: string;
+  type: "movies" | "series";
+};
 
 type MediaGridProps = {
-  items: MediaItem[]
-  loading: boolean
-  favorites: { id: string }[]
-  mediaType: 'movies' | 'series'
-  getHref: (id: string) => string
-  onToggleFavorite: (item: { id: string; type: 'movies' | 'series' }) => void
-}
+  items: MediaItem[];
+  loading: boolean;
+  favorites: FavoriteItem[];
+  getHref: (id: string) => string;
+  onToggleFavorite: (id: string) => void;
+  mediaType: "movies" | "series";
+};
 
-export default function MediaGrid({
+function MediaGridComponent({
   items,
   loading,
   favorites,
-  mediaType,
   getHref,
   onToggleFavorite,
+  mediaType,
 }: MediaGridProps) {
-  if (loading) return <GridSkeleton count={6} />
+  const favoriteSet = useMemo(() => {
+    return new Set(favorites.map((f) => `${f.type}:${f.id}`));
+  }, [favorites]);
 
-  if (items.length === 0) {
-    return (
-      <p className="text-center text-muted">
-        No results found.
-      </p>
-    )
+  if (loading) return <GridSkeleton count={6} />;
+
+  if (!items.length) {
+    return <p className="text-center text-muted w-full">No items found.</p>;
   }
 
   return (
-    <div className="flex-1 px-5">
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {items.map((item) => {
-          const isFavorite = favorites.some(
-            (f) => f.id === item._id
-          )
-
-          return (
-            <MediaCard
-              key={item._id}
-              title={item.name}
-              poster={item.poster}
-              releaseYear={item.releaseYear}
-              href={getHref(item._id)}
-              isFavorite={isFavorite}
-              onToggleFavorite={() =>
-                onToggleFavorite({
-                  id: item._id,
-                  type: mediaType,
-                })
-              }
-            />
-          )
-        })}
+    <div className="flex-1">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        {items.map((item) => (
+          <MediaCard
+            key={item._id}
+            id={item._id}
+            title={item.name}
+            poster={item.poster}
+            releaseYear={item.releaseYear}
+            href={getHref(item._id)}
+            isFavorite={favoriteSet.has(`${mediaType}:${item._id}`)} // ✅ الحل
+            onToggleFavorite={onToggleFavorite}
+          />
+        ))}
       </div>
     </div>
-  )
+  );
 }
+
+export default memo(MediaGridComponent);

@@ -1,39 +1,51 @@
 "use client";
 
-// types 
-import { Series } from "@/types/series";
+import { memo, useCallback, useMemo } from "react";
 
-// contexts
-import { FavoriteItem } from "@/contexts/FavoriteContext";
-
-// components
 import MediaGrid from "@/components/media/MediaGrid";
+import { Series } from "@/types/series";
 
 type SimilarSeriesGridProps = {
   series: Series[];
-  favoriteList: FavoriteItem[];
-  toggleFavorite: (item: FavoriteItem) => void;
+  favoriteList: any[];
+  toggleFavorite: (id: string) => void;
 };
 
-export default function SimilarSeriesGrid({ series, favoriteList, toggleFavorite }: SimilarSeriesGridProps) {
+function SimilarSeriesGridComponent({
+  series,
+  favoriteList,
+  toggleFavorite,
+}: SimilarSeriesGridProps) {
+  const items = useMemo(
+    () =>
+      series.map((s) => ({
+        _id: s._id,
+        name: s.name,
+        poster: s.poster,
+        releaseYear: s.releaseYear ? Number(s.releaseYear) : undefined,
+      })),
+    [series]
+  );
+
+  const getHref = useCallback((id: string) => `/series/${id}`, []);
+
   return (
     <>
       <h1 className="text-3xl font-bold text-red-500 p-5">Similar Series</h1>
+
       <div className="flex-1 my-10">
         <MediaGrid
-          items={series.map((s) => ({
-            _id: s._id,
-            name: s.name,
-            poster: s.poster,
-            releaseYear: s.releaseYear ? Number(s.releaseYear) : undefined,
-          }))}
-          loading={false} 
-          favorites={favoriteList}
+          items={items}
           mediaType="series"
-          getHref={(id) => `/series/${id}`}
+          loading={false}
+          favorites={favoriteList}
+          getHref={getHref}
           onToggleFavorite={toggleFavorite}
         />
       </div>
     </>
   );
 }
+
+const SimilarSeriesGrid = memo(SimilarSeriesGridComponent);
+export default SimilarSeriesGrid;

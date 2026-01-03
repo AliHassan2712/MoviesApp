@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { Container } from "@/components/containers/Container";
@@ -25,61 +25,41 @@ export default function SearchPageComponent() {
     setActorsPage(1);
   }, [query]);
 
-  const {
-    movies,
-    series,
-    actors,
-    pagination,
-    loading,
-  } = useSearch(query, {
-    movies: moviesPage,
-    series: seriesPage,
-    actors: actorsPage,
-  });
+  const pages = useMemo(
+    () => ({ movies: moviesPage, series: seriesPage, actors: actorsPage }),
+    [moviesPage, seriesPage, actorsPage]
+  );
+
+  const handleMoviesPage = useCallback((p: number) => setMoviesPage(p), []);
+  const handleSeriesPage = useCallback((p: number) => setSeriesPage(p), []);
+  const handleActorsPage = useCallback((p: number) => setActorsPage(p), []);
+
+  const { movies, series, actors, pagination, loading } = useSearch(query, pages);
 
   return (
     <Container className="pt-20 space-y-14">
-      <h1 className="text-3xl font-bold">
-        Search results for "{query}"
-      </h1>
+      <h1 className="text-3xl font-bold">Search results for "{query}"</h1>
 
       {loading ? (
         <p className="text-muted">Searching...</p>
       ) : (
         <>
           {/* Movies */}
-          <MediaResultsSection
-            title="Movies"
-            type="movies"
-            data={movies}
-          />
+          <MediaResultsSection title="Movies" type="movies" data={movies} />
           {pagination.movies && movies.length > 0 && (
-            <Pagination
-              pagination={pagination.movies}
-              onChange={setMoviesPage}
-            />
+            <Pagination pagination={pagination.movies} onChange={handleMoviesPage} />
           )}
 
           {/* Series */}
-          <MediaResultsSection
-            title="Series"
-            type="series"
-            data={series}
-          />
+          <MediaResultsSection title="Series" type="series" data={series} />
           {pagination.series && series.length > 0 && (
-            <Pagination
-              pagination={pagination.series}
-              onChange={setSeriesPage}
-            />
+            <Pagination pagination={pagination.series} onChange={handleSeriesPage} />
           )}
 
           {/* Actors */}
           <ActorsResults data={actors} />
           {pagination.actors && actors.length > 0 && (
-            <Pagination
-              pagination={pagination.actors}
-              onChange={setActorsPage}
-            />
+            <Pagination pagination={pagination.actors} onChange={handleActorsPage} />
           )}
         </>
       )}

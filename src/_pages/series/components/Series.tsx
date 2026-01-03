@@ -1,50 +1,45 @@
-'use client'
+"use client";
 
-//React
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from "react";
 
-// hooks
-import { useGenres } from '@/_pages/genres/hooks/useGenres'
+import { useSeries } from "../hooks/useSeries";
+import { useGenres } from "@/_pages/genres/hooks/useGenres";
+import { useFavorite } from "@/contexts/FavoriteContext";
 
-// context
-import { useFavorite } from '@/contexts/FavoriteContext'
+import { Container } from "@/components/containers/Container";
+import GenresTabs from "@/components/media/GenresTabs";
+import GenresSidebar from "@/components/media/GenresSidebar";
+import MobileGenresModal from "@/components/media/MobileGenresModal";
+import MediaGrid from "@/components/media/MediaGrid";
+import MediaPagination from "@/components/media/MediaPagination";
 
-// components
-import { Container } from '@/components/containers/Container'
-import GenresTabs from '@/components/media/GenresTabs'
-import GenresSidebar from '@/components/media/GenresSidebar'
-import MobileGenresModal from '@/components/media/MobileGenresModal'
-import MediaGrid from '@/components/media/MediaGrid'
-import MediaPagination from '@/components/media/MediaPagination'
-
-// constants
-import { PATHS } from '@/constant/PATHS'
-import { useSeries } from '../hooks/useSeries'
+import { PATHS } from "@/constant/PATHS";
 
 export default function SeriesPage() {
-  /* ===== GENRES ===== */
-  const { allGenres, activeTab, setActiveTab } = useGenres()
+  const { allGenres, activeTab, setActiveTab } = useGenres();
 
-  const query =
-    activeTab !== '0' ? `genres=${activeTab}` : undefined
+  const query = useMemo(
+    () => (activeTab !== "0" ? `genresRefs=${activeTab}` : undefined),
+    [activeTab]
+  );
 
-  /* ===== Series ===== */
-  const {
-    series,
-    loading,
-    pagination,
-    setPage,
-  } = useSeries(query)
+  const { series, loading, pagination, setPage } = useSeries(query);
+  const { favoriteList, toggleFavorite } = useFavorite();
 
-  /* ===== FAVORITES ===== */
-  const { favoriteList, toggleFavorite } = useFavorite()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  /* ===== UI STATE ===== */
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const getSeriesHref = useCallback(
+    (id: string) => PATHS.SERIES_DETAILS(id),
+    []
+  );
+
+  const handleToggleFavorite = useCallback(
+    (id: string) => toggleFavorite({ id, type: "series" }),
+    [toggleFavorite]
+  );
 
   return (
     <>
-      {/* ===== TOP GENRES TABS ===== */}
       <GenresTabs
         genres={allGenres}
         activeId={activeTab}
@@ -54,7 +49,6 @@ export default function SeriesPage() {
 
       <Container>
         <div className="flex flex-col lg:flex-row gap-6 py-10 relative">
-          {/* ===== DESKTOP SIDEBAR ===== */}
           <GenresSidebar
             genres={allGenres}
             activeId={activeTab}
@@ -62,7 +56,6 @@ export default function SeriesPage() {
             loading={loading}
           />
 
-          {/* ===== MOBILE GENRES MODAL ===== */}
           <MobileGenresModal
             open={sidebarOpen}
             onClose={() => setSidebarOpen(false)}
@@ -72,17 +65,6 @@ export default function SeriesPage() {
             loading={loading}
           />
 
-          {/* ===== MOBILE OPEN BUTTON ===== */}
-          {!loading && (
-            <button
-              className="lg:hidden fixed bottom-5 right-6 btn-primary px-4 py-3 rounded-full shadow-lg z-50"
-              onClick={() => setSidebarOpen(true)}
-            >
-              Genres
-            </button>
-          )}
-
-          {/* ===== Series GRID ===== */}
           <MediaGrid
             items={series.map((s) => ({
               ...s,
@@ -90,18 +72,16 @@ export default function SeriesPage() {
             }))}
             loading={loading}
             favorites={favoriteList}
-            mediaType="series"
-            getHref={(id) => PATHS.SERIES_DETAILS(id)}
-            onToggleFavorite={toggleFavorite}
+            getHref={getSeriesHref}
+            onToggleFavorite={handleToggleFavorite}
+            mediaType="series" 
           />
         </div>
 
-        {/* ===== PAGINATION ===== */}
-        <MediaPagination
-          pagination={pagination}
-          onChange={setPage}
-        />
+        {pagination && (
+          <MediaPagination pagination={pagination} onChange={setPage} />
+        )}
       </Container>
     </>
-  )
+  );
 }

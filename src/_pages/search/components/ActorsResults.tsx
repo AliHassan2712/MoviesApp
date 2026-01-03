@@ -1,35 +1,52 @@
-//React & Next
-import Link from "next/link";
-import Image from "next/image";
+"use client";
 
-//paths constants
+import { memo, useCallback, useMemo } from "react";
+import Link from "next/link";
+import Pagination from "@/components/ui/Pagination";
+import type { BackendPagination } from "@/types/pagination";
+import type { MediaItem } from "@/types/media";
 import { PATHS } from "@/constant/PATHS";
 
-export default function ActorsResults({ data }: { data: any[] }) {
-  if (!data.length) return null;
+type Props = {
+  items: MediaItem[];
+  loading: boolean;
+  page: number;
+  pagination?: BackendPagination;
+  onPageChange: (page: number) => void;
+};
+
+function ActorsResultsComponent({ items, loading,  pagination, onPageChange }: Props) {
+  const countLabel = useMemo(() => (items.length > 0 ? ` (${items.length})` : ""), [items.length]);
+  const actorHref = useCallback((id: string) => PATHS.ACTOR_DETAILS(id), []);
+
+  if (loading) return <div className="text-muted">Loading actors...</div>;
 
   return (
-    <section>
-      <h2 className="text-2xl font-bold mb-4">Actors</h2>
+    <section className="space-y-5">
+      <h2 className="text-2xl font-bold">
+        Actors
+        {countLabel}
+      </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
-        {data.map((actor) => (
-          <Link
-            key={actor._id}
-            href={PATHS.ACTOR_DETAILS(actor._id)}
-            className="text-center"
-          >
-            <Image
-              src={actor.profilePath || "/assets/images/img_hero.jpg"}
-              alt={actor.name}
-              width={200}
-              height={200}
-              className="rounded-full h-32 w-32 object-cover mx-auto"
-            />
-            <p className="mt-2 font-semibold">{actor.name}</p>
-          </Link>
-        ))}
-      </div>
+      {items.length === 0 ? (
+        <p className="text-muted">Not found.</p>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {items.map((a) => (
+              <Link key={a._id} href={actorHref(a._id)} className="bg-card p-4 rounded-2xl hover:bg-soft">
+                {a.name}
+              </Link>
+            ))}
+          </div>
+
+          {pagination && (
+            <Pagination pagination={pagination} onChange={onPageChange} />
+          )}
+        </>
+      )}
     </section>
   );
 }
+
+export default memo(ActorsResultsComponent);

@@ -1,9 +1,6 @@
 export type FavoriteType = "movies" | "series";
 
-export interface FavoriteItem {
-  _id: string;
-  name: string;
-  poster: string;
-  releaseYear?:number,
+export type FavoriteItem = {
+  id: string;
   type: FavoriteType;
-}
+};

@@ -1,10 +1,6 @@
-//React & Next
+import { memo } from 'react'
 import Image from 'next/image'
-
-
-//types
 import { Movie } from '@/types/movie'
-
 
 type MovieHeroProps = {
   movie: Movie
@@ -12,7 +8,7 @@ type MovieHeroProps = {
   onPlay: () => void
 }
 
-export default function MovieHero({ movie, showPlayer, onPlay }: MovieHeroProps) {
+function MovieHeroComponent({ movie, showPlayer, onPlay }: MovieHeroProps) {
   return (
     <div className="relative h-[420px] md:h-[560px]">
       <Image
@@ -49,3 +45,5 @@ export default function MovieHero({ movie, showPlayer, onPlay }: MovieHeroProps)
     </div>
   )
 }
+
+export default memo(MovieHeroComponent)

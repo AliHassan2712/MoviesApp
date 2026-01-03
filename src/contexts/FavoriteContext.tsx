@@ -1,109 +1,112 @@
 "use client";
-//React
+
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
-  ReactNode,
 } from "react";
+import type { FavoriteItem, FavoriteType } from "@/types/favorite";
 
-//types
-export type FavoriteType = "movies" | "series";
-
-export type FavoriteItem = {
+type ToggleFavoriteArgs = {
   id: string;
   type: FavoriteType;
 };
 
 type FavoriteContextType = {
   favoriteList: FavoriteItem[];
-  toggleFavorite: (item: FavoriteItem) => void;
-  isFavorite: (item: FavoriteItem) => boolean;
+  toggleFavorite: (args: ToggleFavoriteArgs) => void;
+  isFavorite: (args: ToggleFavoriteArgs) => boolean;
   clearFavorites: () => void;
 };
 
-//localStorage key
-const STORAGE_KEY = "favoriteList";
-
-//context
 const FavoriteContext = createContext<FavoriteContextType | undefined>(
   undefined
 );
 
-//provider
-export function FavoriteProvider({ children }: { children: ReactNode }) {
+const STORAGE_KEY = "favorites";
+
+export function FavoriteProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [favoriteList, setFavoriteList] = useState<FavoriteItem[]>([]);
 
-  // Load favorites from localStorage 
+  /** تحميل من localStorage */
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         setFavoriteList(JSON.parse(stored));
       }
-    } catch {
-      setFavoriteList([]);
+    } catch (err) {
+      console.error("Failed to load favorites", err);
     }
   }, []);
 
-  // Save favorites to localStorage 
+  /** حفظ في localStorage */
   useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(favoriteList)
-    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(favoriteList));
   }, [favoriteList]);
 
-    // Toggle favorite item 
-  const toggleFavorite = (item: FavoriteItem) => {
-    setFavoriteList(prev =>
-      prev.some(
-        f => f.id === item.id && f.type === item.type
-      )
-        ? prev.filter(
-          f =>
-            !(
-              f.id === item.id &&
-              f.type === item.type
-            )
-        )
-        : [...prev, item]
-    );
-  };
+  /** فحص هل العنصر Favorite */
+  const isFavorite = useCallback(
+    ({ id, type }: ToggleFavoriteArgs) => {
+      return favoriteList.some(
+        (fav) => fav.id === id && fav.type === type
+      );
+    },
+    [favoriteList]
+  );
 
-  /* Check if item is favorite */
-  const isFavorite = (item: FavoriteItem) =>
-    favoriteList.some(
-      f => f.id === item.id && f.type === item.type
-    );
+  /** إضافة / حذف Favorite */
+  const toggleFavorite = useCallback(
+    ({ id, type }: ToggleFavoriteArgs) => {
+      setFavoriteList((prev) => {
+        const exists = prev.some(
+          (fav) => fav.id === id && fav.type === type
+        );
 
-  /* Clear all favorites */
-  const clearFavorites = () => {
+        if (exists) {
+          return prev.filter(
+            (fav) => !(fav.id === id && fav.type === type)
+          );
+        }
+
+        return [...prev, { id, type }];
+      });
+    },
+    []
+  );
+
+  const clearFavorites = useCallback(() => {
     setFavoriteList([]);
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      favoriteList,
+      toggleFavorite,
+      isFavorite,
+      clearFavorites,
+    }),
+    [favoriteList, toggleFavorite, isFavorite, clearFavorites]
+  );
 
   return (
-    <FavoriteContext.Provider
-      value={{
-        favoriteList,
-        toggleFavorite,
-        isFavorite,
-        clearFavorites,
-      }}
-    >
+    <FavoriteContext.Provider value={value}>
       {children}
     </FavoriteContext.Provider>
   );
 }
 
-// Custom hook to use FavoriteContext
 export function useFavorite() {
-  const context = useContext(FavoriteContext);
-  if (!context) {
-    throw new Error(
-      "useFavorite must be used inside FavoriteProvider"
-    );
+  const ctx = useContext(FavoriteContext);
+  if (!ctx) {
+    throw new Error("useFavorite must be used inside FavoriteProvider");
   }
-  return context;
+  return ctx;
 }
