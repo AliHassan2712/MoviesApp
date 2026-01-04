@@ -1,42 +1,26 @@
 "use client";
 
-//React
 import { memo, useCallback, useMemo } from "react";
-
-//components
 import { Container } from "@/components/containers/Container";
 import GridSkeleton from "@/components/skeletons/GridSkeleton";
 import Pagination from "@/components/ui/Pagination";
 import { MediaCard } from "@/components/cards/MediaCard";
 import { FavoritesTabs } from "./components/FavoritesTabs";
-
-//contexts
 import { useFavorite } from "@/contexts/FavoriteContext";
-
-//hooks
 import { useFavorites } from "./hooks/useFavorites";
-
-//types
-import { FavoriteItem, FavoriteType } from "@/types/favorite";
-
-//icons
 import { Heart } from "lucide-react";
-
-type FavoriteGridItemProps = {
-  item: FavoriteItem;
-  href: string;
-  isFav: boolean;
-  onToggle: (id: string) => void;
-};
 
 const FavoriteGridItem = memo(function FavoriteGridItem({
   item,
   href,
   isFav,
   onToggle,
-}: FavoriteGridItemProps) {
-  const handleToggle = useCallback(() => onToggle(item._id), [onToggle, item._id]);
-
+}: {
+  item: any;
+  href: string;
+  isFav: boolean;
+  onToggle: (id: string) => void;
+}) {
   return (
     <MediaCard
       id={item._id}
@@ -46,40 +30,33 @@ const FavoriteGridItem = memo(function FavoriteGridItem({
       aspect="portrait"
       href={href}
       isFavorite={isFav}
-      onToggleFavorite={handleToggle}
+      onToggleFavorite={onToggle}
     />
   );
 });
 
 export default function FavoritesPage() {
   const { toggleFavorite, isFavorite } = useFavorite();
-
   const { loading, activeTab, setActiveTab, items, setPage, pagination } =
     useFavorites();
-
-  const handleTabChange = useCallback(
-    (tab: FavoriteType) => {
-      setActiveTab(tab);
-    },
-    [setActiveTab]
-  );
 
   const handleToggle = useCallback(
     (id: string) => toggleFavorite({ id, type: activeTab }),
     [toggleFavorite, activeTab]
   );
 
-  const itemsWithFav = useMemo(() => {
-    return items.map((item) => ({
-      ...item,
-      fav: isFavorite({ id: item._id, type: activeTab }),
-    }));
-  }, [items, isFavorite, activeTab]);
+  const itemsWithFav = useMemo(
+    () =>
+      items.map((item: any) => ({
+        ...item,
+        fav: isFavorite({ id: item._id, type: activeTab }),
+      })),
+    [items, isFavorite, activeTab]
+  );
 
   return (
     <Container>
       <div className="px-4 py-10 space-y-8">
-        {/* Header */}
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <Heart className="text-red-400" size={32} />
@@ -88,19 +65,22 @@ export default function FavoritesPage() {
           <p className="text-muted">Movies & Series you marked as favorite</p>
         </div>
 
-        {/* Tabs */}
-        <FavoritesTabs activeTab={activeTab} onChange={handleTabChange} />
+        <FavoritesTabs activeTab={activeTab} onChange={setActiveTab} />
 
-        {/* Loading */}
         {loading && <GridSkeleton count={6} />}
 
-        {/* Content */}
+        {!loading && itemsWithFav.length === 0 && (
+          <p className="text-center text-muted py-20">
+            No favorites yet 💔
+          </p>
+        )}
+
         {!loading && itemsWithFav.length > 0 && (
           <>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {itemsWithFav.map((item) => (
+              {itemsWithFav.map((item: any) => (
                 <FavoriteGridItem
-                  key={`${item.type}-${item._id}`}
+                  key={item._id}
                   item={item}
                   href={`/${activeTab}/${item._id}`}
                   isFav={item.fav}

@@ -11,7 +11,6 @@ type Props = {
   title: string;
   items: MediaItem[];
   loading: boolean;
-  page: number;
   pagination?: BackendPagination;
   onPageChange: (page: number) => void;
   type: "movies" | "series";
@@ -21,15 +20,20 @@ function MediaResultsSectionComponent({
   title,
   items,
   loading,
-  page,
   pagination,
   onPageChange,
   type,
 }: Props) {
-  const countLabel = useMemo(() => (items.length > 0 ? ` (${items.length})` : ""), [items.length]);
+  const countLabel = useMemo(
+    () => (items.length > 0 ? ` (${items.length})` : ""),
+    [items.length]
+  );
 
   const getHref = useCallback(
-    (id: string) => (type === "movies" ? PATHS.MOVIE_DETAILS(id) : PATHS.SERIES_DETAILS(id)),
+    (id: string) =>
+      type === "movies"
+        ? PATHS.MOVIE_DETAILS(id)
+        : PATHS.SERIES_DETAILS(id),
     [type]
   );
 
@@ -59,8 +63,8 @@ function MediaResultsSectionComponent({
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             {items.map((item) => (
               <MediaCard
-              id={item._id}
                 key={item._id}
+                id={item._id}
                 title={item.name}
                 poster={item.poster}
                 releaseYear={item.releaseYear}
@@ -71,7 +75,7 @@ function MediaResultsSectionComponent({
 
           {pagination && (
             <Pagination
-            pagination={pagination}
+              pagination={pagination}
               onChange={onPageChange}
             />
           )}

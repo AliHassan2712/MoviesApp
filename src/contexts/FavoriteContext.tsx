@@ -8,7 +8,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import type { FavoriteItem, FavoriteType } from "@/types/favorite";
+import { FavoriteItem, FavoriteType } from "@/types/favorite";
 
 type ToggleFavoriteArgs = {
   id: string;
@@ -22,64 +22,44 @@ type FavoriteContextType = {
   clearFavorites: () => void;
 };
 
-const FavoriteContext = createContext<FavoriteContextType | undefined>(
-  undefined
-);
-
+const FavoriteContext = createContext<FavoriteContextType | undefined>(undefined);
 const STORAGE_KEY = "favorites";
 
-export function FavoriteProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function FavoriteProvider({ children }: { children: React.ReactNode }) {
   const [favoriteList, setFavoriteList] = useState<FavoriteItem[]>([]);
 
-  /** تحميل من localStorage */
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        setFavoriteList(JSON.parse(stored));
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        setFavoriteList(JSON.parse(saved));
+      } catch {
+        setFavoriteList([]);
       }
-    } catch (err) {
-      console.error("Failed to load favorites", err);
     }
   }, []);
 
-  /** حفظ في localStorage */
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(favoriteList));
   }, [favoriteList]);
 
-  /** فحص هل العنصر Favorite */
-  const isFavorite = useCallback(
-    ({ id, type }: ToggleFavoriteArgs) => {
-      return favoriteList.some(
-        (fav) => fav.id === id && fav.type === type
-      );
-    },
-    [favoriteList]
-  );
-
-  /** إضافة / حذف Favorite */
   const toggleFavorite = useCallback(
     ({ id, type }: ToggleFavoriteArgs) => {
       setFavoriteList((prev) => {
-        const exists = prev.some(
-          (fav) => fav.id === id && fav.type === type
-        );
-
+        const exists = prev.some((f) => f.id === id && f.type === type);
         if (exists) {
-          return prev.filter(
-            (fav) => !(fav.id === id && fav.type === type)
-          );
+          return prev.filter((f) => !(f.id === id && f.type === type));
         }
-
-        return [...prev, { id, type }];
+        return [...prev.filter(f => !(f.id === id && f.type === type)), { id, type }];
       });
     },
     []
+  );
+
+  const isFavorite = useCallback(
+    ({ id, type }: ToggleFavoriteArgs) =>
+      favoriteList.some((f) => f.id === id && f.type === type),
+    [favoriteList]
   );
 
   const clearFavorites = useCallback(() => {
@@ -106,7 +86,7 @@ export function FavoriteProvider({
 export function useFavorite() {
   const ctx = useContext(FavoriteContext);
   if (!ctx) {
-    throw new Error("useFavorite must be used inside FavoriteProvider");
+    throw new Error("useFavorite must be used within FavoriteProvider");
   }
   return ctx;
 }

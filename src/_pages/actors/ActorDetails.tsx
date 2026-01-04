@@ -99,7 +99,9 @@ export default function ActorDetailsComponent({
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {series.map((s) => (
+
               <MediaCard
+              id={s._id}
                 key={s._id}
                 title={s.name}
                 poster={s.poster}

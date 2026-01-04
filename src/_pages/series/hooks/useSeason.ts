@@ -9,8 +9,9 @@ export const useSeason = (seriesId?: string, seasonId?: string) => {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  const url = useMemo(() => {
+  const url = useMemo((): string | null => {
     if (!API_URL || !seriesId) return null;
+
     return seasonId
       ? `${API_URL}/series/${seriesId}/seasons/${seasonId}`
       : `${API_URL}/series/${seriesId}/seasons?sort=seasonNumber`;
@@ -25,20 +26,28 @@ export const useSeason = (seriesId?: string, seasonId?: string) => {
 
     const controller = new AbortController();
 
-    async function fetchData() {
+    async function fetchData(fetchUrl: string) {
       setIsLoading(true);
       try {
-        const res = await fetch(url, { signal: controller.signal });
+        const res = await fetch(fetchUrl, {
+          signal: controller.signal,
+        });
+
         const data = await res.json();
         setSeason(data.data ?? null);
       } catch (err: any) {
-        if (err?.name !== "AbortError") console.error("Fetch error:", err);
+        if (err?.name !== "AbortError") {
+          console.error("Fetch error:", err);
+        }
       } finally {
-        if (!controller.signal.aborted) setIsLoading(false);
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     }
 
-    fetchData();
+    fetchData(url);
+
     return () => controller.abort();
   }, [url]);
 

@@ -1,14 +1,13 @@
 "use client";
 
 import { memo, useCallback, useMemo } from "react";
-
 import MediaGrid from "@/components/media/MediaGrid";
 import { Series } from "@/types/series";
 
 type SimilarSeriesGridProps = {
   series: Series[];
   favoriteList: any[];
-  toggleFavorite: (id: string) => void;
+  toggleFavorite: (id: string) => void; 
 };
 
 function SimilarSeriesGridComponent({
@@ -22,7 +21,9 @@ function SimilarSeriesGridComponent({
         _id: s._id,
         name: s.name,
         poster: s.poster,
-        releaseYear: s.releaseYear ? Number(s.releaseYear) : undefined,
+        releaseYear: s.releaseYear
+          ? Number(s.releaseYear)
+          : undefined,
       })),
     [series]
   );
@@ -31,7 +32,9 @@ function SimilarSeriesGridComponent({
 
   return (
     <>
-      <h1 className="text-3xl font-bold text-red-500 p-5">Similar Series</h1>
+      <h1 className="text-3xl font-bold text-red-500 p-5">
+        Similar Series
+      </h1>
 
       <div className="flex-1 my-10">
         <MediaGrid
