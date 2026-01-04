@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Season } from "@/types/season"
+import { useEffect, useMemo, useState } from "react";
+import { Season } from "@/types/season";
 
 export const useSeason = (seriesId?: string, seasonId?: string) => {
   const [season, setSeason] = useState<Season[] | null>(null);
@@ -9,27 +9,47 @@ export const useSeason = (seriesId?: string, seasonId?: string) => {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+  const url = useMemo((): string | null => {
+    if (!API_URL || !seriesId) return null;
+
+    return seasonId
+      ? `${API_URL}/series/${seriesId}/seasons/${seasonId}`
+      : `${API_URL}/series/${seriesId}/seasons?sort=seasonNumber`;
+  }, [API_URL, seriesId, seasonId]);
+
   useEffect(() => {
-    async function fetchData() {
-      if (!seriesId) return;
+    if (!url) {
+      setSeason(null);
+      setIsLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+
+    async function fetchData(fetchUrl: string) {
       setIsLoading(true);
       try {
-        const url = seasonId ? `${API_URL}/series/${seriesId}/seasons/${seasonId}` : `${API_URL}/series/${seriesId}/seasons?sort=seasonNumber`;
-        const seasonRes = await fetch(url);
-        const seasonData = await seasonRes.json();
-        setSeason(seasonData.data);
-      } catch (err) {
-        console.error("Fetch error:", err);
+        const res = await fetch(fetchUrl, {
+          signal: controller.signal,
+        });
+
+        const data = await res.json();
+        setSeason(data.data ?? null);
+      } catch (err: any) {
+        if (err?.name !== "AbortError") {
+          console.error("Fetch error:", err);
+        }
       } finally {
-        setIsLoading(false);
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     }
 
-    fetchData();
-  }, [API_URL, seasonId, seriesId]);
+    fetchData(url);
 
-  return {
-    season,
-    isLoading,
-  };
+    return () => controller.abort();
+  }, [url]);
+
+  return { season, isLoading };
 };

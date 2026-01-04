@@ -57,30 +57,41 @@ export default function GenreDetailsPage({ id }: GenreDetailsPageProps) {
         items={movies}
         type="movies"
         favorites={favoriteList.map((f) => f.id)}
-        onToggleFavorite={(item, type) => toggleFavorite({ id: item._id, type })}
+        onToggleFavorite={(item, type) =>
+          toggleFavorite({ id: item._id, type })
+        }
       />
 
-      <MediaPagination
-        pagination={moviesPagination}
-        onChange={setMoviesPage}
-      />
+      {moviesPagination && (
+        <MediaPagination
+          pagination={moviesPagination}
+          onChange={setMoviesPage}
+        />
+      )}
 
       {/* ===== SERIES ===== */}
       <Section
         title="Series"
         items={series.map((s) => ({
           ...s,
-          releaseYear: typeof s.releaseYear === 'string' ? parseInt(s.releaseYear) : s.releaseYear
+          releaseYear:
+            typeof s.releaseYear === 'string'
+              ? parseInt(s.releaseYear)
+              : s.releaseYear,
         }))}
         type="series"
         favorites={favoriteList.map((f) => f.id)}
-        onToggleFavorite={(item, type) => toggleFavorite({ id: item._id, type })}
+        onToggleFavorite={(item, type) =>
+          toggleFavorite({ id: item._id, type })
+        }
       />
 
-      <MediaPagination
-        pagination={seriesPagination}
-        onChange={setSeriesPage}
-      />
+      {seriesPagination && (
+        <MediaPagination
+          pagination={seriesPagination}
+          onChange={setSeriesPage}
+        />
+      )}
     </Container>
   )
 }

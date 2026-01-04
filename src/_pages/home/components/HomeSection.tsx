@@ -1,12 +1,11 @@
 "use client";
-//Next
+
+import { memo, useMemo } from "react";
 import Link from "next/link";
 
-//components
 import GridSkeleton from "@/components/skeletons/GridSkeleton";
 import HomeMediaCard from "./HomeMediaCard";
 
-//types
 import { Movie } from "@/types/movie";
 
 type HomeSectionProps = {
@@ -16,33 +15,25 @@ type HomeSectionProps = {
   viewAllHref: string;
 };
 
-export default function HomeSection({
-  title,
-  items,
-  loading,
-  viewAllHref,
-}: HomeSectionProps) {
+function HomeSectionComponent({ title, items, loading, viewAllHref }: HomeSectionProps) {
+  const top4 = useMemo(() => items.slice(0, 4), [items]);
+
   return (
     <section className="px-6 mb-20">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">{title}</h2>
-        <Link
-          href={viewAllHref}
-          className="text-primary text-sm hover:underline"
-        >
+        <Link href={viewAllHref} className="text-primary text-sm hover:underline">
           View all →
         </Link>
       </div>
 
-      {/* Content */}
       {loading ? (
         <GridSkeleton count={6} />
-      ) : items.length === 0 ? (
+      ) : top4.length === 0 ? (
         <p className="text-muted">No items found.</p>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {items.slice(0, 4).map((item) => (
+          {top4.map((item) => (
             <HomeMediaCard key={item._id} item={item} />
           ))}
         </div>
@@ -50,3 +41,5 @@ export default function HomeSection({
     </section>
   );
 }
+
+export default memo(HomeSectionComponent);

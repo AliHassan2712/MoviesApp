@@ -36,10 +36,12 @@ export default function WatchlistPage() {
           {items.map((item) => (
             <MediaCard
               key={`${item.type}-${item.id}`}
+              id={item.id}
               title={item.name}
               poster={item.poster}
               href={`/${item.type}/${item.id}`}
             />
+
           ))}
         </div>
       )}

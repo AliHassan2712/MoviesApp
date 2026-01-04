@@ -1,109 +1,92 @@
 "use client";
-//React
+
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
-  ReactNode,
 } from "react";
+import { FavoriteItem, FavoriteType } from "@/types/favorite";
 
-//types
-export type FavoriteType = "movies" | "series";
-
-export type FavoriteItem = {
+type ToggleFavoriteArgs = {
   id: string;
   type: FavoriteType;
 };
 
 type FavoriteContextType = {
   favoriteList: FavoriteItem[];
-  toggleFavorite: (item: FavoriteItem) => void;
-  isFavorite: (item: FavoriteItem) => boolean;
+  toggleFavorite: (args: ToggleFavoriteArgs) => void;
+  isFavorite: (args: ToggleFavoriteArgs) => boolean;
   clearFavorites: () => void;
 };
 
-//localStorage key
-const STORAGE_KEY = "favoriteList";
+const FavoriteContext = createContext<FavoriteContextType | undefined>(undefined);
+const STORAGE_KEY = "favorites";
 
-//context
-const FavoriteContext = createContext<FavoriteContextType | undefined>(
-  undefined
-);
-
-//provider
-export function FavoriteProvider({ children }: { children: ReactNode }) {
+export function FavoriteProvider({ children }: { children: React.ReactNode }) {
   const [favoriteList, setFavoriteList] = useState<FavoriteItem[]>([]);
 
-  // Load favorites from localStorage 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        setFavoriteList(JSON.parse(stored));
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        setFavoriteList(JSON.parse(saved));
+      } catch {
+        setFavoriteList([]);
       }
-    } catch {
-      setFavoriteList([]);
     }
   }, []);
 
-  // Save favorites to localStorage 
   useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify(favoriteList)
-    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(favoriteList));
   }, [favoriteList]);
 
-    // Toggle favorite item 
-  const toggleFavorite = (item: FavoriteItem) => {
-    setFavoriteList(prev =>
-      prev.some(
-        f => f.id === item.id && f.type === item.type
-      )
-        ? prev.filter(
-          f =>
-            !(
-              f.id === item.id &&
-              f.type === item.type
-            )
-        )
-        : [...prev, item]
-    );
-  };
+  const toggleFavorite = useCallback(
+    ({ id, type }: ToggleFavoriteArgs) => {
+      setFavoriteList((prev) => {
+        const exists = prev.some((f) => f.id === id && f.type === type);
+        if (exists) {
+          return prev.filter((f) => !(f.id === id && f.type === type));
+        }
+        return [...prev.filter(f => !(f.id === id && f.type === type)), { id, type }];
+      });
+    },
+    []
+  );
 
-  /* Check if item is favorite */
-  const isFavorite = (item: FavoriteItem) =>
-    favoriteList.some(
-      f => f.id === item.id && f.type === item.type
-    );
+  const isFavorite = useCallback(
+    ({ id, type }: ToggleFavoriteArgs) =>
+      favoriteList.some((f) => f.id === id && f.type === type),
+    [favoriteList]
+  );
 
-  /* Clear all favorites */
-  const clearFavorites = () => {
+  const clearFavorites = useCallback(() => {
     setFavoriteList([]);
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      favoriteList,
+      toggleFavorite,
+      isFavorite,
+      clearFavorites,
+    }),
+    [favoriteList, toggleFavorite, isFavorite, clearFavorites]
+  );
 
   return (
-    <FavoriteContext.Provider
-      value={{
-        favoriteList,
-        toggleFavorite,
-        isFavorite,
-        clearFavorites,
-      }}
-    >
+    <FavoriteContext.Provider value={value}>
       {children}
     </FavoriteContext.Provider>
   );
 }
 
-// Custom hook to use FavoriteContext
 export function useFavorite() {
-  const context = useContext(FavoriteContext);
-  if (!context) {
-    throw new Error(
-      "useFavorite must be used inside FavoriteProvider"
-    );
+  const ctx = useContext(FavoriteContext);
+  if (!ctx) {
+    throw new Error("useFavorite must be used within FavoriteProvider");
   }
-  return context;
+  return ctx;
 }

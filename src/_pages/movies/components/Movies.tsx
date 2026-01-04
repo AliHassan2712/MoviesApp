@@ -1,49 +1,42 @@
-'use client'
-//React
-import { useState } from 'react'
+"use client";
 
-// hooks
-import { useMovies } from '../hooks/useMovies'
-import { useGenres } from '@/_pages/genres/hooks/useGenres'
+import { useCallback, useMemo, useState } from "react";
 
-// context
-import { useFavorite } from '@/contexts/FavoriteContext'
+import { useMovies } from "../hooks/useMovies";
+import { useGenres } from "@/_pages/genres/hooks/useGenres";
+import { useFavorite } from "@/contexts/FavoriteContext";
 
-// components
-import { Container } from '@/components/containers/Container'
-import GenresTabs from '@/components/media/GenresTabs'
-import GenresSidebar from '@/components/media/GenresSidebar'
-import MobileGenresModal from '@/components/media/MobileGenresModal'
-import MediaGrid from '@/components/media/MediaGrid'
-import MediaPagination from '@/components/media/MediaPagination'
+import { Container } from "@/components/containers/Container";
+import GenresTabs from "@/components/media/GenresTabs";
+import GenresSidebar from "@/components/media/GenresSidebar";
+import MobileGenresModal from "@/components/media/MobileGenresModal";
+import MediaGrid from "@/components/media/MediaGrid";
+import MediaPagination from "@/components/media/MediaPagination";
 
-// constants
-import { PATHS } from '@/constant/PATHS'
+import { PATHS } from "@/constant/PATHS";
 
 export default function MoviesPage() {
-  /* ===== GENRES ===== */
-  const { allGenres, activeTab, setActiveTab } = useGenres()
+  const { allGenres, activeTab, setActiveTab } = useGenres();
 
-  const query =
-    activeTab !== '0' ? `genresRefs=${activeTab}` : undefined
+  const query = useMemo(
+    () => (activeTab !== "0" ? `genresRefs=${activeTab}` : undefined),
+    [activeTab]
+  );
 
-  /* ===== MOVIES ===== */
-  const {
-    movies,
-    loading,
-    pagination,
-    setPage,
-  } = useMovies(query)
+  const { movies, loading, pagination, setPage } = useMovies(query);
+  const { favoriteList, toggleFavorite } = useFavorite();
 
-  /* ===== FAVORITES ===== */
-  const { favoriteList, toggleFavorite } = useFavorite()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  /* ===== UI STATE ===== */
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const getMovieHref = useCallback((id: string) => PATHS.MOVIE_DETAILS(id), []);
+
+  const handleToggleFavorite = useCallback(
+    (id: string) => toggleFavorite({ id, type: "movies" }),
+    [toggleFavorite]
+  );
 
   return (
     <>
-      {/* ===== TOP GENRES TABS ===== */}
       <GenresTabs
         genres={allGenres}
         activeId={activeTab}
@@ -53,7 +46,6 @@ export default function MoviesPage() {
 
       <Container>
         <div className="flex flex-col lg:flex-row gap-6 py-10 relative">
-          {/* ===== DESKTOP SIDEBAR ===== */}
           <GenresSidebar
             genres={allGenres}
             activeId={activeTab}
@@ -61,7 +53,6 @@ export default function MoviesPage() {
             loading={loading}
           />
 
-          {/* ===== MOBILE GENRES MODAL ===== */}
           <MobileGenresModal
             open={sidebarOpen}
             onClose={() => setSidebarOpen(false)}
@@ -71,33 +62,20 @@ export default function MoviesPage() {
             loading={loading}
           />
 
-          {/* ===== MOBILE OPEN BUTTON ===== */}
-          {!loading && (
-            <button
-              className="lg:hidden fixed bottom-5 right-6 btn-primary px-4 py-3 rounded-full shadow-lg z-50"
-              onClick={() => setSidebarOpen(true)}
-            >
-              Genres
-            </button>
-          )}
-
-          {/* ===== MOVIES GRID ===== */}
           <MediaGrid
             items={movies}
             loading={loading}
             favorites={favoriteList}
-            mediaType="movies"
-            getHref={(id) => PATHS.MOVIE_DETAILS(id)}
-            onToggleFavorite={toggleFavorite}
+            getHref={getMovieHref}
+            onToggleFavorite={handleToggleFavorite}
+            mediaType="movies" 
           />
         </div>
 
-        {/* ===== PAGINATION ===== */}
-        <MediaPagination
-          pagination={pagination}
-          onChange={setPage}
-        />
+        {pagination && (
+          <MediaPagination pagination={pagination} onChange={setPage} />
+        )}
       </Container>
     </>
-  )
+  );
 }

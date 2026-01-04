@@ -1,24 +1,10 @@
-//types
-import { Series } from '@/types/series';
-import { BackendPagination } from '@/types/pagination';
-
-type SeriesResponse = {
-  data: Series[];
-  pagination: BackendPagination;
-};
-
-type ApiResponse<T> = {
-  status: string;
-  data: T;
-};
-
-//All Series with Search and Pagination
 export async function fetchSeries(params: {
   page: number;
   query?: string;
   limit?: number;
-}): Promise<SeriesResponse> {
-  const { page, query, limit = 12 } = params;
+  signal?: AbortSignal;
+}) {
+  const { page, query, limit = 12, signal } = params;
 
   const searchParams = new URLSearchParams({
     page: String(page),
@@ -28,23 +14,24 @@ export async function fetchSeries(params: {
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/series?${searchParams.toString()}`,
-    { cache: 'no-store' }
+    {
+      cache: "no-store",
+      signal,
+    }
   );
 
-  if (!res.ok) throw new Error('Failed to fetch series');
-
+  if (!res.ok) throw new Error("Failed to fetch series");
   return res.json();
 }
 
-//Single Series
-export async function getSeriesById(id: string): Promise<Series> {
+export async function getSeriesById(id: string, signal?: AbortSignal) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/series/${id}`, {
-    credentials: 'include',
-    cache: 'no-store',
+    cache: "no-store",
+    credentials: "include",
+    signal,
   });
 
-  if (!res.ok) throw new Error('Failed to fetch series by ID');
-
-  const json: ApiResponse<Series> = await res.json();
+  if (!res.ok) throw new Error("Failed to fetch series");
+  const json = await res.json();
   return json.data;
 }
