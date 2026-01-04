@@ -1,39 +1,41 @@
-'use client'
+"use client";
 
-// React
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { fetchGenres } from "@/services/genre.service";
 
-// types
-import { Genre } from '@/types/movie'
-
-// services
-import { fetchGenres } from '@/services/genre.service'
-
-export const useGenres = () => {
-  const [genres, setGenres] = useState<Genre[]>([])
-  const [activeTab, setActiveTab] = useState('0')
-  const [loading, setLoading] = useState(true)
+export function useGenres() {
+  const [genres, setGenres] = useState<{ _id: string; name_en: string }[]>([]);
+  const [activeTab, setActiveTab] = useState("0");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetchGenres({ page: 1, limit: 1000 })
-        setGenres(res.data)
-      } catch (e) {
-        console.error(e)
-      } finally {
-        setLoading(false)
-      }
-    }
+    let mounted = true;
 
-    load()
-  }, [])
+    (async () => {
+      setLoading(true);
+      try {
+        const res = await fetchGenres({ limit: 1000 });
+        if (mounted) setGenres(res.data ?? []);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const allGenres = useMemo(() => {
-    return [{ _id: '0', name_en: 'All' }, ...genres]
-  }, [genres])
+    return [{ _id: "0", name_en: "All" }, ...genres];
+  }, [genres]);
 
-  const getGenreById = (id: string) => genres.find((g) => g._id === id)
+  const getGenreById = useCallback(
+    (id: string) => genres.find((g) => g._id === id),
+    [genres]
+  );
 
   return {
     genres,
@@ -42,5 +44,5 @@ export const useGenres = () => {
     loading,
     setActiveTab,
     getGenreById,
-  }
+  };
 }

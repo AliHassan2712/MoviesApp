@@ -1,111 +1,119 @@
 "use client";
 
-//React & Next
+import React, { memo, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-//hooks
 import { useSeason } from "@/_pages/series/hooks/useSeason";
-import { useEpisodes } from "../../hooks/useEpisodes";
+import { useEpisodes } from "@/_pages/series/hooks/useEpisodes";
 
-//types
 import { Season } from "@/types/season";
 
-//components
 import HeroSingleSkeleton from "@/components/skeletons/HeroSingleSkeleton";
 import { Container } from "@/components/containers/Container";
-import SeasonDetailsSkeleton from "@/components/skeletons/SeasonDetailsSkeleton"
-import EpisodesCardSkeleton from "@/components/skeletons/EpisodesCardSkeleton"
+import SeasonDetailsSkeleton from "@/components/skeletons/SeasonDetailsSkeleton";
+import EpisodesCardSkeleton from "@/components/skeletons/EpisodesCardSkeleton";
 
-//paths constants
 import { PATHS } from "@/constant/PATHS";
 
-//FontAwesome
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 
 type SeasonDetailsProps = {
   id: string;
   seasonId: string;
 };
 
+type EpisodeCardProps = {
+  seriesId: string;
+  seasonId: string;
+  e: any;
+};
+
+const EpisodeCard = memo(function EpisodeCard({
+  seriesId,
+  seasonId,
+  e,
+}: EpisodeCardProps) {
+  return (
+    <li key={e._id}>
+      <div className="flex flex-col gap-4 p-4 bg-card rounded-xl shadow-xl">
+        <div className="text-lg font-bold">
+          Episode Number : {e.episodeNumber}
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <div>
+            <h3 className="font-semibold">{e.title}</h3>
+            <p className="text-sm text-muted line-clamp-2">{e.overview}</p>
+          </div>
+
+          <Link
+            href={PATHS.EPISODES(seriesId, seasonId, e._id)}
+            className="text-muted"
+          >
+            <FontAwesomeIcon icon={faPlay} className="text-red-500 mr-3" />
+            Watch Now
+          </Link>
+        </div>
+      </div>
+    </li>
+  );
+});
+
 export default function SeasonDetails({ id, seasonId }: SeasonDetailsProps) {
   const { season, isLoading } = useSeason(id, seasonId);
-  const {episodes,isloading}=useEpisodes(id,seasonId)
-  const seasonArray = Array.isArray(season) ? season : [season];
-  const currentSeason = seasonArray[0];
+  const { episodes, isloading } = useEpisodes(id, seasonId);
+
+  const currentSeason = useMemo(() => {
+    const seasonArray = Array.isArray(season) ? season : [season];
+    return seasonArray[0] as Season | undefined;
+  }, [season]);
+
+  const episodesList = useMemo(() => episodes ?? [], [episodes]);
+
+  if (isLoading || !currentSeason) {
+    return (
+      <div className="flex flex-col gap-10">
+        <HeroSingleSkeleton />
+        <SeasonDetailsSkeleton />
+        <EpisodesCardSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-10">
-      {isLoading || !currentSeason ? (
-        <> 
-        <HeroSingleSkeleton />
-        <SeasonDetailsSkeleton/>
-        <EpisodesCardSkeleton/>
-        </>
-       
-      ) : (
-        <>
-          <HeroSection season={currentSeason} />
-          <Container>
+     <HeroSection season={currentSeason} /> 
+
+      <Container>
         <div className="flex flex-col gap-y-8 py-10">
+          <div className="flex flex-col gap-2 mt-10">
+            <h1 className="text-3xl font-bold text-red-500">Season overview</h1>
+            <p className="text-muted text-lg">
+              {currentSeason?.overview || "No overview available"}
+            </p>
+          </div>
 
-        <div className="flex flex-col gap-2 mt-10">
-        <h1 className="text-3xl font-bold text-red-500">Season overview</h1>
-        <p className="text-muted text-lg">{currentSeason?.overview || "No overview available"}</p>
-        </div>
-        <div className="flex flex-col gap-2 my-10">
-        <h1 className="text-3xl font-bold text-red-500">Episodes</h1>
-        <ul  className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 ">
-        {isloading?<></>:(<>
-        {episodes?.map((e)=>(
-          <li key={e._id}>
-          <div className="flex flex-col gap-4 p-4 bg-card rounded-xl shadow-xl">
-      <div className="text-lg font-bold">
-      Episode Number : {e.episodeNumber}
-      </div>
+          <div className="flex flex-col gap-2 my-10">
+            <h1 className="text-3xl font-bold text-red-500">Episodes</h1>
 
-      <div className="flex flex-col gap-3">
-        <div>
-        <h3 className="font-semibold">{e.title}</h3>
-        <p className="text-sm text-muted line-clamp-2">
-          {e.overview}
-        </p>
+            {isloading ? (
+              <EpisodesCardSkeleton />
+            ) : (
+              <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                {episodesList.map((e) => (
+                  <EpisodeCard key={e._id} seriesId={id} seasonId={seasonId} e={e} />
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
-        
-        <Link href={PATHS.EPISODES(id,seasonId,e._id)}  className= "text-muted ">
-        <FontAwesomeIcon icon={faPlay} className="text-red-500 mr-3"/>
-        Watch Now</Link>
-
-        <div className="text-xs mt-1 text-muted">
-        {e.runtime} min
-        </div>
-      </div>
-    </div>
-         
-          </li>
-          
-        ))}
-        </>)
-        }
-        </ul>
-        </div>
-        
-        
-        </div>
-        
-
-
       </Container>
-        </>
-
-      )}
-
-     
     </div>
   );
 }
+
 
 type HeroSectionProps = {
   season: Season;

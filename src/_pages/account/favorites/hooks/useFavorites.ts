@@ -1,16 +1,9 @@
 "use client";
 
-//React
-import { useEffect, useState } from "react";
-
-//contexts
+import { useEffect, useMemo, useState } from "react";
 import { useFavorite } from "@/contexts/FavoriteContext";
-
-//types
+import { FavoriteType } from "@/types/favorite";
 import { BackendPagination } from "@/types/pagination";
-import { FavoriteItem, FavoriteType } from "@/types/favorite";
-
-//services
 import { getFavoritesByIds } from "@/services/favorites.service";
 
 const LIMIT = 8;
@@ -18,30 +11,28 @@ const LIMIT = 8;
 export function useFavorites() {
   const { favoriteList } = useFavorite();
 
-  const [items, setItems] = useState<FavoriteItem[]>([]);
+  const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-
-  const [activeTab, setActiveTab] =
-    useState<FavoriteType>("movies");
-
+  const [activeTab, setActiveTab] = useState<FavoriteType>("movies");
   const [page, setPage] = useState(1);
 
-  const [pagination, setPagination] =
-    useState<BackendPagination>({
-      page: 1,
-      limit: LIMIT,
-      totalDocs: 0,
-      totalPages: 0,
-    });
+  const [pagination, setPagination] = useState<BackendPagination>({
+    page: 1,
+    limit: LIMIT,
+    totalDocs: 0,
+    totalPages: 0,
+  });
 
-    // fetch favorites when favoriteList, activeTab, or page changes
+  const ids = useMemo(
+    () =>
+      favoriteList
+        .filter((f) => f.type === activeTab)
+        .map((f) => f.id),
+    [favoriteList, activeTab]
+  );
+
   useEffect(() => {
-    const ids = favoriteList
-      .filter((f) => f.type === activeTab)
-      .map((f) => f.id)
-      .join(",");
-
-    if (!ids) {
+    if (!ids.length) {
       setItems([]);
       setPagination({
         page: 1,
@@ -52,19 +43,23 @@ export function useFavorites() {
       return;
     }
 
-    // fetch favorites
     async function load() {
       try {
         setLoading(true);
-        const json = await getFavoritesByIds(
+        const res = await getFavoritesByIds(
           activeTab,
-          ids,
+          ids.join(","),
           page,
           LIMIT
         );
 
-        setItems(json.data || []);
-        setPagination(json.pagination);
+        if (page > 1 && res.data.length === 0) {
+          setPage(page - 1);
+          return;
+        }
+
+        setItems(res.data || []);
+        setPagination(res.pagination);
       } catch {
         setItems([]);
       } finally {
@@ -73,7 +68,7 @@ export function useFavorites() {
     }
 
     load();
-  }, [favoriteList, activeTab, page]);
+  }, [ids, activeTab, page]);
 
   useEffect(() => {
     setPage(1);
@@ -82,15 +77,10 @@ export function useFavorites() {
   return {
     loading,
     items,
-
     activeTab,
     setActiveTab,
-
     page,
     setPage,
-
     pagination,
   };
 }
-
-export default useFavorites;

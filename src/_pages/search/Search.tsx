@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { Container } from "@/components/containers/Container";
-import Pagination from "@/components/ui/Pagination";
 
 import useSearch from "./hooks/useSearch";
 import ActorsResults from "./components/ActorsResults";
@@ -18,24 +17,29 @@ export default function SearchPageComponent() {
   const [seriesPage, setSeriesPage] = useState(1);
   const [actorsPage, setActorsPage] = useState(1);
 
-  /* reset pagination when query changes */
   useEffect(() => {
     setMoviesPage(1);
     setSeriesPage(1);
     setActorsPage(1);
   }, [query]);
 
-  const {
-    movies,
-    series,
-    actors,
-    pagination,
-    loading,
-  } = useSearch(query, {
-    movies: moviesPage,
-    series: seriesPage,
-    actors: actorsPage,
-  });
+  const pages = useMemo(
+    () => ({
+      movies: moviesPage,
+      series: seriesPage,
+      actors: actorsPage,
+    }),
+    [moviesPage, seriesPage, actorsPage]
+  );
+
+  const handleMoviesPage = useCallback((p: number) => setMoviesPage(p), []);
+  const handleSeriesPage = useCallback((p: number) => setSeriesPage(p), []);
+  const handleActorsPage = useCallback((p: number) => setActorsPage(p), []);
+
+  const { movies, series, actors, pagination, loading } = useSearch(
+    query,
+    pages
+  );
 
   return (
     <Container className="pt-20 space-y-14">
@@ -43,46 +47,33 @@ export default function SearchPageComponent() {
         Search results for "{query}"
       </h1>
 
-      {loading ? (
-        <p className="text-muted">Searching...</p>
-      ) : (
-        <>
-          {/* Movies */}
-          <MediaResultsSection
-            title="Movies"
-            type="movies"
-            data={movies}
-          />
-          {pagination.movies && movies.length > 0 && (
-            <Pagination
-              pagination={pagination.movies}
-              onChange={setMoviesPage}
-            />
-          )}
+      {/* Movies */}
+      <MediaResultsSection
+        title="Movies"
+        type="movies"
+        items={movies}
+        loading={loading}
+        pagination={pagination.movies}
+        onPageChange={handleMoviesPage}
+      />
 
-          {/* Series */}
-          <MediaResultsSection
-            title="Series"
-            type="series"
-            data={series}
-          />
-          {pagination.series && series.length > 0 && (
-            <Pagination
-              pagination={pagination.series}
-              onChange={setSeriesPage}
-            />
-          )}
+      {/* Series */}
+      <MediaResultsSection
+        title="Series"
+        type="series"
+        items={series}
+        loading={loading}
+        pagination={pagination.series}
+        onPageChange={handleSeriesPage}
+      />
 
-          {/* Actors */}
-          <ActorsResults data={actors} />
-          {pagination.actors && actors.length > 0 && (
-            <Pagination
-              pagination={pagination.actors}
-              onChange={setActorsPage}
-            />
-          )}
-        </>
-      )}
+      {/* Actors */}
+      <ActorsResults
+        items={actors}
+        loading={loading}
+        pagination={pagination.actors}
+        onPageChange={handleActorsPage}
+      />
     </Container>
   );
 }

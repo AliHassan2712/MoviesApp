@@ -1,23 +1,17 @@
 "use client";
 
-//React
 import { useEffect, useState } from "react";
-
-//service
 import { searchAll } from "@/services/search.service";
-
-//types
 import { BackendPagination } from "@/types/pagination";
 import { MediaItem } from "@/types/media";
+import { useDebouncedValue } from "@/hooks/search/useDebouncedValue";
 
 export default function useSearch(
   query: string,
-  pages: {
-    movies: number;
-    series: number;
-    actors: number;
-  }
+  pages: { movies: number; series: number; actors: number }
 ) {
+  const debouncedQuery = useDebouncedValue(query, 350);
+
   const [movies, setMovies] = useState<MediaItem[]>([]);
   const [series, setSeries] = useState<MediaItem[]>([]);
   const [actors, setActors] = useState<MediaItem[]>([]);
@@ -33,7 +27,7 @@ export default function useSearch(
   useEffect(() => {
     const controller = new AbortController();
 
-    if (!query) {
+    if (!debouncedQuery) {
       setMovies([]);
       setSeries([]);
       setActors([]);
@@ -46,7 +40,7 @@ export default function useSearch(
       setLoading(true);
       try {
         const { moviesData, seriesData, actorsData } = await searchAll(
-          query,
+          debouncedQuery,
           pages,
           controller.signal
         );
@@ -69,13 +63,7 @@ export default function useSearch(
 
     fetchAll();
     return () => controller.abort();
-  }, [query, pages.movies, pages.series, pages.actors]);
+  }, [debouncedQuery, pages.movies, pages.series, pages.actors]); 
 
-  return {
-    movies,
-    series,
-    actors,
-    pagination,
-    loading,
-  };
+  return { movies, series, actors, pagination, loading };
 }

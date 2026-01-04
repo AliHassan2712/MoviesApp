@@ -76,12 +76,14 @@ export default function ActorDetailsComponent({
             {movies.map((m) => (
               <MediaCard
                 key={m._id}
+                id={m._id}
                 title={m.name}
                 poster={m.poster}
                 releaseYear={m.releaseYear}
                 href={PATHS.MOVIE_DETAILS(m._id)}
                 aspect="landscape"
               />
+
             ))}
 
           </div>
@@ -97,7 +99,9 @@ export default function ActorDetailsComponent({
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {series.map((s) => (
+
               <MediaCard
+              id={s._id}
                 key={s._id}
                 title={s.name}
                 poster={s.poster}

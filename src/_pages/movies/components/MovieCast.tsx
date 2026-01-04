@@ -1,11 +1,8 @@
-//React & Next
+import { memo } from 'react'
 import Image from 'next/image'
-
-//types
 import { Cast } from '@/types/movie'
 
-
-export function MovieCast({ cast }: { cast: Cast[] }) {
+function MovieCastComponent({ cast }: { cast: Cast[] }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
       {cast.map((c) => (
@@ -23,3 +20,5 @@ export function MovieCast({ cast }: { cast: Cast[] }) {
     </div>
   )
 }
+
+export const MovieCast = memo(MovieCastComponent)
