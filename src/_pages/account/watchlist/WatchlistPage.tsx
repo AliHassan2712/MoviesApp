@@ -5,13 +5,14 @@ import { MediaCard } from "@/components/cards/MediaCard";
 import { WatchlistEmpty } from "./components/WatchlistEmpty";
 
 //hooks
-import { useWatchlist } from "./hooks/useWatchlist";
+import { useWatchlist } from "@/contexts/WatchlistContext";
 
 //icons
 import { Bookmark } from "lucide-react";
 
 export default function WatchlistPage() {
-  const { items, isEmpty } = useWatchlist();
+  const { items } = useWatchlist();
+  const isEmpty = items.length === 0;
 
   return (
     <div className="min-h-screen pt-20 px-6 max-w-6xl mx-auto space-y-10">
