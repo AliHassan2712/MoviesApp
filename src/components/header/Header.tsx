@@ -75,8 +75,8 @@ export default function Header() {
 
         {/* LOGO */}
         <Link href={PATHS.HOME} className="text-2xl md:text-3xl font-extrabold tracking-wide flex gap-1">
-          <span className="text-primary">Movies</span>
-          <span className="text-main">App</span>
+          <span className="text-white font-bold">Cine</span>
+          <span className="text-red-500">Verse</span>
         </Link>
 
         {/* DESKTOP NAV */}
