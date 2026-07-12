@@ -10,6 +10,8 @@ type MediaCardProps = {
   title: string;
   poster?: string;
   href: string;
+  /** @deprecated aspect ratio is now always 2:3 — this prop is ignored */
+  aspect?: "portrait" | "landscape";
   releaseYear?: number;
   rating?: number;
   isFavorite?: boolean;

@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
-import { Play, Plus, Star, Clock } from "lucide-react";
+import { Play, Bookmark, Star, Clock } from "lucide-react";
 
 import { PATHS } from "@/constant/PATHS";
 import useHeroItems from "@/hooks/hero/useHeroItems";
 import HeroSkeleton from "@/components/skeletons/HeroSkeleton";
+import { useWatchlist } from "@/contexts/WatchlistContext";
 
 type HeroType = "movies" | "series";
 type HeroSliderProps = { type: HeroType; limit?: number };
@@ -16,9 +17,12 @@ export default function Hero({ type, limit = 5 }: HeroSliderProps) {
   const { item, items, loading, activeIndex, total, setActiveIndex } =
     useHeroItems({ type, limit });
 
+  const { toggleWatchlist, isInWatchlist } = useWatchlist();
   const startX = useRef<number | null>(null);
 
   if (loading || !item) return <HeroSkeleton />;
+
+  const inWatchlist = isInWatchlist({ id: item._id, type });
 
   const heroImage = item.backdrop?.trim()
     ? item.backdrop
@@ -116,13 +120,28 @@ export default function Hero({ type, limit = 5 }: HeroSliderProps) {
                 Watch Now
               </Link>
 
-              <Link
-                href={type === "movies" ? PATHS.MOVIES : PATHS.SERIES}
-                className="inline-flex items-center gap-2.5 px-7 py-3.5 bg-white/10 hover:bg-white/20 border border-white/15 hover:border-white/30 text-white rounded-xl font-semibold text-sm backdrop-blur-sm active:scale-95 transition-all duration-200"
+              <button
+                onClick={() =>
+                  toggleWatchlist({
+                    id: item._id,
+                    type,
+                    name: item.name,
+                    poster: item.poster || item.backdrop,
+                  })
+                }
+                className={`inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-semibold text-sm border backdrop-blur-sm active:scale-95 transition-all duration-200 ${
+                  inWatchlist
+                    ? "bg-white/20 border-white/50 text-white"
+                    : "bg-white/10 hover:bg-white/20 border-white/15 hover:border-white/30 text-white"
+                }`}
               >
-                <Plus size={18} />
-                Add to List
-              </Link>
+                <Bookmark
+                  size={18}
+                  fill={inWatchlist ? "currentColor" : "none"}
+                  className="shrink-0"
+                />
+                {inWatchlist ? "In Watchlist" : "Add to List"}
+              </button>
             </div>
           </div>
         </div>
