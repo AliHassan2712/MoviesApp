@@ -15,6 +15,8 @@ export type WatchlistType = "movies" | "series";
 type ToggleWatchlistArgs = {
   id: string;
   type: WatchlistType;
+  name?: string;
+  poster?: string;
 };
 
 type WatchlistContextType = {
@@ -46,13 +48,16 @@ export function WatchlistProvider({ children }: { children: React.ReactNode }) {
   }, [items]);
 
   const toggleWatchlist = useCallback(
-    ({ id, type }: ToggleWatchlistArgs) => {
+    ({ id, type, name, poster }: ToggleWatchlistArgs) => {
       setItems((prev) => {
         const exists = prev.some((w) => w.id === id && w.type === type);
         if (exists) {
           return prev.filter((w) => !(w.id === id && w.type === type));
         }
-        return [...prev.filter((w) => !(w.id === id && w.type === type)), { id, type, name: id }];
+        return [
+          ...prev.filter((w) => !(w.id === id && w.type === type)),
+          { id, type, name: name ?? id, poster },
+        ];
       });
     },
     []

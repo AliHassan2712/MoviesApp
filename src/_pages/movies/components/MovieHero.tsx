@@ -6,7 +6,6 @@ import { Bookmark } from "lucide-react";
 
 import { Movie } from "@/types/movie";
 import { useWatchlist } from "@/contexts/WatchlistContext";
-
 type MovieHeroProps = {
   movie: Movie;
   showPlayer: boolean;
