@@ -3,8 +3,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { getMovieById } from '@/services/movie.service'
 import { Movie } from '@/types/movie'
+import { useAuth } from '@/contexts/AuthContext'
 
 export function useMovie(id: string) {
+  const { isLoggedIn } = useAuth()
+
   const [movie, setMovie] = useState<Movie | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -46,14 +49,18 @@ export function useMovie(id: string) {
   }, [])
 
   const togglePlayer = useCallback(() => {
-    if (!movie?.videoUrl) {
+    if (!isLoggedIn) {
       setShowLoginMsg(true)
       return
     }
 
-    setShowLoginMsg(false)
-    setShowPlayer((prev) => !prev)
-  }, [movie?.videoUrl])
+    if (movie?.videoUrl) {
+      setShowLoginMsg(false)
+      setShowPlayer((prev) => !prev)
+    } else {
+      setShowLoginMsg(true)
+    }
+  }, [isLoggedIn, movie?.videoUrl])
 
   return {
     movie,
