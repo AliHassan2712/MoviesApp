@@ -40,10 +40,10 @@ function HomeSectionComponent({
     <section className="mb-14">
       {/* Header */}
       <div className="flex items-end justify-between mb-5">
-        <h2 className="text-xl font-bold text-white tracking-tight">{title}</h2>
+        <h2 className="text-xl font-bold text-main tracking-tight">{title}</h2>
         <Link
           href={viewAllHref}
-          className="text-[13px] font-medium text-white/35 hover:text-white/80 transition-colors duration-200 pb-0.5 border-b border-transparent hover:border-white/30"
+          className="text-[13px] font-medium text-muted hover:text-main transition-colors duration-200 pb-0.5 border-b border-transparent hover:border-main"
         >
           See all
         </Link>
@@ -52,18 +52,21 @@ function HomeSectionComponent({
       {loading ? (
         <GridSkeleton count={6} />
       ) : displayItems.length === 0 ? (
-        <p className="text-white/25 text-sm py-10 text-center">
+        <p className="text-muted text-sm py-10 text-center">
           No content available.
         </p>
       ) : (
         <div className="group/row relative">
-          {/* Left fade edge */}
-          <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-[#0a0a0a] to-transparent z-10 pointer-events-none opacity-0 group-hover/row:opacity-100 transition-opacity duration-300" />
+          {/* Left fade edge — uses CSS var so it works in light + dark */}
+          <div
+            className="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none opacity-0 group-hover/row:opacity-100 transition-opacity duration-300"
+            style={{ background: "linear-gradient(to right, var(--color-background), transparent)" }}
+          />
 
           {/* Left scroll button */}
           <button
             onClick={() => scroll("left")}
-            className="absolute -left-4 top-[42%] -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-[#1c1c1c] border border-white/8 text-white/50 hover:text-white hover:bg-[#252525] hover:border-white/20 flex items-center justify-center opacity-0 group-hover/row:opacity-100 transition-all duration-250 active:scale-90 cursor-pointer shadow-lg"
+            className="absolute -left-4 top-[42%] -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-card border border-main text-muted hover:text-main hover:bg-soft hover:border-main flex items-center justify-center opacity-0 group-hover/row:opacity-100 transition-all duration-250 active:scale-90 cursor-pointer shadow-lg"
             aria-label="Scroll left"
           >
             <ChevronLeft size={16} strokeWidth={2.5} />
@@ -84,13 +87,16 @@ function HomeSectionComponent({
             ))}
           </div>
 
-          {/* Right fade edge */}
-          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-[#0a0a0a] to-transparent z-10 pointer-events-none opacity-0 group-hover/row:opacity-100 transition-opacity duration-300" />
+          {/* Right fade edge — uses CSS var so it works in light + dark */}
+          <div
+            className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none opacity-0 group-hover/row:opacity-100 transition-opacity duration-300"
+            style={{ background: "linear-gradient(to left, var(--color-background), transparent)" }}
+          />
 
           {/* Right scroll button */}
           <button
             onClick={() => scroll("right")}
-            className="absolute -right-4 top-[42%] -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-[#1c1c1c] border border-white/8 text-white/50 hover:text-white hover:bg-[#252525] hover:border-white/20 flex items-center justify-center opacity-0 group-hover/row:opacity-100 transition-all duration-250 active:scale-90 cursor-pointer shadow-lg"
+            className="absolute -right-4 top-[42%] -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-card border border-main text-muted hover:text-main hover:bg-soft hover:border-main flex items-center justify-center opacity-0 group-hover/row:opacity-100 transition-all duration-250 active:scale-90 cursor-pointer shadow-lg"
             aria-label="Scroll right"
           >
             <ChevronRight size={16} strokeWidth={2.5} />
