@@ -5,11 +5,13 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LangProvider } from "@/contexts/LangContext";
 import { FavoriteProvider } from "@/contexts/FavoriteContext";
+import { WatchlistProvider } from "@/contexts/WatchlistContext";
 import ReactQueryProvider from "./ReactQueryProvider";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <FavoriteProvider>
+    <WatchlistProvider>
+      <FavoriteProvider>
       <AuthProvider>
         <ThemeProvider>
           <LangProvider>
@@ -32,6 +34,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           }}
         />
       </AuthProvider>
-    </FavoriteProvider>
+      </FavoriteProvider>
+    </WatchlistProvider>
   );
 }
