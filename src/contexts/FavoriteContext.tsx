@@ -12,6 +12,7 @@ import {
 import { FavoriteItem, FavoriteType } from "@/types/favorite";
 import { useAuth } from "@/contexts/AuthContext";
 import { updateFavoritesOnServer } from "@/services/user.service";
+import toast from "react-hot-toast";
 
 type ToggleFavoriteArgs = {
   id: string;
@@ -108,43 +109,43 @@ export function FavoriteProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user, setUser]);
 
-  // 4. Toggle Favorite
+  // 4. Toggle Favorite (Refactored to run side-effects outside of state updater)
   const toggleFavorite = useCallback(
     ({ id, type }: ToggleFavoriteArgs) => {
-      setFavoriteList((prev) => {
-        const exists = prev.some((f) => f.id === id && f.type === type);
-        let nextList;
-        if (exists) {
-          nextList = prev.filter((f) => !(f.id === id && f.type === type));
-        } else {
-          nextList = [
-            ...prev.filter((f) => !(f.id === id && f.type === type)),
-            { id, type },
-          ];
-        }
+      const exists = favoriteList.some((f) => f.id === id && f.type === type);
+      const nextList = exists
+        ? favoriteList.filter((f) => !(f.id === id && f.type === type))
+        : [...favoriteList.filter((f) => !(f.id === id && f.type === type)), { id, type }];
 
-        // Sync with server if logged in
-        if (user) {
-          const payload = nextList.map((f) => ({
-            item: f.id,
-            itemType: f.type === "movies" ? ("Movie" as const) : ("Series" as const),
-          }));
-          updateFavoritesOnServer(payload)
-            .then((res) => {
-              const updatedUser = res.data?.user ?? res.user ?? res.data;
-              if (updatedUser) {
-                setUser((curr) => (curr ? { ...curr, ...updatedUser } : null));
-              }
-            })
-            .catch((err) => {
-              console.error("Failed to sync toggle favorite with server:", err);
-            });
-        }
+      // Update state
+      setFavoriteList(nextList);
 
-        return nextList;
-      });
+      // Trigger side-effect toast alert
+      if (exists) {
+        toast.success(type === "movies" ? "Removed from Favorite Movies" : "Removed from Favorite Series");
+      } else {
+        toast.success(type === "movies" ? "Added to Favorite Movies" : "Added to Favorite Series");
+      }
+
+      // Sync with server if logged in
+      if (user) {
+        const payload = nextList.map((f) => ({
+          item: f.id,
+          itemType: f.type === "movies" ? ("Movie" as const) : ("Series" as const),
+        }));
+        updateFavoritesOnServer(payload)
+          .then((res) => {
+            const updatedUser = res.data?.user ?? res.user ?? res.data;
+            if (updatedUser) {
+              setUser((curr) => (curr ? { ...curr, ...updatedUser } : null));
+            }
+          })
+          .catch((err) => {
+            console.error("Failed to sync toggle favorite with server:", err);
+          });
+      }
     },
-    [user, setUser]
+    [favoriteList, user, setUser]
   );
 
   const isFavorite = useCallback(
@@ -155,6 +156,7 @@ export function FavoriteProvider({ children }: { children: React.ReactNode }) {
 
   const clearFavorites = useCallback(() => {
     setFavoriteList([]);
+    toast.success("Favorites cleared successfully");
     if (user) {
       updateFavoritesOnServer([])
         .then(() => {
