@@ -7,8 +7,10 @@ import {
   useEffect,
   useMemo,
   useState,
+  useRef,
 } from "react";
 import { WatchlistItem } from "@/types/watchlist";
+import { useAuth } from "@/contexts/AuthContext";
 
 export type WatchlistType = "movies" | "series";
 
@@ -30,8 +32,11 @@ const WatchlistContext = createContext<WatchlistContextType | undefined>(undefin
 const STORAGE_KEY = "watchlist";
 
 export function WatchlistProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
   const [items, setItems] = useState<WatchlistItem[]>([]);
+  const wasLoggedInRef = useRef(false);
 
+  // 1. Initial load from local storage
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -43,21 +48,39 @@ export function WatchlistProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // 2. Persist to local storage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
+  // 3. Clear local storage on logout to prevent crossover leak between different user profiles
+  useEffect(() => {
+    if (!user) {
+      if (wasLoggedInRef.current) {
+        setItems([]);
+        localStorage.removeItem(STORAGE_KEY);
+      }
+      wasLoggedInRef.current = false;
+      return;
+    }
+    wasLoggedInRef.current = true;
+  }, [user]);
+
+  // 4. Toggle Watchlist
   const toggleWatchlist = useCallback(
     ({ id, type, name, poster }: ToggleWatchlistArgs) => {
       setItems((prev) => {
         const exists = prev.some((w) => w.id === id && w.type === type);
+        let nextItems;
         if (exists) {
-          return prev.filter((w) => !(w.id === id && w.type === type));
+          nextItems = prev.filter((w) => !(w.id === id && w.type === type));
+        } else {
+          nextItems = [
+            ...prev.filter((w) => !(w.id === id && w.type === type)),
+            { id, type, name: name ?? id, poster },
+          ];
         }
-        return [
-          ...prev.filter((w) => !(w.id === id && w.type === type)),
-          { id, type, name: name ?? id, poster },
-        ];
+        return nextItems;
       });
     },
     []
