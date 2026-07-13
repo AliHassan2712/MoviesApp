@@ -1,3 +1,8 @@
+export type FavoriteItemType = {
+  _id: string;
+  addedAt?: string;
+};
+
 export type UserType = {
   _id: string;
   firstName: string;
@@ -6,7 +11,8 @@ export type UserType = {
   photo: string;
   role: string;
   active: boolean;
-  favorites?: string[];
+  favorites?: FavoriteItemType[];
+  watchlist?: string[]; // fallback
 };
 
 export type AuthContextType = {
@@ -18,13 +24,11 @@ export type AuthContextType = {
   logout: () => void;
 };
 
-
 export type ChangePasswordPayload = {
   currentPassword: string;
   newPassword: string;
   confirmNewPassword: string;
 };
-
 
 export type EditProfilePayload = {
   firstName: string;
