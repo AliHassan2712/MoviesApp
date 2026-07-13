@@ -1,10 +1,16 @@
 "use client";
 
-// React
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { Bell, Play, Film } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
-// icons
-import { Bell, Play, Star, AlertCircle, UserCheck } from "lucide-react";
+type NotificationItem = {
+  id: string;
+  text: string;
+  type: "movies" | "series";
+  createdAt: string;
+};
 
 type NotificationsMenuProps = {
   isLoggedIn: boolean;
@@ -14,6 +20,8 @@ type NotificationsMenuProps = {
   setIsOpen: (v: boolean) => void;
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+
 export default function NotificationsMenu({
   isLoggedIn,
   desktopOnly = false,
@@ -21,10 +29,11 @@ export default function NotificationsMenu({
   isOpen,
   setIsOpen,
 }: NotificationsMenuProps) {
+  const { user, setUser } = useAuth();
   const [closing, setClosing] = useState(false);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const ref = useRef<HTMLDivElement | null>(null);
-
-  if (!isLoggedIn) return null;
 
   const closeMenu = () => {
     setClosing(true);
@@ -34,41 +43,91 @@ export default function NotificationsMenu({
     }, 160);
   };
 
-  /* Dummy notifications */
-  const notifications = [
-    {
-      id: 1,
-      text: "New episode for Breaking Bad",
-      icon: <Play size={18} className="text-primary" />,
-    },
-    {
-      id: 2,
-      text: "Recommended: The Witcher",
-      icon: <Star size={18} className="text-accent" />,
-    },
-    {
-      id: 3,
-      text: "System maintenance tonight",
-      icon: <AlertCircle size={18} className="text-danger" />,
-    },
-    {
-      id: 4,
-      text: "Your password was updated",
-      icon: <UserCheck size={18} className="text-success" />,
-    },
-  ];
+  // Fetch notifications from the backend database notifications route
+  useEffect(() => {
+    if (!isLoggedIn) return;
 
-  const panelAnimation = closing
-    ? "animate-dropdown-close"
-    : "animate-dropdown-open";
+    async function fetchNotificationsList() {
+      try {
+        const res = await fetch(`${API_URL}/notifications?limit=6`, {
+          credentials: "include", // vital for auth session cookie
+        });
+        const json = await res.json();
+
+        if (json?.data) {
+          const list = json.data.map((n: any) => ({
+            id: n.refId,
+            text: n.message,
+            type: n.type === "movie" ? ("movies" as const) : ("series" as const),
+            createdAt: n.createdAt,
+          }));
+
+          setNotifications(list);
+
+          // Calculate unread count using the backend user.lastReadNotifications timestamp
+          const lastReadTime = user?.lastReadNotifications
+            ? new Date(user.lastReadNotifications).getTime()
+            : 0;
+
+          const unread = list.filter(
+            (n: any) => new Date(n.createdAt).getTime() > lastReadTime
+          ).length;
+
+          setUnreadCount(unread);
+        }
+      } catch (e) {
+        console.error("Failed to load notifications:", e);
+      }
+    }
+
+    fetchNotificationsList();
+    const interval = setInterval(fetchNotificationsList, 120000);
+    return () => clearInterval(interval);
+  }, [isLoggedIn, user?.lastReadNotifications]);
+
+  // Sync opening the menu: Mark notifications as read on the backend API database
+  useEffect(() => {
+    if (isOpen && isLoggedIn && user) {
+      const nowStr = new Date().toISOString();
+      
+      // Update UI count immediately
+      setUnreadCount(0);
+
+      // Save to database
+      fetch(`${API_URL}/users/update-me`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ lastReadNotifications: nowStr }),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          const updatedUser = json.data?.user ?? json.user ?? json.data;
+          if (updatedUser) {
+            setUser((curr) => (curr ? { ...curr, ...updatedUser } : null));
+          } else {
+            setUser((curr) => (curr ? { ...curr, lastReadNotifications: nowStr } : null));
+          }
+        })
+        .catch((e) => {
+          console.error("Failed to save read notifications status to server:", e);
+        });
+    }
+  }, [isOpen, isLoggedIn, setUser]);
+
+  if (!isLoggedIn) return null;
+
+  const panelAnimation = closing ? "animate-dropdown-close" : "animate-dropdown-open";
 
   return (
     <div
       ref={ref}
       className={`
         dropdown relative
-        ${desktopOnly ? "hidden md:block" : ""}
-        ${isMobile ? "block md:hidden" : ""}
+        ${desktopOnly ? "hidden md:inline-block" : ""}
+        ${isMobile ? "inline-block md:hidden" : ""}
       `}
     >
       {/* Bell Icon */}
@@ -77,14 +136,16 @@ export default function NotificationsMenu({
           if (isOpen) closeMenu();
           else setIsOpen(true);
         }}
-        className="relative text-main hover:text-primary transition"
+        className="relative text-main hover:text-primary transition flex items-center justify-center"
       >
         <Bell size={22} />
 
         {/* Badge */}
-        <span className="absolute -top-1 -right-1 bg-primary text-xs text-white rounded-full w-4 h-4 flex items-center justify-center">
-          {notifications.length}
-        </span>
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-primary text-xs text-white rounded-full w-4 h-4 flex items-center justify-center font-bold">
+            {unreadCount}
+          </span>
+        )}
       </button>
 
       {/* DROPDOWN */}
@@ -98,20 +159,35 @@ export default function NotificationsMenu({
           `}
         >
           <p className="text-main font-semibold pb-2 border-b border-main">
-            Notifications
+            Latest Releases
           </p>
 
-          <div className="max-h-72 overflow-y-auto mt-2">
-            {notifications.map((n) => (
-              <div
-                key={n.id}
-                onClick={closeMenu}
-                className="flex items-center gap-3 py-2 hover:bg-soft rounded-lg transition cursor-pointer"
-              >
-                {n.icon}
-                <span className="text-main text-sm">{n.text}</span>
-              </div>
-            ))}
+          <div className="max-h-72 overflow-y-auto mt-2 space-y-1">
+            {notifications.length === 0 ? (
+              <p className="text-muted text-xs text-center py-4">No new releases yet</p>
+            ) : (
+              notifications.map((n) => (
+                <Link
+                  key={`${n.type}-${n.id}`}
+                  href={`/${n.type}/${n.id}`}
+                  onClick={closeMenu}
+                  className="flex items-center gap-3 p-2 hover:bg-soft rounded-lg transition cursor-pointer text-left w-full"
+                >
+                  <div className="shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    {n.type === "movies" ? <Film size={16} /> : <Play size={16} />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-main text-sm truncate font-medium">{n.text}</p>
+                    <p className="text-muted text-xs mt-0.5">
+                      {new Date(n.createdAt).toLocaleDateString(undefined, {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </Link>
+              ))
+            )}
           </div>
         </div>
       )}
