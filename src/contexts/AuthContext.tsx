@@ -13,6 +13,8 @@ import React, {
 
 // constants
 import { PATHS } from "@/constant/PATHS";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 // types
 import { AuthContextType, UserType } from "@/types/user";
@@ -23,6 +25,7 @@ if (!API_URL) throw new Error("NEXT_PUBLIC_API_URL is not set");
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -30,11 +33,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const mountedRef = useRef(false);
 
   const fetchUser = useCallback(async () => {
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
     try {
+      const controller = new AbortController();
+      abortRef.current = controller;
+
       const res = await fetch(`${API_URL}/auth/me`, {
         credentials: "include",
         signal: controller.signal,
@@ -80,9 +82,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
     } finally {
       setUser(null);
-      window.location.href = PATHS.LOGIN;
+      toast.success("Logged out successfully");
+      router.push(PATHS.LOGIN);
     }
-  }, []);
+  }, [router]);
 
   const value = useMemo<AuthContextType>(
     () => ({
