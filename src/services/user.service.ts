@@ -47,3 +47,25 @@ export async function updateProfile(
 
   return json;
 }
+
+// update favorites on server
+export async function updateFavoritesOnServer(favorites: { item: string; itemType: "Movie" | "Series" }[]) {
+  const res = await fetch(`${API_URL}/users/update-me`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ favorites }),
+  });
+
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(json.message || "Failed to update favorites");
+  }
+
+  return json;
+}
+
+

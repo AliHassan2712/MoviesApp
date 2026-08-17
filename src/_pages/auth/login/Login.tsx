@@ -9,7 +9,7 @@ export default function LoginPage() {
       <AuthCard>
         <AuthHeader
           title="Welcome Back"
-          subtitle="Login to continue watching your movies"
+          subtitle="Login to continue your CineVerse experience"
         />
         <LoginForm />
       </AuthCard>

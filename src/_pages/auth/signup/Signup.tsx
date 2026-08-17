@@ -9,7 +9,7 @@ export default function SignupPage() {
       <AuthCard>
         <AuthHeader
           title="Create Account"
-          subtitle="Join us and enjoy unlimited movies & shows"
+          subtitle="Join CineVerse and enjoy unlimited movies & shows"
         />
         <SignupForm />
       </AuthCard>

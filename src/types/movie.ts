@@ -15,8 +15,10 @@ export type Movie = {
   description: string
   poster: string
   backdrop: string
-  duration: number
-  releaseYear: number
+  duration?: number
+  releaseYear?: number
+  rating?: number
+  views?: number
   genresRefs: Genre[]
   castRefs: Cast[]
   isDeleted: boolean

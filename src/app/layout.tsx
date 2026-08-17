@@ -3,8 +3,8 @@ import "./globals.css";
 import Providers from "@/providers/providers";
 
 export const metadata: Metadata = {
-  title: "Movies App",
-  description: "Movies and Series App",
+  title: "CineVerse",
+  description: "CineVerse - Your ultimate movies & series destination",
 
   manifest: "/manifest.json",
 

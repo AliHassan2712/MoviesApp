@@ -75,8 +75,8 @@ export default function Header() {
 
         {/* LOGO */}
         <Link href={PATHS.HOME} className="text-2xl md:text-3xl font-extrabold tracking-wide flex gap-1">
-          <span className="text-primary">Movies</span>
-          <span className="text-main">App</span>
+          <span className=" font-bold">Cine</span>
+          <span className="text-red-500">Verse</span>
         </Link>
 
         {/* DESKTOP NAV */}
@@ -102,23 +102,19 @@ export default function Header() {
             <Search size={22} />
           </button>
 
-          {!isLoggedIn && <Link href={`${PATHS.LOGIN}`} className={`w-full btn-primary px-3 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition disabled:opacity-60 flex items-center justify-center gap-2`}>Login</Link>
+          {/* FAVORITES */}
+          <Link href={PATHS.FAVORITES} className="text-main hover:text-primary transition">
+            <Heart size={22} />
+          </Link>
+
+          {/* WATCHLIST */}
+          <Link href={PATHS.WATCHLIST} className="text-main hover:text-primary transition">
+            <Bookmark size={22} />
+          </Link>
+
+          {!isLoggedIn && <Link href={`${PATHS.LOGIN}`} className={`btn-primary px-3 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition disabled:opacity-60 flex items-center justify-center gap-2`}>Login</Link>
           }
 
-
-
-          {/* NOTIFICATIONS */}
-          {/* <NotificationsMenu
-            isLoggedIn={isLoggedIn}
-            isOpen={notifOpen}
-            setIsOpen={(v: boolean) => {
-              setNotifOpen(v);
-              if (v) setUserOpen(false);
-            }}
-            desktopOnly
-          /> */}
-
-          {/* USER MENU */}
           <UserMenu
             isLoggedIn={isLoggedIn}
             isOpen={userOpen}
@@ -131,43 +127,27 @@ export default function Header() {
 
         {/* MOBILE ACTION BAR */}
         <div className="md:hidden flex items-center gap-4">
+          {/* SEARCH */}
+          <button
+            onClick={() => {
+              setShowSearch(true);
+              setNotifOpen(false);
+              setMenuOpen(false);
+            }}
+            className="text-main hover:text-primary transition"
+          >
+            <Search size={22} />
+          </button>
 
-          {isLoggedIn && (
-            <>
-              {/* SEARCH */}
-              <button
-                onClick={() => {
-                  setShowSearch(true);
-                  setNotifOpen(false);
-                  setMenuOpen(false);
-                }}
-                className="text-main hover:text-primary transition"
-              >
-                <Search size={22} />
-              </button>
+          {/* FAVORITES */}
+          <Link href={PATHS.FAVORITES} className="text-main hover:text-primary transition">
+            <Heart size={22} />
+          </Link>
 
-              {/* FAVORITES */}
-              <Link href={PATHS.FAVORITES} className="text-main hover:text-primary transition">
-                <Heart size={22} />
-              </Link>
-
-              {/* WATCHLIST */}
-              <Link href={PATHS.WATCHLIST} className="text-main hover:text-primary transition">
-                <Bookmark size={22} />
-              </Link>
-
-              {/* MOBILE NOTIFICATIONS */}
-              {/* <NotificationsMenu
-                isLoggedIn={isLoggedIn}
-                isMobile
-                isOpen={notifOpen}
-                setIsOpen={(v: boolean) => {
-                  setNotifOpen(v);
-                  if (v) setMenuOpen(false);
-                }}
-              /> */}
-            </>
-          )}
+          {/* WATCHLIST */}
+          <Link href={PATHS.WATCHLIST} className="text-main hover:text-primary transition">
+            <Bookmark size={22} />
+          </Link>
 
           {/* MENU BUTTON (WITH FIXED TOGGLE) */}
           <button

@@ -1,14 +1,9 @@
 "use client";
 
-//components
 import { Container } from "@/components/containers/Container";
 import Hero from "./components/Hero";
 import HomeSection from "./components/HomeSection";
-
-//hooks
 import { useHomeSection } from "./hooks/useHomeSection";
-
-//paths constants
 import { PATHS } from "@/constant/PATHS";
 
 export default function HomePageComponent() {
@@ -20,29 +15,30 @@ export default function HomePageComponent() {
     <>
       <Hero type="movies" limit={5} />
 
-      <Container>
-        <HomeSection
-          title="⭐ Top Rated"
-          items={topRated.data}
-          loading={topRated.loading}
-          viewAllHref={PATHS.MOVIES + "?sort=rating"}
-        />
+      <div className="pt-10 pb-16">
+        <Container>
+          <HomeSection
+            title="Top Rated"
+            items={topRated.data}
+            loading={topRated.loading}
+            viewAllHref={PATHS.MOVIES + "?sort=rating"}
+          />
 
-        <HomeSection
-          title="🆕 Recently Added"
-          items={recent.data}
-          loading={recent.loading}
-          viewAllHref={PATHS.MOVIES + "?sort=createdAt"}
-        />
+          <HomeSection
+            title="Recently Added"
+            items={recent.data}
+            loading={recent.loading}
+            viewAllHref={PATHS.MOVIES + "?sort=createdAt"}
+          />
 
-        <HomeSection
-          title="👁️ Most Viewed"
-          items={mostViewed.data}
-          loading={mostViewed.loading}
-          viewAllHref={PATHS.MOVIES + "?sort=views"}
-        />
-      </Container>
+          <HomeSection
+            title="Most Viewed"
+            items={mostViewed.data}
+            loading={mostViewed.loading}
+            viewAllHref={PATHS.MOVIES + "?sort=views"}
+          />
+        </Container>
+      </div>
     </>
   );
 }
-

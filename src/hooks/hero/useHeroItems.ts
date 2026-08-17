@@ -59,6 +59,7 @@ export default function useHeroItems({
 
     return {
         item: items[activeIndex],
+        items,
         loading,
         activeIndex,
         total: items.length,
