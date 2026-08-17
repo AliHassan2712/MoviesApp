@@ -1,168 +1,137 @@
-# 🎬 Movies App
+# 🎬 CimaFlix — Next-Gen Movies & Series Streaming Platform
 
-A **production-ready Movies & Series web application** built with **Next.js App Router**, focused on scalability, clean architecture, and high-quality UI/UX.
+[![Next.js](https://img.shields.io/badge/Next.js-14.x-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-18.x-blue?style=flat-square&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38bdf8?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![Google Gemini](https://img.shields.io/badge/Google_Gemini_AI-2.5_Flash-orange?style=flat-square&logo=google)](https://aistudio.google.com/)
 
-This project is designed as a real-world application with reusable components, custom hooks, and optimized performance — suitable for learning, portfolio usage, or further extension.
-
----
-
-## ✨ Key Highlights
-
-- ✅ Modern **Next.js 14+ App Router** architecture
-- ✅ Fully **TypeScript**-based
-- ✅ Clean & reusable component system
-- ✅ Custom hooks for data fetching
-- ✅ Skeleton loading states
-- ✅ Optimized images & performance
-- ✅ Ready for deployment
+A modern, full-featured **Movies & Series Streaming Web Application** built with **Next.js 14 App Router**, **TypeScript**, and **Tailwind CSS**. Features AI-powered conversational recommendations, smart semantic search, custom high-performance video player, real-time notification engine, watchlist synchronization, and an administrative dashboard.
 
 ---
 
-## 🏠 Home Page Sections
+## 🌟 Key Features
 
-- ⭐ **Top Rated** – Highest rated movies
-- 🆕 **Recent** – Newly added content
-- 👁️ **Most Viewed** – Popular movies based on views
+### 🤖 1. AI-Powered Assistant & Semantic Search
+- **AI Chat Widget:** Floating interactive AI cinematic companion powered by Google Gemini for tailored movie suggestions, summaries, and taste-based discovery.
+- **AI Smart Search:** Natural language search queries ("mind-bending sci-fi with time loops") with automated fallback to fuzzy title/actor/genre matching.
 
-Each section is built as a **reusable component**, making the page easy to scale and maintain.
+### 🎥 2. Cinematic Player Experience
+- **Custom Player:** Built with custom controls, playback speed selection (0.5x - 2x), theater mode, picture-in-picture (PiP), fullscreen, and keyboard shortcuts.
+- **Watch History & Resume:** Automatically remembers the user's playback position.
+- **Seasons & Episodes Switcher:** Seamless transition between episodes with auto-next and quick navigation.
 
----
+### 🔔 3. Real-Time Notification Center
+- **Release Alerts:** Instant notifications when new movies or episodes are released.
+- **Unread Badge & Sync:** Unread counter with instant mark-all-as-read synchronized with user profile in the backend.
 
-## 🎥 Movies & Series
+### ❤️ 4. Watchlist & Favorites Management
+- **Instant Persistence:** Add or remove content with optimistic UI updates.
+- **Cross-Device Sync:** Synced to MongoDB database with guest local-storage fallback for unauthorized users.
 
-- Movie details page
-- Series details page
-- Seasons & Episodes support
-- Dynamic routing with App Router
-- Skeleton loaders while fetching data
+### 🛡️ 5. Authentication & Guest Mode
+- **Dual Auth Support:** Credentials login/signup + **Google OAuth** and **Facebook OAuth**.
+- **Guest Access:** Browse catalog and search freely with protected video viewing prompts.
+- **Route Guards:** Role-based security for user profiles and admin controls.
 
----
-
-## 👥 Actors
-
-- Actors listing page
-- Actor details page
-- Optimized images & clean UI
-
----
-
-## 🧠 Architecture Principles
-
-### 🔹 Separation of Concerns
-- UI components isolated from business logic
-- Data fetching handled via custom hooks
-
-### 🔹 Reusability First
-- Shared cards for movies, series, and actors
-- Shared section & layout components
-
-### 🔹 Performance Optimization
-- `useMemo` & `useCallback` where needed
-- Skeleton loading instead of spinners
-- `next/image` for image optimization
+### 📊 6. Comprehensive Admin Dashboard
+- **Content Management:** Create, update, and delete movies, series, seasons, and episodes with direct image upload.
+- **Analytics Overview:** Detailed statistics on total views, user growth, top genres, and system logs.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Next.js 14+** (App Router)
-- **React**
-- **TypeScript**
-- **Tailwind CSS**
-- **FontAwesome Icons**
-- **REST API / External Movie API**
+| Technology | Purpose |
+| :--- | :--- |
+| **Next.js 14+ (App Router)** | Framework for Server & Client Components, SSR, and dynamic routing |
+| **TypeScript** | Type-safe development across models, hooks, and components |
+| **Tailwind CSS** | Responsive styling, modern dark-mode aesthetic, and fluid layouts |
+| **Axios** | HTTP client configured with interceptors and cookie support |
+| **FontAwesome & Lucide Icons** | Visual iconography |
+| **Google Gemini SDK** | Generative AI integration for conversational recommendation engine |
 
 ---
 
 ## 📂 Project Structure
 
+```
 movies-app/
-├── app/
-│   ├── page.tsx
-│   ├── movies/
-│   ├── series/
-│   └── actors/
-├── components/
-│   ├── cards/
-│   ├── sections/
-│   ├── containers/
-│   └── skeletons/
-├── hooks/
-├── types/
-├── constants/
-├── lib/
-├── public/
+├── src/
+│   ├── _pages/              # Page-level components & domain logic
+│   │   ├── auth/            # Login, Signup, Forgot Password
+│   │   ├── dashboard/       # Admin Dashboard & CMS
+│   │   ├── movies/          # Movies catalog & filters
+│   │   ├── series/          # Series catalog & season explorer
+│   │   ├── search/          # AI Search & query results
+│   │   ├── single-movie/    # Movie details & custom player
+│   │   └── single-series/   # Series player & episode listing
+│   ├── app/                 # Next.js App Router root layout & routes
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── globals.css
+│   ├── components/          # Reusable design system components
+│   │   ├── cards/           # MovieCard, SeriesCard, ActorCard
+│   │   ├── common/          # Navbar, Footer, Modal, Skeleton
+│   │   ├── player/          # Custom HTML5 Video Player
+│   │   ├── ui/              # AiChatWidget, NotificationDropdown, SocialButtons
+│   │   └── auth/            # ProtectedRoute, GuestRoute
+│   ├── context/             # React Contexts (Auth, Watchlist, Theme)
+│   ├── hooks/               # Custom hooks (useAiChat, useAiSearch, useDebounce)
+│   ├── services/            # API integration modules
+│   └── types/               # TypeScript interfaces and types
+├── public/                  # Static assets and images
+├── package.json
 └── README.md
+```
 
 ---
 
-## ⚙️ Installation & Running Locally
-
-1. Clone the repository
-```bash
-git clone <repository-url>
-```
-
-2. Navigate to the project directory
-```bash
-cd movies-app
-```
-
-3. Install dependencies
-```bash
-npm install
-```
-
-4. Run the development server
-```bash
-npm run dev
-```
-
-Open http://localhost:3000 in your browser.
-
----
-
-## 🌍 Environment Variables
+## ⚙️ Environment Variables
 
 Create a `.env.local` file in the root directory:
 
 ```env
-NEXT_PUBLIC_API_BASE_URL=your_api_url_here
+# Backend API Base URL
+NEXT_PUBLIC_API_BASE_URL=https://movies-api-w3xb.onrender.com/api/v1
+
+# Direct Gemini Key (Frontend fallback / direct search)
+NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 ---
 
-## 🔐 Test Admin Account (Development Only)
+## 🚀 Getting Started Locally
 
-Email: admin@test.com  
-Password: 12345678  
+### 1. Clone the repository
+```bash
+git clone https://github.com/AliHassan2712/MoviesApp.git
+cd MoviesApp/movies-app
+```
 
-⚠️ For development and testing only. Do NOT use in production.
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Setup environment variables
+Create `.env.local` with the values shown above.
+
+### 4. Run the development server
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 5. Build for production
+```bash
+npm run build
+npm run start
+```
 
 ---
 
-## 🚀 Deployment Checklist
+## 👥 Authors & Acknowledgments
 
-- [ ] Environment variables configured
-- [ ] Reusable components verified
-- [ ] No console errors
-- [ ] Skeleton loaders working
-- [ ] Image optimization enabled
-- [ ] SEO metadata added
-- [ ] Test admin disabled in production
-
----
-
-## 🔮 Future Enhancements
-
-- Authentication & user profiles
-- Favorites & watchlist
-- Advanced search & filters
-- Infinite scroll / pagination
-- Dark / Light mode
-
----
-
-## 👨‍💻 Author
-
-Built with ❤️ as part of a **Movies App Project Team**.
+Developed with ❤️ as part of the **CimaFlix** team project.
