@@ -11,6 +11,7 @@ import {
 } from "react";
 import { WatchlistItem } from "@/types/watchlist";
 import { useAuth } from "@/contexts/AuthContext";
+import toast from "react-hot-toast";
 
 export type WatchlistType = "movies" | "series";
 
@@ -66,24 +67,24 @@ export function WatchlistProvider({ children }: { children: React.ReactNode }) {
     wasLoggedInRef.current = true;
   }, [user]);
 
-  // 4. Toggle Watchlist
+  // 4. Toggle Watchlist (Refactored to execute side-effects outside state updater)
   const toggleWatchlist = useCallback(
     ({ id, type, name, poster }: ToggleWatchlistArgs) => {
-      setItems((prev) => {
-        const exists = prev.some((w) => w.id === id && w.type === type);
-        let nextItems;
-        if (exists) {
-          nextItems = prev.filter((w) => !(w.id === id && w.type === type));
-        } else {
-          nextItems = [
-            ...prev.filter((w) => !(w.id === id && w.type === type)),
-            { id, type, name: name ?? id, poster },
-          ];
-        }
-        return nextItems;
-      });
+      const exists = items.some((w) => w.id === id && w.type === type);
+      const nextItems = exists
+        ? items.filter((w) => !(w.id === id && w.type === type))
+        : [...items.filter((w) => !(w.id === id && w.type === type)), { id, type, name: name ?? id, poster }];
+
+      setItems(nextItems);
+
+      // Trigger side-effect toast alert
+      if (exists) {
+        toast.success(type === "movies" ? "Removed from Watchlist Movies" : "Removed from Watchlist Series");
+      } else {
+        toast.success(type === "movies" ? "Added to Watchlist Movies" : "Added to Watchlist Series");
+      }
     },
-    []
+    [items]
   );
 
   const isInWatchlist = useCallback(
@@ -94,6 +95,7 @@ export function WatchlistProvider({ children }: { children: React.ReactNode }) {
 
   const clearWatchlist = useCallback(() => {
     setItems([]);
+    toast.success("Watchlist cleared successfully");
   }, []);
 
   const value = useMemo(
