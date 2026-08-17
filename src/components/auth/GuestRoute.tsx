@@ -11,14 +11,18 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PATHS } from "@/constant/PATHS";
 
 export default function GuestRoute({ children }: { children: React.ReactNode }) {
-  const { isLoggedIn, loading } = useAuth();
+  const { isLoggedIn, loading, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!loading && isLoggedIn) {
-      router.replace(PATHS.HOME);
+      if (user?.role === "admin") {
+        router.replace(PATHS.ADMIN);
+      } else {
+        router.replace(PATHS.HOME);
+      }
     }
-  }, [loading, isLoggedIn, router]);
+  }, [loading, isLoggedIn, user, router]);
 
   if (loading) return null;
 
@@ -26,3 +30,4 @@ export default function GuestRoute({ children }: { children: React.ReactNode }) 
 
   return <>{children}</>;
 }
+
