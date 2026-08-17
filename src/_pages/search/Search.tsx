@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { Container } from "@/components/containers/Container";
-
 import useSearch from "./hooks/useSearch";
 import ActorsResults from "./components/ActorsResults";
 import MediaResultsSection from "./components/MediaResultsSection";
@@ -44,7 +43,7 @@ export default function SearchPageComponent() {
   return (
     <Container className="pt-20 space-y-14">
       <h1 className="text-3xl font-bold">
-        Search results for "{query}"
+        Search results for &quot;{query}&quot;
       </h1>
 
       {/* Movies */}

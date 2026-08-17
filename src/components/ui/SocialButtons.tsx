@@ -51,9 +51,11 @@ export default function SocialButtons() {
 
       if (googleBtnRef.current) {
         window.google.accounts.id.renderButton(googleBtnRef.current, {
-          theme: "outline",
+          theme: "filled_black",
           size: "large",
-          width: 500,
+          text: "continue_with",
+          shape: "rectangular",
+          width: 360,
         });
         setGoogleReady(true);
       }
@@ -124,27 +126,28 @@ export default function SocialButtons() {
   };
 
   return (
-    <div className="space-y-4 mt-6">
+    <div className="flex flex-col items-center gap-3 mt-6 w-full">
       {/* GOOGLE */}
-      <div className="w-full min-h-[44px]">
+      <div className="w-[360px] max-w-full min-h-[44px] flex justify-center">
         {!googleReady && (
-          <div className="w-full h-[44px] bg-gray-100 rounded-lg animate-pulse" />
+          <div className="w-full h-[40px] bg-white/5 border border-white/10 rounded animate-pulse" />
         )}
-        <div ref={googleBtnRef} />
+        <div ref={googleBtnRef} className="w-full flex justify-center" />
       </div>
 
       {/* FACEBOOK */}
       <button
         onClick={handleFacebookLogin}
         disabled={!facebookReady || isLoading}
-        className="w-full h-[44px] flex items-center justify-between gap-3 px-4 rounded-lg
-                   bg-[#1877F2] text-white font-medium hover:bg-[#166FE5]
+        className="w-[360px] max-w-full h-[40px] flex items-center justify-center gap-3 rounded
+                   bg-[#1877F2] hover:bg-[#166FE5] text-white font-semibold text-[14px]
+                   shadow transition-all duration-200 active:scale-[0.98]
                    disabled:opacity-50"
       >
-        <FaFacebook size={20} />
+        <FaFacebook size={18} />
         <span>Continue with Facebook</span>
-        <span />
       </button>
     </div>
   );
 }
+

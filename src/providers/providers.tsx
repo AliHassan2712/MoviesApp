@@ -7,6 +7,7 @@ import { LangProvider } from "@/contexts/LangContext";
 import { FavoriteProvider } from "@/contexts/FavoriteContext";
 import { WatchlistProvider } from "@/contexts/WatchlistContext";
 import ReactQueryProvider from "./ReactQueryProvider";
+import AiChatWidget from "@/components/ui/AiChatWidget";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -32,6 +33,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           },
         }}
       />
+      {/* 🤖 AI Chat Widget — visible on every page */}
+      <AiChatWidget />
     </AuthProvider>
   );
 }
+

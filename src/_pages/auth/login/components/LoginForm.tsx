@@ -39,21 +39,18 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (data: LoginSchemaType) => {
-    const success = await login(data);
-    const user = await fetchUser()
+    const loggedInUser = await login(data);
 
-
-    if (success) {
-      if (user?.role == "admin") {
-        router.push(PATHS.ADMIN)
+    if (loggedInUser) {
+      toast.success("Welcome back!");
+      if (loggedInUser.role === "admin") {
+        router.push(PATHS.ADMIN);
       } else {
-        toast.success("Welcome back!");
-        setTimeout(() => {
-          router.push(PATHS.HOME);
-        }, 1000);
+        router.push(PATHS.HOME);
       }
     }
   };
+
 
 
   return (
