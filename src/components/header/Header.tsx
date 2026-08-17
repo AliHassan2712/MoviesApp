@@ -19,6 +19,7 @@ import DesktopNav from "./DesktopNav";
 import UserMenu from "./UserMenu";
 import MobileMenu from "./MobileMenu";
 import SearchBar from "./SearchBar";
+import NotificationsMenu from "./NotificationsMenu";
 
 export default function Header() {
   const [showSearch, setShowSearch] = useState(false);
@@ -112,6 +113,17 @@ export default function Header() {
             <Bookmark size={22} />
           </Link>
 
+          {/* NOTIFICATIONS */}
+          <NotificationsMenu
+            isLoggedIn={isLoggedIn}
+            isOpen={notifOpen}
+            setIsOpen={(v: boolean) => {
+              setNotifOpen(v);
+              if (v) setUserOpen(false);
+            }}
+            desktopOnly
+          />
+
           {!isLoggedIn && <Link href={`${PATHS.LOGIN}`} className={`btn-primary px-3 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition disabled:opacity-60 flex items-center justify-center gap-2`}>Login</Link>
           }
 
@@ -148,6 +160,17 @@ export default function Header() {
           <Link href={PATHS.WATCHLIST} className="text-main hover:text-primary transition">
             <Bookmark size={22} />
           </Link>
+
+          {/* MOBILE NOTIFICATIONS */}
+          <NotificationsMenu
+            isLoggedIn={isLoggedIn}
+            isMobile
+            isOpen={notifOpen}
+            setIsOpen={(v: boolean) => {
+              setNotifOpen(v);
+              if (v) setMenuOpen(false);
+            }}
+          />
 
           {/* MENU BUTTON (WITH FIXED TOGGLE) */}
           <button

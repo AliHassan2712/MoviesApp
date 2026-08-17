@@ -7,6 +7,7 @@ import { useCallback, useMemo, useState } from "react";
 //components
 import { Container } from "@/components/containers/Container";
 import EpisodesDetailsSkeleton from "@/components/skeletons/EpisodesDetailsSkeleton";
+import CustomVideoPlayer from "@/components/video/CustomVideoPlayer";
 
 //hooks
 import { useEpisodes } from "@/_pages/series/hooks/useEpisodes";
@@ -78,11 +79,10 @@ export default function EpisodesDetails({ id, seasonId, episodesId }: SeasonDeta
 
       {currentEpisode.videoUrl && (
         <>
-          <video
+          <CustomVideoPlayer
             src={currentEpisode.videoUrl}
-            controls
-            className="w-full h-[60vh] md:h-screen lg:h-[85vh]
-              object-cover rounded-b-2xl bg-black"
+            autoPlay={false}
+            className="w-full"
           />
 
           {/*  Navigation */}

@@ -28,7 +28,6 @@ function Pagination({ pagination, onChange }: Props) {
 
   if (!pages.length) return null;
 
-  console.log("aliaksldfasnj;dkfadsjkbfjksafjsk")
 
   return (
     <div className="flex justify-center gap-2 mt-12 flex-wrap">
@@ -36,7 +35,7 @@ function Pagination({ pagination, onChange }: Props) {
       <button
         disabled={page === 1}
         onClick={handlePrev}
-        className="px-4 py-2 rounded-lg border border-[var(--color-border)] bg-card disabled:opacity-40"
+        className="px-4 py-2 rounded-lg border  bg-card disabled:opacity-40"
       >
         Prev
       </button>

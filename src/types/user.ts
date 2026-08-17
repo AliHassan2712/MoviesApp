@@ -13,6 +13,7 @@ export type UserType = {
   active: boolean;
   favorites?: FavoriteItemType[];
   watchlist?: string[]; // fallback
+  lastReadNotifications?: string;
 };
 
 export type AuthContextType = {
